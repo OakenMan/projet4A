@@ -52,7 +52,7 @@ public class GraphBuilderController {
 		graph.getModel().beginUpdate();
 
 		try {
-			graph.insertVertex(parent, null, nbVertex, 340, 250, 40, 40, "ROUNDED");
+			graph.insertVertex(parent, null, nbVertex, 340, 250, 40, 40);
 			nbVertex++;
 		} finally {
 			graph.getModel().endUpdate();

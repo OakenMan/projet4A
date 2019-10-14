@@ -18,7 +18,6 @@ import view.mainWindow.MainWindow;
 public class MainWindowController {
 
 	/*===== ATTRIBUTES =====*/
-	@SuppressWarnings("unused")
 	private static MainWindow view;
 	private static mxGraph graph;
 	private static AbstractShortestPath asp;
@@ -88,6 +87,9 @@ public class MainWindowController {
 				// On change le graphPath et on charge le graphe
 				setGraphPath(file.getPath());
 				graph.setModel((mxIGraphModel)Serialize.load(graphPath));
+				view.getActionPanel().resetParameters();
+				setStart(-1);
+				setEnd(-1);
 				System.out.println("Graph successfully loaded");
 			}
 			else {
@@ -110,6 +112,10 @@ public class MainWindowController {
 		return false;
 	}
 
+	/**
+	 * Redessine le graphe à l'écran
+	 * TODO : exception ClassCastException quand les label ne sont pas des chiffres
+	 */
 	public static void redrawGraph() {
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
 		for (Object c : cells)
