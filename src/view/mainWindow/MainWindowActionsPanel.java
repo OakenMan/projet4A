@@ -4,13 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -32,8 +30,6 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	protected static final URL fastForwardIcon = MainWindowActionsPanel.class.getResource("/icons/fast-forward.png");
 
 	/*===== ATTRIBUTES =====*/
-	final JFileChooser fileChooser = new JFileChooser();
-
 	private JButton bLoadFile;
 	private JTextField tfGraphFile;
 
@@ -41,8 +37,6 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 	private JTextField tfStartVertex;
 	private JTextField tfEndVertex;
-	
-	private JTextField tfSpeed;
 	
 	private SpinnerNumberModel speedSpinnerModel;
 
@@ -89,8 +83,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		tfStartVertex = new JTextField();
 		tfStartVertex.setPreferredSize(new Dimension(175, 25));
 		tfStartVertex.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
 			public void changedUpdate(DocumentEvent e) { warn(); }
+			@Override
 			public void removeUpdate(DocumentEvent e) { warn(); }
+			@Override
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
 				if(tfStartVertex.getText().matches("[0-9]*") && !tfStartVertex.getText().equals("")) {
@@ -124,8 +121,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		tfEndVertex = new JTextField();
 		tfEndVertex.setPreferredSize(new Dimension(175, 25));
 		tfEndVertex.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
 			public void changedUpdate(DocumentEvent e) { warn(); }
+			@Override
 			public void removeUpdate(DocumentEvent e) { warn(); }
+			@Override
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
 				if(tfEndVertex.getText().matches("[0-9]*") && !tfEndVertex.getText().equals("")) {
@@ -211,16 +211,9 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == bLoadFile) {
-			int returnVal = fileChooser.showOpenDialog(this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				MainWindowController.setGraphPath(file.getPath());
-				tfGraphFile.setText(MainWindowController.getGraphPath());
-				MainWindowController.loadGraph(MainWindowController.getGraphPath());
-			} else {
-				tfGraphFile.setText(MainWindowController.getGraphPath());
-			}
+		switch(e.getActionCommand()) {
+		case "Load graph" :		MainWindowController.loadGraph();
+		tfGraphFile.setText(MainWindowController.getGraphPath()); 	break;
 		}
 
 	}

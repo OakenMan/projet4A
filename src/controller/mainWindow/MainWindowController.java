@@ -1,5 +1,11 @@
 package controller.mainWindow;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.view.mxGraph;
@@ -10,10 +16,11 @@ import view.mainWindow.MainWindow;
 
 public class MainWindowController {
 
+	/*===== ATTRIBUTES =====*/
+	@SuppressWarnings("unused")
 	private static MainWindow view;
 	private static mxGraph graph;
 	
-	private static int nbVertex;
 	private static int start;
 	private static int end;
 	
@@ -21,14 +28,13 @@ public class MainWindowController {
 	
 	/*===== BUILDER =====*/
 	public static void main(String[] args) {
-		graph = new mxGraph();
-		graph.setStylesheet(new StyleSheet());
-		view = new MainWindow(graph);
-		
-		nbVertex = 0;
 		start = -1;
 		end = -1;
 		graphPath = "";
+		
+		graph = new mxGraph();
+		graph.setStylesheet(new StyleSheet());
+		view = new MainWindow(graph);
 	}
 	
 	/*===== GETTERS AND SETTERS =====*/
@@ -44,10 +50,6 @@ public class MainWindowController {
 		return end;
 	}
 	
-	public static String getGraphPath() {
-		return graphPath;
-	}
-	
 	public static void setStart(int id) {
 		start = id;
 		redrawGraph();
@@ -58,14 +60,40 @@ public class MainWindowController {
 		redrawGraph();
 	}
 	
+	public static String getGraphPath() {
+		return graphPath;
+	}
+	
 	public static void setGraphPath(String path) {
 		graphPath = path;
 	}
 	
 	/*===== METHODS =====*/
-	public static void loadGraph(String graphPath) {
-		graph.setModel((mxIGraphModel)Serialize.load(graphPath));
-		System.out.println("Graph successfully loaded");
+	/**
+	 * Charge un graphe depuis un fichier *.grp
+	 */
+	public static void loadGraph() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Graph file", "grp"));
+		
+		// Ouverture d'une fenêtre de type "Ouvrir fichier"
+		int returnVal = fileChooser.showOpenDialog(new JFrame());
+		
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			// Si l'extension est correcte
+			if(file.getName().matches(".*.grp")) {
+				// On change le graphPath et on charge le graphe
+				setGraphPath(file.getPath());
+				graph.setModel((mxIGraphModel)Serialize.load(graphPath));
+				System.out.println("Graph successfully loaded");
+			}
+			else {
+				System.out.println("Error : invalid extension");
+			}
+		} else {
+//			System.out.println("Graph wasn't loaded");
+		}	
 	}
 	
 	public static boolean containsVertex(int id) {
@@ -79,8 +107,6 @@ public class MainWindowController {
 		}
 		return false;
 	}
-	
-	
 	
 	public static void redrawGraph() {
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());

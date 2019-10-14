@@ -1,9 +1,9 @@
 package tests;
 
-import java.awt.Color;
 import java.util.Hashtable;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -117,7 +117,7 @@ public class Graphe extends JFrame {
    */
   public static void main(String[] args) {
 	Graphe frame = new Graphe();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setSize(400, 320);
     frame.setVisible(true);
   }
