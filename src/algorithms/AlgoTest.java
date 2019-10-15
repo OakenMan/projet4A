@@ -21,15 +21,15 @@ public class AlgoTest extends AbstractShortestPath implements ShortestPath {
 		{
 			mxCell cell = (mxCell) c;
 			if((int)cell.getValue() == MainWindowController.getStart()) {
-				graph.getModel().setStyle(cell, "START");
+//				graph.getModel().setStyle(cell, "START");
 				startCell = cell;
 			}
 			else if((int)cell.getValue() == MainWindowController.getStart()) {
-				graph.getModel().setStyle(cell, "END");
+//				graph.getModel().setStyle(cell, "END");
 				endCell = cell;
 			}
 			else {
-				graph.getModel().setStyle(cell, "ROUNDED");
+//				graph.getModel().setStyle(cell, "ROUNDED");
 			}
 		}
 	}

@@ -228,7 +228,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		tfGraphFile.setText(MainWindowController.getGraphPath()); 	break;
 		}
 		if(e.getSource() == bFirstStep) {
-			
+//			MainWindowController
 		}
 
 	}
