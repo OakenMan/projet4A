@@ -11,6 +11,7 @@ import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
+import algorithms.AlgoTest;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -133,6 +134,7 @@ public class MainWindowController {
 				graph.getModel().setStyle(cell, "ROUNDED");
 			}
 		}
+		asp = new AlgoTest(graph);
 	}
 
 	/*===== PLAY BUTTONS =====*/
