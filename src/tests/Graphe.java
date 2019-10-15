@@ -1,9 +1,9 @@
 package tests;
 
-import java.awt.Color;
 import java.util.Hashtable;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -37,7 +37,7 @@ public class Graphe extends JFrame {
     style.put(mxConstants.STYLE_FONTSIZE, 15);
     style.put(mxConstants.STYLE_FONTCOLOR, "#000000");
     style.put(mxConstants.STYLE_FILLCOLOR, "#9999ff");
-    style.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
+    style.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
     style.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
     style.put(mxConstants.STYLE_STROKEWIDTH, 3);
     style.put(mxConstants.STYLE_STROKECOLOR, "#6464ff");
@@ -48,7 +48,7 @@ public class Graphe extends JFrame {
     styleStart.put(mxConstants.STYLE_FONTSIZE, 15);
     styleStart.put(mxConstants.STYLE_FONTCOLOR, "#000000");
     styleStart.put(mxConstants.STYLE_FILLCOLOR, "#99ff99");
-    styleStart.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
+    styleStart.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
     styleStart.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
     styleStart.put(mxConstants.STYLE_STROKEWIDTH, 3);
     styleStart.put(mxConstants.STYLE_STROKECOLOR, "#64ff64");
@@ -59,7 +59,7 @@ public class Graphe extends JFrame {
     styleEnd.put(mxConstants.STYLE_FONTSIZE, 15);
     styleEnd.put(mxConstants.STYLE_FONTCOLOR, "#000000");
     styleEnd.put(mxConstants.STYLE_FILLCOLOR, "#ff9999");
-    styleEnd.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
+    styleEnd.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
     styleEnd.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
     styleEnd.put(mxConstants.STYLE_STROKEWIDTH, 3);
     styleEnd.put(mxConstants.STYLE_STROKECOLOR, "#ff6464");
@@ -117,7 +117,7 @@ public class Graphe extends JFrame {
    */
   public static void main(String[] args) {
 	Graphe frame = new Graphe();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setSize(400, 320);
     frame.setVisible(true);
   }

@@ -37,4 +37,8 @@ public class MainWindow extends JFrame {
 	public void setGraph(mxGraph g) {
 		graphPanel.setGraph(g);
 	}
+	
+	public MainWindowActionsPanel getActionPanel() {
+		return actionPanel;
+	}
 }
