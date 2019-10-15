@@ -24,6 +24,8 @@ public class MainWindowController {
 
 	private static int start;
 	private static int end;
+	
+	private static float speed;
 
 	private static String graphPath;
 

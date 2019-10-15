@@ -6,10 +6,10 @@ import com.mxgraph.view.mxGraph;
 
 public abstract class AbstractShortestPath implements ShortestPath {
 
-	private mxGraph graph;
-	private ArrayList<mxGraph> steps;
-	private int nbSteps;
-	private int currentStep;
+	protected mxGraph graph;
+	protected ArrayList<mxGraph> steps;
+	protected int nbSteps;
+	protected int currentStep;
 	
 	public AbstractShortestPath(mxGraph graph) {
 		steps = new ArrayList<mxGraph>();
