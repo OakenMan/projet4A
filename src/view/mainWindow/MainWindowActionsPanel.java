@@ -41,6 +41,12 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	private JTextField tfEndVertex;
 	
 	private SpinnerNumberModel speedSpinnerModel;
+	
+	private JButton bFirstStep;
+	private JButton bPreviousStep;
+	private JButton bPlayPause;
+	private JButton bNextStep;
+	private JButton bLastStep;
 
 	/*===== BUILDER =====*/
 	public MainWindowActionsPanel() {
@@ -220,6 +226,9 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		switch(e.getActionCommand()) {
 		case "Choix du graphe" :		MainWindowController.loadGraph();
 		tfGraphFile.setText(MainWindowController.getGraphPath()); 	break;
+		}
+		if(e.getSource() == bFirstStep) {
+			
 		}
 
 	}
