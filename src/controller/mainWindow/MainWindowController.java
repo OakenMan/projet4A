@@ -12,6 +12,7 @@ import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
 import algorithms.AlgoTest;
+import algorithms.DisplayThread;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -25,8 +26,8 @@ public class MainWindowController {
 
 	private static int start;
 	private static int end;
-	
-	private static float speed;
+
+	private static double speed;
 
 	private static String graphPath;
 
@@ -44,6 +45,10 @@ public class MainWindowController {
 	/*===== GETTERS AND SETTERS =====*/
 	public static mxGraph getGraph() {
 		return graph;
+	}
+	
+	public static MainWindow getView() {
+		return view;
 	}
 
 	public static int getStart() {
@@ -70,6 +75,11 @@ public class MainWindowController {
 
 	public static void setGraphPath(String path) {
 		graphPath = path;
+	}
+
+	public static void setSpeed(double s) {
+		speed = s;
+		System.out.println("set speed to "+speed+" ("+1000/speed+")");
 	}
 
 	/*===== METHODS =====*/
@@ -103,6 +113,12 @@ public class MainWindowController {
 		}	
 	}
 
+	/**
+	 * Méthode pour savoir si le graphe contient ou non un sommet
+	 * @param id l'id du sommet à vérifier
+	 * @return true si le graphe contient le sommet, false sinon
+	 * TODO : à bouger dans une autre classe ??
+	 */
 	public static boolean containsVertex(int id) {
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
 		for (Object c : cells)
@@ -134,21 +150,25 @@ public class MainWindowController {
 				graph.getModel().setStyle(cell, "ROUNDED");
 			}
 		}
+	}
+
+	public static void findPCC() {
 		asp = new AlgoTest(graph);
+		asp.displayPotentials();
 	}
 
 	/*===== PLAY BUTTONS =====*/
-	public void firstStep() {
+	public static void firstStep() {
 		graph = asp.getFirstStep();
 		view.setGraph(graph);
 	}
-	
-	public void lastStep() {
+
+	public static void lastStep() {
 		graph = asp.getLastStep();
 		view.setGraph(graph);
 	}
-	
-	public void previousStep() {
+
+	public static void previousStep() {
 		try {
 			graph = asp.getPreviousStep();
 			view.setGraph(graph);
@@ -158,7 +178,7 @@ public class MainWindowController {
 		}
 	}
 
-	public void nextStep() {
+	public static void nextStep() {
 		try {
 			graph = asp.getNextStep();
 			view.setGraph(graph);
@@ -168,23 +188,40 @@ public class MainWindowController {
 		}
 	}
 
-	public void playPause() {
-		try {
-			while(true) {
-				graph = asp.getNextStep();
-				view.setGraph(graph);
-				try {
-					Thread.sleep(1000);				// à changer par la valeur de vitesse
-				}  catch (InterruptedException e) {
-					// ...
-				}
+//	public static void playPause() {
+//		boolean run = true;
+//		while(run) {
+//			try {
+//				System.out.println("IT");
+//				graph = asp.getNextStep();
+//				
+//			}
+//			catch(Exception e) {
+//				System.out.println("fin");
+//				run = false;
+//			}
+//			try {
+//				Thread.sleep(500);
+//				view.setGraph(graph);
+//			}  catch (InterruptedException e) {
+//				// ...(long)((1000/speed))
+//			}
+//		}
+//	}
+	
+	public static void playPause() {
+		while(asp.getCurrentStep() < asp.getNbSteps()) {
+			System.out.println("current="+asp.getCurrentStep()+"/"+asp.getNbSteps());
+			try {
+				new Thread(new DisplayThread()).start();
+				Thread.sleep(500);
+			}  catch (InterruptedException e) {
+				// ...(long)((1000/speed))
 			}
 		}
-		catch(Exception e) {
-			// Cas où on est à la fin
-		}
-
+		
 	}
+
 
 
 }

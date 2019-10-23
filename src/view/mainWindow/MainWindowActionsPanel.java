@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -39,9 +41,9 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 	private JTextField tfStartVertex;
 	private JTextField tfEndVertex;
-	
+
 	private SpinnerNumberModel speedSpinnerModel;
-	
+
 	private JButton bFirstStep;
 	private JButton bPreviousStep;
 	private JButton bPlayPause;
@@ -53,13 +55,13 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(250, 600));
 		setLayout(new BorderLayout());
 
-//		createGap();
+		//		createGap();
 
 		JPanel center = new JPanel();
-		
+
 		center.add(new JLabel("----- PARAMETRES -----"));
 
-//		createGap();
+		//		createGap();
 
 		bLoadFile = new JButton("Choix du graphe");
 		bLoadFile.addActionListener(this);
@@ -82,7 +84,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 		cbAlgo.setPreferredSize(new Dimension(240, 25));
 		center.add(cbAlgo);
-		
+
 		center.add(new InfoDijkstra());
 
 		createGap(center);
@@ -164,59 +166,71 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			}
 		});
 		center.add(tfEndVertex);
-		
+
 		add(center, BorderLayout.CENTER);
-		
+
 		JPanel south = new JPanel();
-		south.setPreferredSize(new Dimension(240, 125));
+		south.setPreferredSize(new Dimension(240, 160));
 
 		south.add(new JLabel("----- SIMULATION -----"));
 
-//		createGap();
-		
+		//		createGap();
+
 		south.add(new JLabel("Vitesse (iterations par seconde)"));
-		
-//		tfSpeed = new JTextField();
-//		tfSpeed.setPreferredSize(new Dimension(240, 25));
-//		add(tfSpeed);
-		
-		speedSpinnerModel = new SpinnerNumberModel(1, 0.1, 5, 0.1);
+
+		//		tfSpeed = new JTextField();
+		//		tfSpeed.setPreferredSize(new Dimension(240, 25));
+		//		add(tfSpeed);
+
+		speedSpinnerModel = new SpinnerNumberModel(1.0, 0.1, 5.0, 0.1);
+		speedSpinnerModel.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				MainWindowController.setSpeed((double)speedSpinnerModel.getValue());
+			}
+		});
+
 		JSpinner speedSpinner = new JSpinner(speedSpinnerModel);
 		speedSpinner.setPreferredSize(new Dimension(240, 25));
 		south.add(speedSpinner);
-		
+
 		createGap(south);
 
-		JButton bFirstStep = new JButton();
+		JButton calcShortestPath = new JButton("Calculer le PCC");
+		calcShortestPath.addActionListener(this);
+		calcShortestPath.setPreferredSize(new Dimension(240, 25));
+		south.add(calcShortestPath);
+
+		bFirstStep = new JButton();
 		bFirstStep.addActionListener(this);
 		bFirstStep.setPreferredSize(new Dimension(44, 25));
 		bFirstStep.setIcon(new ImageIcon(rewindIcon));
 		south.add(bFirstStep);
 
-		JButton bLastStep = new JButton();
-		bLastStep.addActionListener(this);
-		bLastStep.setPreferredSize(new Dimension(44, 25));
-		bLastStep.setIcon(new ImageIcon(backIcon));
-		south.add(bLastStep);
+		bPreviousStep = new JButton();
+		bPreviousStep.addActionListener(this);
+		bPreviousStep.setPreferredSize(new Dimension(44, 25));
+		bPreviousStep.setIcon(new ImageIcon(backIcon));
+		south.add(bPreviousStep);
 
-		JButton bPlayPause = new JButton();
+		bPlayPause = new JButton();
 		bPlayPause.addActionListener(this);
 		bPlayPause.setPreferredSize(new Dimension(44, 25));
 		bPlayPause.setIcon(new ImageIcon(playIcon));
 		south.add(bPlayPause);
 
-		JButton bNextStep = new JButton();
+		bNextStep = new JButton();
 		bNextStep.addActionListener(this);
 		bNextStep.setPreferredSize(new Dimension(44, 25));
 		bNextStep.setIcon(new ImageIcon(nextIcon));
 		south.add(bNextStep);
 
-		JButton bEndStep = new JButton();
-		bEndStep.addActionListener(this);
-		bEndStep.setPreferredSize(new Dimension(44, 25));
-		bEndStep.setIcon(new ImageIcon(fastForwardIcon));
-		south.add(bEndStep);
-		
+		bLastStep = new JButton();
+		bLastStep.addActionListener(this);
+		bLastStep.setPreferredSize(new Dimension(44, 25));
+		bLastStep.setIcon(new ImageIcon(fastForwardIcon));
+		south.add(bLastStep);
+
 		add(south, BorderLayout.SOUTH);
 
 	}
@@ -226,10 +240,13 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		switch(e.getActionCommand()) {
 		case "Choix du graphe" :		MainWindowController.loadGraph();
 		tfGraphFile.setText(MainWindowController.getGraphPath()); 	break;
+		case "Calculer le PCC" :		MainWindowController.findPCC(); break;
 		}
-		if(e.getSource() == bFirstStep) {
-//			MainWindowController
-		}
+		if(e.getSource() == bFirstStep) { MainWindowController.firstStep(); }
+		else if(e.getSource() == bPreviousStep) { MainWindowController.previousStep(); }
+		else if(e.getSource() == bPlayPause) { MainWindowController.playPause(); }
+		else if(e.getSource() == bNextStep) { MainWindowController.nextStep(); }
+		else if(e.getSource() == bLastStep) { MainWindowController.lastStep(); }
 
 	}
 
@@ -238,7 +255,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		separator.setPreferredSize(new Dimension(240, 10));
 		panel.add(separator);
 	}
-	
+
 	public void resetParameters() {
 		tfStartVertex.setText("");
 		tfStartVertex.setBackground(null);

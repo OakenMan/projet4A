@@ -31,11 +31,23 @@ public class StyleSheet extends mxStylesheet {
 		styleStart.put(mxConstants.STYLE_FILLCOLOR, "#99ff99");
 		styleStart.put(mxConstants.STYLE_STROKECOLOR, "#64ff64");
 		putCellStyle("START", styleStart);
+		
+		Hashtable<String, Object> boldStart = new Hashtable<String, Object>();
+		boldStart.put(mxConstants.STYLE_FILLCOLOR, "#99ff99");
+		boldStart.put(mxConstants.STYLE_STROKECOLOR, "#64ff64");
+		boldStart.put(mxConstants.STYLE_STROKEWIDTH, 3);
+		putCellStyle("BOLD_START", boldStart);
 
 		Hashtable<String, Object> styleEnd = new Hashtable<String, Object>();
 		styleEnd.put(mxConstants.STYLE_FILLCOLOR, "#ff9999");
 		styleEnd.put(mxConstants.STYLE_STROKECOLOR, "#ff6464");
 		putCellStyle("END", styleEnd);
+		
+		Hashtable<String, Object> boldEnd = new Hashtable<String, Object>();
+		boldEnd.put(mxConstants.STYLE_FILLCOLOR, "#ff9999");
+		boldEnd.put(mxConstants.STYLE_STROKECOLOR, "#ff6464");
+		boldEnd.put(mxConstants.STYLE_STROKEWIDTH, 3);
+		putCellStyle("BOLD_END", boldEnd);
 
 		Hashtable<String, Object> defaultEdge = new Hashtable<String, Object>();
 		defaultEdge.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);

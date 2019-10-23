@@ -15,4 +15,10 @@ public class Dijkstra extends AbstractShortestPath implements ShortestPath {
 
 	}
 
+	@Override
+	public void displayPotentials() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -41,4 +41,8 @@ public class MainWindow extends JFrame {
 	public MainWindowActionsPanel getActionPanel() {
 		return actionPanel;
 	}
+	
+	public GraphDisplayPanel getGraphPanel() {
+		return graphPanel;
+	}
 }
