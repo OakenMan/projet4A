@@ -212,12 +212,7 @@ public class MainWindowController {
 	public static void playPause() {
 		while(asp.getCurrentStep() < asp.getNbSteps()) {
 			System.out.println("current="+asp.getCurrentStep()+"/"+asp.getNbSteps());
-			try {
-				new Thread(new DisplayThread()).start();
-				Thread.sleep(500);
-			}  catch (InterruptedException e) {
-				// ...(long)((1000/speed))
-			}
+			new Thread(new DisplayThread()).start();
 		}
 		
 	}

@@ -11,10 +11,8 @@ import com.mxgraph.view.mxGraph;
 import controller.mainWindow.MainWindowController;
 import view.GraphDisplayPanel;
 
-public class AlgoTest extends AbstractShortestPath implements ShortestPath {
+public class AlgoTest extends AbstractShortestPath {
 
-	
-	
 	/*===== BUILDER =====*/
 	public AlgoTest(mxGraph graph) {
 		super(graph);	
@@ -28,10 +26,11 @@ public class AlgoTest extends AbstractShortestPath implements ShortestPath {
 		mxCell currentCell;
 		
 		// On récupère le sommet de départ et d'arrivée
-		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
-		for (Object c : cells)
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : vertices)
 		{
 			mxCell cell = (mxCell) c;
+			
 			if((int)cell.getValue() == MainWindowController.getStart()) {
 				startCell = cell;
 				graph.getModel().setStyle(startCell, "BOLD_START");
@@ -41,6 +40,7 @@ public class AlgoTest extends AbstractShortestPath implements ShortestPath {
 				endCell = cell;
 				System.out.println("Arrivée = "+endCell.getValue().toString());
 			}
+			
 		}
 		// On ajoute l'étape 0 (juste le départ en gras)
 		steps.add(copy(graph));
@@ -53,11 +53,15 @@ public class AlgoTest extends AbstractShortestPath implements ShortestPath {
 		
 		// Tant qu'on a pas atteind l'arrivée
 		while(!currentCell.equals(endCell)) {
-			cells = graph.getOutgoingEdges(currentCell);			// On récupère la liste des arcs partant de currentCell
-			mxCell minPath = getShortestEdge(cells);				// On récupère l'arc au plus petit poids
+			
+			vertices = graph.getOutgoingEdges(currentCell);			// On récupère la liste des arcs partant de currentCell
+			
+			mxCell minPath = getShortestEdge(vertices);				// On récupère l'arc au plus petit poids
+			
 			graph.getModel().setStyle(minPath, "BOLD_EDGE");		// On change son style
 			
 			currentCell = (mxCell) minPath.getTarget();				// On récupère le sommet au bout de cet arc
+			
 			if(!currentCell.equals(endCell)) {							// Si ce sommet n'est pas l'arrivée
 				potentials.put(currentCell, minPath.getValue().toString());
 				graph.getModel().setStyle(currentCell, "BOLD_VERTEX");	// On change son style
@@ -67,12 +71,13 @@ public class AlgoTest extends AbstractShortestPath implements ShortestPath {
 			else {														// Sinon (si c'est l'arrivée)
 				graph.getModel().setStyle(currentCell, "BOLD_END");		// On change son style
 			}
+			
 			steps.add(copy(graph));									// Enfin on ajoute cette nouvelle étape au tableau
 		}
 	}
 	
 	public static mxCell getShortestEdge(Object[] cells) {
-		mxCell minEdge = (mxCell) cells[0];
+		mxCell minEdge = (mxCell)cells[0];
 		for(Object c : cells) {
 			mxCell cell = (mxCell) c;
 			if(Integer.parseInt((String)cell.getValue()) < Integer.parseInt((String)minEdge.getValue())) {
