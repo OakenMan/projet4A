@@ -1,0 +1,38 @@
+mxGraph
+
+getChildCells(Object parent)
+
+getChildVerticles(Object parent)
+
+getChildEdges(Object parent)
+
+getConnections(Object cell)
+getConnections(Object cell, Object parent)
+getConnections(Object cell, Object parent, boolean recursive)
+
+getEdges(Object cell)
+getEdges(Object cell, Object parent)
+getEdges(Object cell, Object parent, bool incoming, bool outgoing, bool includeLoops, bool recursive)
+
+getEdgesBetween(Object source, Object dest)
+getEdgesBetween(Object source, Object dest, bool directed)
+
+getIncomingEdges(Object cell)
+
+getLabel(Object cell)
+
+
+METHODES VRAIMENTS UTILES 
+----------------------------------------------------------------------------------------------
+mxCell = un vertex (sommet) ou un edge (arc)
+
+edge.getSource() -> sommet de départ
+edge.getTarget() -> sommet d'arrivée
+
+(int)vertex.getValue() 				-> id du sommet
+Integer.parseInt((String)edge.getValue())	-> poids de l'arc
+
+mxGraph.getOutgoingEdges(vertex) -> Object[] qui contient tous les arcs partants
+mxGraph.getIncomingEdges(vertex) -> Object[] qui contient tous les arcs arrivants
+----------------------------------------------------------------------------------------------
+
