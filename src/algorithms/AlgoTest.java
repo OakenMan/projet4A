@@ -1,15 +1,16 @@
 package algorithms;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.Map;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;
 
 import controller.mainWindow.MainWindowController;
-import view.GraphDisplayPanel;
 
 public class AlgoTest extends AbstractShortestPath {
 
@@ -69,6 +70,7 @@ public class AlgoTest extends AbstractShortestPath {
 				currentStep++;											// et l'étape courante
 			}
 			else {														// Sinon (si c'est l'arrivée)
+				potentials.put(currentCell, minPath.getValue().toString());
 				graph.getModel().setStyle(currentCell, "BOLD_END");		// On change son style
 			}
 			
@@ -88,20 +90,22 @@ public class AlgoTest extends AbstractShortestPath {
 	}
 	
 	public void displayPotentials() {
+		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotPane();
+//		JViewport potPane = MainWindowController.getView().getGraphPanel().getGraphPane();
+		
 		for(Map.Entry<mxCell, String> mapentry : potentials.entrySet()) {
-			System.out.println(mapentry.getKey() + " ---> " + mapentry.getValue());
-			
-			GraphDisplayPanel comp = MainWindowController.getView().getGraphPanel();
-
-			JLabel potential = new JLabel("bababab");
+			JLabel potential = new JLabel(mapentry.getValue());
 			
 			int x = (int)mapentry.getKey().getGeometry().getX();
-			int y = (int)mapentry.getKey().getGeometry().getY()-20;
+			int y = (int)mapentry.getKey().getGeometry().getY()-30;
+			
+			System.out.println("Sommet " + mapentry.getKey().getValue() + " ---> " + mapentry.getValue() + "("+x+","+y+")");
 			
 			potential.setBounds(new Rectangle(x, y, 50, 50));
-			comp.add(potential);
+			potential.setBackground(Color.WHITE);
+			potPane.add(potential);
 			
-			comp.validate();
+			potPane.validate();
 			
 		}
 	}

@@ -12,7 +12,6 @@ import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
 import algorithms.AlgoTest;
-import algorithms.DisplayThread;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -188,34 +187,27 @@ public class MainWindowController {
 		}
 	}
 
-//	public static void playPause() {
-//		boolean run = true;
-//		while(run) {
-//			try {
-//				System.out.println("IT");
-//				graph = asp.getNextStep();
-//				
-//			}
-//			catch(Exception e) {
-//				System.out.println("fin");
-//				run = false;
-//			}
-//			try {
-//				Thread.sleep(500);
-//				view.setGraph(graph);
-//			}  catch (InterruptedException e) {
-//				// ...(long)((1000/speed))
-//			}
-//		}
-//	}
-	
 	public static void playPause() {
-		while(asp.getCurrentStep() < asp.getNbSteps()) {
-			System.out.println("current="+asp.getCurrentStep()+"/"+asp.getNbSteps());
-			new Thread(new DisplayThread()).start();
+		boolean run = true;
+		while(run) {
+			try {
+				System.out.println("IT");
+				graph = asp.getNextStep();
+				
+			}
+			catch(Exception e) {
+				System.out.println("fin");
+				run = false;
+			}
+			try {
+				Thread.sleep(500);
+				view.setGraph(graph);
+			}  catch (InterruptedException e) {
+				// ...(long)((1000/speed))
+			}
 		}
-		
 	}
+
 
 
 

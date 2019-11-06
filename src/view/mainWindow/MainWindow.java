@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JViewport;
 import javax.swing.WindowConstants;
 
 import com.mxgraph.view.mxGraph;
