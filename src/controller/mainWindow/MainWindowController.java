@@ -6,12 +6,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
 import algorithms.AlgoTest;
+import algorithms.Dijkstra;
+import model.Graph;
+import model.Vertex;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -19,16 +21,16 @@ import view.mainWindow.MainWindow;
 public class MainWindowController {
 
 	/*===== ATTRIBUTES =====*/
-	private static MainWindow view;
-	private static mxGraph graph;
-	private static AbstractShortestPath asp;
+	private static MainWindow view;				// Fenêtre principale
+	private static Graph graph;					// Graphe
+	private static AbstractShortestPath asp;	// Algorithme (contient le tableau d'étapes)
 
-	private static int start;
-	private static int end;
+	private static int start;					// ID du sommet de départ
+	private static int end;						// ID du sommet d'arrivée
 
-	private static double speed;
+	private static double speed;				// Vitesse de déroulement de l'algo (étapes/s)
 
-	private static String graphPath;
+	private static String graphPath;			// Chemin du fichier du graphe
 
 	/*===== BUILDER =====*/
 	public static void main(String[] args) {
@@ -36,7 +38,7 @@ public class MainWindowController {
 		end = -1;
 		graphPath = "";
 
-		graph = new mxGraph();
+		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
 		view = new MainWindow(graph);
 	}
@@ -45,7 +47,7 @@ public class MainWindowController {
 	public static mxGraph getGraph() {
 		return graph;
 	}
-	
+
 	public static MainWindow getView() {
 		return view;
 	}
@@ -83,15 +85,17 @@ public class MainWindowController {
 
 	/*===== METHODS =====*/
 	/**
-	 * Charge un graphe depuis un fichier *.grp
+	 * Ouvre une fenêtre de sélection de fichier et charge le graphe choisi
 	 */
 	public static void loadGraph() {
-		JFileChooser fileChooser = new JFileChooser();
+		// Crée un FileChooser et ajoute un filtre avec l'extension .grp
+		JFileChooser fileChooser = new JFileChooser();									
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Graph file", "grp"));
 
 		// Ouverture d'une fenêtre de type "Ouvrir fichier"
 		int returnVal = fileChooser.showOpenDialog(new JFrame());
 
+		// Si l'opération est un succès
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			// Si l'extension est correcte
@@ -105,25 +109,29 @@ public class MainWindowController {
 				System.out.println("Graph successfully loaded");
 			}
 			else {
-				System.out.println("Error : invalid extension");
+				System.err.println("Error : invalid extension");
 			}
 		} else {
-			//			System.out.println("Graph wasn't loaded");
+			// L'utilisateur n'a pas choisi de graphe, on ne fait rien
 		}	
 	}
 
 	/**
-	 * Méthode pour savoir si le graphe contient ou non un sommet
+	 * Méthode pour savoir si le graphe contient ou non un sommet (utilisée pour le choix du départ/arrivée)
 	 * @param id l'id du sommet à vérifier
 	 * @return true si le graphe contient le sommet, false sinon
 	 * TODO : à bouger dans une autre classe ??
 	 */
 	public static boolean containsVertex(int id) {
+//		System.out.println("did the graph contains "+id+" ?");
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
+//		System.out.println(cells.length == 0);
 		for (Object c : cells)
 		{
-			mxCell cell = (mxCell) c;
-			if(id == (int)cell.getValue()) {
+			Vertex cell = (Vertex) c;
+			int val = Integer.parseInt(cell.getValue().toString());
+//			System.out.print(val+", ");
+			if(id == val) {
 				return true;
 			}
 		}
@@ -138,25 +146,35 @@ public class MainWindowController {
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
 		for (Object c : cells)
 		{
-			mxCell cell = (mxCell) c;
-			if((int)cell.getValue() == start) {
-				graph.getModel().setStyle(cell, "START");
+			Vertex vertex = (Vertex) c;
+			int val = Integer.parseInt(vertex.getValue().toString());
+			System.out.println("val = "+val);
+			if(val == start) {
+				System.out.println("val = start = " + start);
+				graph.getModel().setStyle(vertex, "START");
 			}
-			else if((int)cell.getValue() == end) {
-				graph.getModel().setStyle(cell, "END");
+			else if(val == end) {
+				System.out.println("val = end = " + end);
+				graph.getModel().setStyle(vertex, "END");
 			}
 			else {
-				graph.getModel().setStyle(cell, "ROUNDED");
+				graph.getModel().setStyle(vertex, "ROUNDED");
 			}
 		}
 	}
 
 	public static void findPCC() {
-		asp = new AlgoTest(graph);
+		switch(view.getActionPanel().getSelectedAlgorithm()) {
+		case "AlgoTest" : 		asp = new AlgoTest(graph); break;
+		case "Dijkstra" : 		asp = new Dijkstra(graph); break;
+		case "Bellman-Ford" : 	asp = new AlgoTest(graph); break;
+		case "A*" : 			asp = new AlgoTest(graph); break;
+		default: break;
+		}
 		asp.displayPotentials();
 	}
 
-	/*===== PLAY BUTTONS =====*/
+	/*===== VISUALISATION BUTTONS =====*/
 	public static void firstStep() {
 		graph = asp.getFirstStep();
 		view.setGraph(graph);
@@ -191,9 +209,7 @@ public class MainWindowController {
 		boolean run = true;
 		while(run) {
 			try {
-				System.out.println("IT");
-				graph = asp.getNextStep();
-				
+				graph = asp.getNextStep();	
 			}
 			catch(Exception e) {
 				System.out.println("fin");
@@ -207,10 +223,6 @@ public class MainWindowController {
 			}
 		}
 	}
-	
-
-
-
 
 }
 

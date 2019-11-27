@@ -4,19 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JViewport;
 import javax.swing.WindowConstants;
 
 import com.mxgraph.view.mxGraph;
 
+import model.Graph;
 import view.GraphDisplayPanel;
 
 public class MainWindow extends JFrame {
 
-	private GraphDisplayPanel graphPanel;
-	private MainWindowActionsPanel actionPanel;
+	/*===== ATTRIBUTES =====*/
+	private GraphDisplayPanel graphPanel;			// Panel d'affichage du graphe
+	private MainWindowActionsPanel actionPanel;		// Panel des actions
 
-	public MainWindow(mxGraph graph) {
+	/*===== BUILDER =====*/
+	public MainWindow(Graph graph) {
 		// Window configuration (name, size and minimum size, location...)
 		setTitle("Create graph");
 		setMinimumSize(new Dimension(1000, 600));
@@ -35,8 +37,14 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 	}
 	
-	public void setGraph(mxGraph g) {
-		graphPanel.setGraph(g);
+	/*===== GETTERS AND SETTERS =====*/
+	
+	/**
+	 * Permet de mettre à jour le graphe
+	 * @param graph le nouveau graphe à afficher
+	 */
+	public void setGraph(Graph graph) {
+		graphPanel.setGraph(graph);
 	}
 	
 	public MainWindowActionsPanel getActionPanel() {

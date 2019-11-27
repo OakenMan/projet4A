@@ -1,10 +1,10 @@
 package algorithms;
 
-import com.mxgraph.view.mxGraph;
+import model.Graph;
 
 public class Dijkstra extends AbstractShortestPath implements ShortestPath {
 
-	public Dijkstra(mxGraph graph) {
+	public Dijkstra(Graph graph) {
 		super(graph);
 		// TODO Auto-generated constructor stub
 	}

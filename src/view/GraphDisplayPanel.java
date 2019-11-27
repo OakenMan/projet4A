@@ -3,65 +3,74 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
+
+import model.Graph;
 
 public class GraphDisplayPanel extends JPanel {
 
-	private mxGraph graph;
-	private mxGraphComponent graphComponent;
-	private JPanel potPane;
-	private JLayeredPane lpane;
-
-	public GraphDisplayPanel(mxGraph g) {
-		this.graph = g;
+	/*===== ATTRIBUTES =====*/
+	private JLayeredPane lpane;					// Panel qui permet d'afficher le graphe + les potentiels
+	private mxGraphComponent graphComponent;	// Composant d'affichage du graphe
+	private JPanel potentialsPane;				// Panel d'affichage des potentiels
+	
+	/*===== BUILDER =====*/
+	public GraphDisplayPanel(Graph graph) {
 
 		setLayout(new BorderLayout());
 
 		// LAYERED PANE
 		lpane = new JLayeredPane();
-		lpane.setBounds(0, 0, 800, 600);
+		lpane.setBounds(0, 0, 1920, 1080);
 		add(lpane, BorderLayout.CENTER);
 		
-        // GRAPH PANE
+        // GRAPH PANE (en fond)
 		graphComponent = new mxGraphComponent(graph);
 		graphComponent.getViewport().setOpaque(true);
 		graphComponent.getViewport().setBackground(Color.WHITE);
 		graphComponent.setBounds(0, 0, 1920, 1080);
 		lpane.add(graphComponent, 0, 0);
 		
-		// POTENTIALS PANE
-		potPane = new JPanel();
-		potPane.setLayout(null);
-		potPane.setOpaque(false);
-		potPane.setBorder(BorderFactory.createLineBorder(Color.red));
-		potPane.setBounds(0, 0, 1920, 1080);
-		lpane.add(potPane, 1, 0);
-		
-//		JLabel text = new JLabel("test");
-//		text.setBounds(50, 50, 50, 50);
-//		potPane.add(text);
+		// POTENTIALS PANE (devant en transparence)
+		potentialsPane = new JPanel();
+		potentialsPane.setLayout(null);
+		potentialsPane.setOpaque(false);
+		potentialsPane.setBounds(0, 0, 1920, 1080);
+		lpane.add(potentialsPane, 1, 0);
 
 		setVisible(true);
 	}
 
-	public void setGraph(mxGraph graph) {
-		this.graph = graph;
-	
-		graphComponent.setGraph(graph);
-		graphComponent.refresh();
-	}
-
-	public JPanel getPotPane() {
-		return potPane;
+	/*===== GETTERS AND SETTERS =====*/
+	public JPanel getPotentialsPane() {
+		return potentialsPane;
 	}
 	
 	public JViewport getGraphPane() {
 		return graphComponent.getViewport();
 	}
+	
+	/*===== METHODS =====*/
+	
+	/**
+	 * Permet de mettre à jour le graphe
+	 * @param graph le nouveau graphe à afficher
+	 */
+	public void setGraph(Graph graph) {
+		graphComponent.setGraph(graph);
+		graphComponent.refresh();
+		resetPotentials();
+	}
+	
+	/**
+	 * Permet de nettoyer le panel des potentiels
+	 */
+	public void resetPotentials() {
+		potentialsPane.removeAll();
+	}
+	
 }

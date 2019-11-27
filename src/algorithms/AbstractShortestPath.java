@@ -1,26 +1,32 @@
 package algorithms;
 
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.mxgraph.model.mxCell;
-import com.mxgraph.view.mxGraph;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
+import controller.mainWindow.MainWindowController;
+import model.Edge;
+import model.Graph;
+import model.Vertex;
 import util.StyleSheet;
 
 public abstract class AbstractShortestPath implements ShortestPath {
 
 	/*===== ATTRIBUTES =====*/
-	protected mxGraph graph;
-	protected ArrayList<mxGraph> steps;
+	protected Graph graph;
+	protected ArrayList<Graph> steps;
 	protected int nbSteps;
 	protected int currentStep;
-	protected HashMap<mxCell, String> potentials;
+	protected HashMap<Vertex, String> potentials;
 	
 	/*===== BUILDER =====*/
-	public AbstractShortestPath(mxGraph graph) {
-		steps = new ArrayList<mxGraph>();
-		potentials = new HashMap<mxCell, String>();
+	public AbstractShortestPath(Graph graph) {
+		steps = new ArrayList<Graph>();
+		potentials = new HashMap<Vertex, String>();
 		this.graph = graph;
 		nbSteps = 0;
 		currentStep = 0;
@@ -31,17 +37,38 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	@Override
 	public abstract void findShortestPath();
 	
-	public abstract void displayPotentials();
+	public void displayPotentials() {
+		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotentialsPane();
+		
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		
+		for(Object c : vertices) {
+			Vertex vertex = (Vertex) c;
+			
+			JLabel potential = new JLabel(String.valueOf(vertex.getPotential()));
+			
+			int x = (int)vertex.getGeometry().getX();
+			int y = (int)vertex.getGeometry().getY()-30;
+			
+			potential.setBounds(new Rectangle(x, y, 50, 50));
+			potential.setBackground(Color.WHITE);
+			potential.setForeground(Color.RED);
+			potPane.add(potential);
+			
+			potPane.validate();
+			
+		}
+	}
 	
 	/**
 	 * Renvoie une copie du graphe passé en paramètre
 	 * @param graph le graphe à copier
 	 * @return une copie du graphe
 	 */
-	public mxGraph copy(mxGraph graph) {
+	public Graph copy(Graph graph) {
 
 		// Créé un nouveau graphe
-		mxGraph copy = new mxGraph();
+		Graph copy = new Graph();
 		copy.setStylesheet(new StyleSheet());
 		
 		Object parent = copy.getDefaultParent();
@@ -50,7 +77,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		// Pour chacun de ses sommets...
 		for(Object c : vertices) {
-			mxCell vertex = (mxCell) c;
+			Vertex vertex = (Vertex) c;
 			// On l'ajoute à la copie
 			copy.insertVertex(parent, 
 					null, 
@@ -60,13 +87,14 @@ public abstract class AbstractShortestPath implements ShortestPath {
 					graph.getCellGeometry(vertex).getWidth(), 
 					graph.getCellGeometry(vertex).getHeight(), 
 					vertex.getStyle());
+			System.out.println("add 1 vertex");
 		}
 		
 		// On récupère la liste des arcs du graphe à copier
 		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
 		// Pour chacun de ses arcs...
 		for(Object c : edges) {
-			mxCell edge = (mxCell) c;
+			Edge edge = (Edge) c;
 			// On l'ajoute à la copie
 			if(edge.getSource() != null && edge.getTarget() != null) {
 			copy.insertEdge(parent, 
@@ -76,6 +104,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 					getCellFromId(copy, edge.getTarget().getId()), 
 					edge.getStyle());
 			}
+			System.out.println("add 1 vertex");
 		}
 
 		return copy;
@@ -87,10 +116,10 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @param id l'idée du sommet à trouver
 	 * @return le sommet lié à l'id, ou null si non trouvé
 	 */
-	public mxCell getCellFromId(mxGraph graph, String id) {
+	public Vertex getCellFromId(Graph graph, String id) {
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		for(Object c : vertices) {
-			mxCell vertex = (mxCell) c;
+			Vertex vertex = (Vertex) c;
 			if(vertex.getId().equals(id)) {
 				return vertex;
 			}
@@ -102,7 +131,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * Renvoie la première étape de l'algo
 	 * @return
 	 */
-	public mxGraph getFirstStep() {
+	public Graph getFirstStep() {
 		currentStep = 0;
 		return steps.get(currentStep);
 	}
@@ -111,8 +140,8 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * Renvoie la dernière étape de l'algo
 	 * @return
 	 */
-	public mxGraph getLastStep() {
-		currentStep = nbSteps;
+	public Graph getLastStep() {
+		currentStep = steps.size()-1;
 		return steps.get(currentStep);
 	}
 	
@@ -121,7 +150,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @return
 	 * @throws Exception
 	 */
-	public mxGraph getPreviousStep() throws Exception {
+	public Graph getPreviousStep() throws Exception {
 		if(currentStep > 0) {
 			currentStep--;
 			return steps.get(currentStep);
@@ -136,7 +165,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @return
 	 * @throws Exception
 	 */
-	public mxGraph getNextStep() throws Exception {
+	public Graph getNextStep() throws Exception {
 		if(currentStep < nbSteps) {
 			currentStep++;
 			return steps.get(currentStep);
@@ -158,10 +187,10 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * [TEMP] méthode de debug pour afficher un graphe dans la console
 	 * @param graph
 	 */
-	public void displayGraph(mxGraph graph) {
-		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
-		for(Object c : cells) {
-			mxCell cell = (mxCell) c;
+	public void displayGraph(Graph graph) {
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for(Object c : vertices) {
+			Vertex cell = (Vertex) c;
 			System.out.println("Vertex " + cell.getValue() + " : " + cell.getStyle());
 		}
 	}

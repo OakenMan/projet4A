@@ -1,45 +1,40 @@
 package algorithms;
 
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import com.mxgraph.model.mxCell;
-import com.mxgraph.view.mxGraph;
-
 import controller.mainWindow.MainWindowController;
+import model.Edge;
+import model.Graph;
+import model.Vertex;
 
 public class AlgoTest extends AbstractShortestPath {
 
 	/*===== BUILDER =====*/
-	public AlgoTest(mxGraph graph) {
+	public AlgoTest(Graph graph) {
 		super(graph);	
 	}
 
 	/*===== METHODS =====*/
 	@Override
 	public void findShortestPath() {
-		mxCell startCell = null;
-		mxCell endCell = null;
-		mxCell currentCell;
+		Vertex startVertex = null;
+		Vertex endVertex = null;
+		Vertex currentVertex;
 		
 		// On récupère le sommet de départ et d'arrivée
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+
 		for (Object c : vertices)
 		{
-			mxCell cell = (mxCell) c;
+			Vertex vertex = (Vertex) c;
+			int val = vertex.getIntValue();
 			
-			if((int)cell.getValue() == MainWindowController.getStart()) {
-				startCell = cell;
-				graph.getModel().setStyle(startCell, "BOLD_START");
-				System.out.println("Départ = "+startCell.getValue().toString());
+			if(val == MainWindowController.getStart()) {
+				startVertex = vertex;
+				graph.getModel().setStyle(startVertex, "BOLD_START");
+				System.out.println("Départ = "+startVertex.getIntValue());
 			}
-			else if((int)cell.getValue() == MainWindowController.getEnd()) {
-				endCell = cell;
-				System.out.println("Arrivée = "+endCell.getValue().toString());
+			else if(val == MainWindowController.getEnd()) {
+				endVertex = vertex;
+				System.out.println("Arrivée = "+endVertex.getIntValue());
 			}
 			
 		}
@@ -47,67 +42,45 @@ public class AlgoTest extends AbstractShortestPath {
 		steps.add(copy(graph));
 		System.out.println("Etape "+currentStep+" OK");
 		
-		nbSteps++;
 		currentStep++;
 		
-		currentCell = startCell;
+		currentVertex = startVertex;
 		
 		// Tant qu'on a pas atteind l'arrivée
-		while(!currentCell.equals(endCell)) {
+		while(!currentVertex.equals(endVertex)) {
 			
-			vertices = graph.getOutgoingEdges(currentCell);			// On récupère la liste des arcs partant de currentCell
+			Object[] edges = graph.getOutgoingEdges(currentVertex);			// On récupère la liste des arcs partant de currentCell
 			
-			mxCell minPath = getShortestEdge(vertices);				// On récupère l'arc au plus petit poids
+			Edge minPath = getShortestEdge(edges);							// On récupère l'arc au plus petit poids
 			
-			graph.getModel().setStyle(minPath, "BOLD_EDGE");		// On change son style
+			graph.getModel().setStyle(minPath, "BOLD_EDGE");				// On change son style
 			
-			currentCell = (mxCell) minPath.getTarget();				// On récupère le sommet au bout de cet arc
+			currentVertex = (Vertex)minPath.getTarget();					// On récupère le sommet au bout de cet arc
 			
-			if(!currentCell.equals(endCell)) {							// Si ce sommet n'est pas l'arrivée
-				potentials.put(currentCell, minPath.getValue().toString());
-				graph.getModel().setStyle(currentCell, "BOLD_VERTEX");	// On change son style
-				nbSteps++;												// On augmente le nombre d'étapes
-				currentStep++;											// et l'étape courante
+			if(!currentVertex.equals(endVertex)) {							// Si ce sommet n'est pas l'arrivée
+//				potentials.put(currentVertex, minPath.getValue().toString());
+				currentVertex.setPotential(minPath.getIntValue());
+				graph.getModel().setStyle(currentVertex, "BOLD_VERTEX");	// On change son style												// On augmente le nombre d'étapes
+				currentStep++;												// et l'étape courante
 			}
-			else {														// Sinon (si c'est l'arrivée)
-				potentials.put(currentCell, minPath.getValue().toString());
-				graph.getModel().setStyle(currentCell, "BOLD_END");		// On change son style
+			else {															// Sinon (si c'est l'arrivée)
+				currentVertex.setPotential(minPath.getIntValue());
+				graph.getModel().setStyle(currentVertex, "BOLD_END");		// On change son style
 			}
 			
-			steps.add(copy(graph));									// Enfin on ajoute cette nouvelle étape au tableau
+			steps.add(copy(graph));											// Enfin on ajoute cette nouvelle étape au tableau
 		}
 	}
 	
-	public static mxCell getShortestEdge(Object[] cells) {
-		mxCell minEdge = (mxCell)cells[0];
-		for(Object c : cells) {
-			mxCell cell = (mxCell) c;
-			if(Integer.parseInt((String)cell.getValue()) < Integer.parseInt((String)minEdge.getValue())) {
-				minEdge = cell;
+	public static Edge getShortestEdge(Object[] edges) {
+		Edge minEdge = (Edge)edges[0];
+		for(Object c : edges) {
+			Edge edge = (Edge) c;
+			if(edge.getIntValue() < minEdge.getIntValue()){
+				minEdge = edge;
 			}
 		}
 		return minEdge;
 	}
 	
-	public void displayPotentials() {
-		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotPane();
-//		JViewport potPane = MainWindowController.getView().getGraphPanel().getGraphPane();
-		
-		for(Map.Entry<mxCell, String> mapentry : potentials.entrySet()) {
-			JLabel potential = new JLabel(mapentry.getValue());
-			
-			int x = (int)mapentry.getKey().getGeometry().getX();
-			int y = (int)mapentry.getKey().getGeometry().getY()-30;
-			
-			System.out.println("Sommet " + mapentry.getKey().getValue() + " ---> " + mapentry.getValue() + "("+x+","+y+")");
-			
-			potential.setBounds(new Rectangle(x, y, 50, 50));
-			potential.setBackground(Color.WHITE);
-			potPane.add(potential);
-			
-			potPane.validate();
-			
-		}
-	}
-
 }

@@ -7,17 +7,23 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
-import com.mxgraph.view.mxGraph;
 
+import model.Graph;
 import util.Serialize;
 import util.StyleSheet;
 import view.graphBuilder.GraphBuilderWindow;
 
+/**
+ * Cette classe utilise le nouveau modèle, avec les surcharges des mxCell et de mxGraph
+ */
 public class GraphBuilderController {
+	
+	/*===== CONST =====*/
+	private final static int vertexRadius = 40;
 	
 	/*===== ATTRIBUTES =====*/
 	private static GraphBuilderWindow view;
-	private static mxGraph graph;
+	private static Graph graph;
 	
 	private static String graphPath;
 	
@@ -28,8 +34,9 @@ public class GraphBuilderController {
 		graphPath = "";
 		nbVertex = 0;
 		
-		graph = new mxGraph();
+		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
+		
 		view = new GraphBuilderWindow(graph);
 	}
 	
@@ -45,6 +52,7 @@ public class GraphBuilderController {
 	/*===== METHODS =====*/
 	/**
 	 * Ajoute un sommet au graphe
+	 * TODO : faire une méthode pour calculer la position du vertex à ajouter, pour qu'il soit jamais sur un ancien vertex
 	 */
 	public static void addVertex() {
 		Object parent = graph.getDefaultParent();
@@ -52,7 +60,7 @@ public class GraphBuilderController {
 		graph.getModel().beginUpdate();
 
 		try {
-			graph.insertVertex(parent, null, nbVertex, 340, 250, 40, 40);
+			graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
 			nbVertex++;
 		} finally {
 			graph.getModel().endUpdate();
@@ -118,7 +126,7 @@ public class GraphBuilderController {
 	 * Créé un nouveau graphe à la place de celui en cours d'édition
 	 */
 	public static void newGraph() {
-		graph = new mxGraph();
+		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
 		view.setGraph(graph);
 	}

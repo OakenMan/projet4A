@@ -2,11 +2,13 @@ package view.graphBuilder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import com.mxgraph.view.mxGraph;
 
+import model.Graph;
 import view.GraphDisplayPanel;
 
 public class GraphBuilderWindow extends JFrame {
@@ -14,7 +16,7 @@ public class GraphBuilderWindow extends JFrame {
 	private GraphDisplayPanel graphPanel;
 	private GraphBuilderActionsPanel actionPanel;
 
-	public GraphBuilderWindow(mxGraph graph) {
+	public GraphBuilderWindow(Graph graph) {
 		// Window configuration (name, size and minimum size, location...)
 		setTitle("Create graph");
 		setMinimumSize(new Dimension(1000, 600));
@@ -33,7 +35,7 @@ public class GraphBuilderWindow extends JFrame {
 		setVisible(true);
 	}
 	
-	public void setGraph(mxGraph g) {
+	public void setGraph(Graph g) {
 		graphPanel.setGraph(g);
 	}
 }

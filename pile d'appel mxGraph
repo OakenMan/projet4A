@@ -1,0 +1,65 @@
+insertVertex(Object parent, String id, Object value, double x,
+			double y, double width, double height)
+
+	-> return insertVertex(parent, id, value, x, y, width, height, null);
+
+
+insertVertex(Object parent, String id, Object value, double x,
+			double y, double width, double height, String style)
+
+	-> return insertVertex(parent, id, value, x, y, width, height, style, false);
+
+
+insertVertex(Object parent, String id, Object value, double x,
+			double y, double width, double height, String style,
+			boolean relative)
+
+	-> Object vertex = createVertex(parent, id, value, x, y, width, height,
+				style, relative);
+
+		return addCell(vertex, parent);
+
+
+METHODE A SURCHARGER -------------------------------------
+createVertex(Object parent, String id, Object value, double x,
+			double y, double width, double height, String style,
+			boolean relative)
+
+	-> mxGeometry geometry = new mxGeometry(x, y, width, height);
+		geometry.setRelative(relative);
+
+		mxCell vertex = new mxCell(value, geometry, style);
+		vertex.setId(id);
+		vertex.setVertex(true);
+		vertex.setConnectable(true);
+
+		return vertex;
+-----------------------------------------------------------------
+insertEdge(Object parent, String id, Object value,
+			Object source, Object target)
+
+	-> return insertEdge(parent, id, value, source, target, null);
+
+
+insertEdge(Object parent, String id, Object value,
+			Object source, Object target, String style)
+
+	-> Object edge = createEdge(parent, id, value, source, target, style);
+
+		return addEdge(edge, parent, source, target, null);
+
+
+METHODE A SURCHARGER -------------------------------------
+createEdge(Object parent, String id, Object value,
+			Object source, Object target, String style)
+
+	-> mxCell edge = new mxCell(value, new mxGeometry(), style);
+
+		edge.setId(id);
+		edge.setEdge(true);
+		edge.getGeometry().setRelative(true);
+
+		return edge;
+
+
+
