@@ -14,6 +14,7 @@ import algorithms.AlgoTest;
 import algorithms.Dijkstra;
 import model.Graph;
 import model.Vertex;
+import algorithms.BellmanFord;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -123,14 +124,14 @@ public class MainWindowController {
 	 * TODO : à bouger dans une autre classe ??
 	 */
 	public static boolean containsVertex(int id) {
-//		System.out.println("did the graph contains "+id+" ?");
+		//		System.out.println("did the graph contains "+id+" ?");
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
-//		System.out.println(cells.length == 0);
+		//		System.out.println(cells.length == 0);
 		for (Object c : cells)
 		{
 			Vertex cell = (Vertex) c;
-			int val = Integer.parseInt(cell.getValue().toString());
-//			System.out.print(val+", ");
+			int val = cell.getIntValue();
+			//			System.out.print(val+", ");
 			if(id == val) {
 				return true;
 			}
@@ -147,7 +148,7 @@ public class MainWindowController {
 		for (Object c : cells)
 		{
 			Vertex vertex = (Vertex) c;
-			int val = Integer.parseInt(vertex.getValue().toString());
+			int val = vertex.getIntValue();
 			System.out.println("val = "+val);
 			if(val == start) {
 				System.out.println("val = start = " + start);
@@ -167,10 +168,11 @@ public class MainWindowController {
 		switch(view.getActionPanel().getSelectedAlgorithm()) {
 		case "AlgoTest" : 		asp = new AlgoTest(graph); break;
 		case "Dijkstra" : 		asp = new Dijkstra(graph); break;
-		case "Bellman-Ford" : 	asp = new AlgoTest(graph); break;
+		case "Bellman-Ford" : 	asp = new BellmanFord(graph); break;
 		case "A*" : 			asp = new AlgoTest(graph); break;
 		default: break;
 		}
+		System.out.println("ALGO CHOISI : " + view.getActionPanel().getSelectedAlgorithm());
 		asp.displayPotentials();
 	}
 

@@ -5,10 +5,10 @@ public class InfoDijkstra extends AbstractAlgoInfos {
 	public InfoDijkstra() {
 		super();
 		
-		append("CaractÃ©ristiques :\n");
+		append("Caractéristiques :\n");
 		append("- Graphes quelconques\n");
 		append("- Longueurs positives\n");
 		append("- One to All\n");
-		append("- ComplexitÃ© : O(a + n.log(n))");
+		append("- Complexité : O(a + n.log(n))");
 	}
 }

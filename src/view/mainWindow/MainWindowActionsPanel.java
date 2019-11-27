@@ -21,6 +21,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import controller.mainWindow.MainWindowController;
+import view.algoInfos.InfoBellmanFord;
 import view.algoInfos.InfoDijkstra;
 
 public class MainWindowActionsPanel extends JPanel implements ActionListener {

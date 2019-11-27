@@ -28,7 +28,6 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		steps = new ArrayList<Graph>();
 		potentials = new HashMap<Vertex, String>();
 		this.graph = graph;
-		nbSteps = 0;
 		currentStep = 0;
 		findShortestPath();
 	}
@@ -59,6 +58,45 @@ public abstract class AbstractShortestPath implements ShortestPath {
 			
 		}
 	}
+
+	public Vertex getBeginning()
+	{
+		Vertex startVertex = null;
+		
+		// On récupère le sommet de départ
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : vertices)
+		{
+			Vertex vertex = (Vertex) c;
+			
+			if(vertex.getIntValue() == MainWindowController.getStart()) 
+			{
+				startVertex = vertex;
+				graph.getModel().setStyle(startVertex, "BOLD_START");
+				System.out.println("Départ = "+startVertex.getIntValue());
+			}
+		}
+		return startVertex;
+	}
+	
+	public Vertex getEnd()
+	{
+		Vertex endVertex = null;
+		
+		// On récupère le sommet d'arrivée
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : vertices)
+		{
+			Vertex vertex = (Vertex) c;
+
+			if(vertex.getIntValue() == MainWindowController.getEnd()) 
+			{
+				endVertex = vertex;
+				System.out.println("Arrivée = "+endVertex.getIntValue());
+			}
+		}
+		return endVertex;
+	}
 	
 	/**
 	 * Renvoie une copie du graphe passé en paramètre
@@ -87,7 +125,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 					graph.getCellGeometry(vertex).getWidth(), 
 					graph.getCellGeometry(vertex).getHeight(), 
 					vertex.getStyle());
-			System.out.println("add 1 vertex");
+//			System.out.println("add 1 vertex");
 		}
 		
 		// On récupère la liste des arcs du graphe à copier
@@ -104,7 +142,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 					getCellFromId(copy, edge.getTarget().getId()), 
 					edge.getStyle());
 			}
-			System.out.println("add 1 vertex");
+//			System.out.println("add 1 vertex");
 		}
 
 		return copy;
@@ -141,7 +179,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @return
 	 */
 	public Graph getLastStep() {
-		currentStep = steps.size()-1;
+		currentStep = steps.size();
 		return steps.get(currentStep);
 	}
 	
@@ -166,7 +204,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @throws Exception
 	 */
 	public Graph getNextStep() throws Exception {
-		if(currentStep < nbSteps) {
+		if(currentStep < steps.size()) {
 			currentStep++;
 			return steps.get(currentStep);
 		}
@@ -176,23 +214,25 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	}
 	
 	public int getNbSteps() {
-		return nbSteps;
+		return steps.size();
 	}
 	
 	public int getCurrentStep() {
 		return currentStep;
 	}
 	
-	/**
-	 * [TEMP] méthode de debug pour afficher un graphe dans la console
-	 * @param graph
-	 */
-	public void displayGraph(Graph graph) {
-		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
-		for(Object c : vertices) {
-			Vertex cell = (Vertex) c;
-			System.out.println("Vertex " + cell.getValue() + " : " + cell.getStyle());
+	public int getDistanceBetween(Vertex vertex1, Vertex vertex2) throws Exception
+	{
+		Object[] edgesFromVertex1 = graph.getOutgoingEdges(vertex1);
+		for (Object o : edgesFromVertex1)
+		{
+			Edge edge = (Edge) o;
+			if (edge.getTarget().equals(vertex2))
+			{
+				return edge.getIntValue();
+			}
 		}
+		throw new Exception ("Les deux sommets " + vertex1 + " et " + vertex2 + " ne sont pas reliés entre eux");
 	}
 }
 

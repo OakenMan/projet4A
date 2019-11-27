@@ -15,6 +15,7 @@ public class AlgoTest extends AbstractShortestPath {
 	/*===== METHODS =====*/
 	@Override
 	public void findShortestPath() {
+
 		Vertex startVertex = null;
 		Vertex endVertex = null;
 		Vertex currentVertex;
@@ -38,6 +39,7 @@ public class AlgoTest extends AbstractShortestPath {
 			}
 			
 		}
+		
 		// On ajoute l'étape 0 (juste le départ en gras)
 		steps.add(copy(graph));
 		System.out.println("Etape "+currentStep+" OK");
@@ -82,5 +84,5 @@ public class AlgoTest extends AbstractShortestPath {
 		}
 		return minEdge;
 	}
-	
+
 }

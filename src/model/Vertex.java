@@ -10,6 +10,10 @@ public class Vertex extends mxCell {
 
 	private int potential;
 	
+	public Vertex() {
+		super();
+	}
+	
 	public Vertex(Object value, mxGeometry geometry, String style)
 	{
 		setValue(value);
