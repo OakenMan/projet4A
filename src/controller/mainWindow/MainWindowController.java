@@ -11,7 +11,7 @@ import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
-import algorithms.AlgoTest;
+import algorithms.BellmanFord;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -152,7 +152,7 @@ public class MainWindowController {
 	}
 
 	public static void findPCC() {
-		asp = new AlgoTest(graph);
+		asp = new BellmanFord(graph);
 		asp.displayPotentials();
 	}
 

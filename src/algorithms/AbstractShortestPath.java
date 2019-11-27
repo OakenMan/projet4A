@@ -1,28 +1,33 @@
 package algorithms;
 
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;
 
+import controller.mainWindow.MainWindowController;
 import util.StyleSheet;
 
 public abstract class AbstractShortestPath implements ShortestPath {
 
 	/*===== ATTRIBUTES =====*/
-	protected mxGraph graph;
-	protected ArrayList<mxGraph> steps;
-	protected int nbSteps;
-	protected int currentStep;
-	protected HashMap<mxCell, String> potentials;
+	protected mxGraph graph;						// Le graphe
+	protected ArrayList<mxGraph> steps;				// Les différents états du graphe
+	protected int currentStep;						// L'état actuel
+	protected HashMap<mxCell, String> potentials;	// Les distances à ce sommet là depuis le sommet de départ
 	
 	/*===== BUILDER =====*/
 	public AbstractShortestPath(mxGraph graph) {
 		steps = new ArrayList<mxGraph>();
 		potentials = new HashMap<mxCell, String>();
 		this.graph = graph;
-		nbSteps = 0;
 		currentStep = 0;
 		findShortestPath();
 	}
@@ -31,7 +36,65 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	@Override
 	public abstract void findShortestPath();
 	
-	public abstract void displayPotentials();
+	public void displayPotentials() {
+		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotPane();
+//		JViewport potPane = MainWindowController.getView().getGraphPanel().getGraphPane();
+		
+		for(Map.Entry<mxCell, String> mapentry : potentials.entrySet()) {
+			JLabel potential = new JLabel(mapentry.getValue());
+			
+			int x = (int)mapentry.getKey().getGeometry().getX();
+			int y = (int)mapentry.getKey().getGeometry().getY()-30;
+			
+			System.out.println("Sommet " + mapentry.getKey().getValue() + " ---> " + mapentry.getValue() + "("+x+","+y+")");
+			
+			potential.setBounds(new Rectangle(x, y, 50, 50));
+			potential.setBackground(Color.WHITE);
+			potential.setForeground(Color.RED);
+			potPane.add(potential);
+			
+			potPane.validate();
+			
+		}
+	}
+	public mxCell getBeginning()
+	{
+		mxCell startCell = null;
+		
+		// On récupère le sommet de départ
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : vertices)
+		{
+			mxCell cell = (mxCell) c;
+			
+			if((int)cell.getValue() == MainWindowController.getStart()) 
+			{
+				startCell = cell;
+				graph.getModel().setStyle(startCell, "BOLD_START");
+				System.out.println("DÃ©part = "+startCell.getValue().toString());
+			}
+		}
+		return startCell;
+	}
+	
+	public mxCell getEnd()
+	{
+		mxCell endCell = null;
+		
+		// On récupère le sommet d'arrivé
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : vertices)
+		{
+			mxCell cell = (mxCell) c;
+
+			if((int)cell.getValue() == MainWindowController.getEnd()) 
+			{
+				endCell = cell;
+				System.out.println("ArrivÃ©e = "+endCell.getValue().toString());
+			}
+		}
+		return endCell;
+	}
 	
 	/**
 	 * Renvoie une copie du graphe passÃ© en paramÃ¨tre
@@ -112,7 +175,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @return
 	 */
 	public mxGraph getLastStep() {
-		currentStep = nbSteps;
+		currentStep = steps.size();
 		return steps.get(currentStep);
 	}
 	
@@ -137,7 +200,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @throws Exception
 	 */
 	public mxGraph getNextStep() throws Exception {
-		if(currentStep < nbSteps) {
+		if(currentStep < steps.size()) {
 			currentStep++;
 			return steps.get(currentStep);
 		}
@@ -147,7 +210,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	}
 	
 	public int getNbSteps() {
-		return nbSteps;
+		return steps.size();
 	}
 	
 	public int getCurrentStep() {
@@ -164,6 +227,35 @@ public abstract class AbstractShortestPath implements ShortestPath {
 			mxCell cell = (mxCell) c;
 			System.out.println("Vertex " + cell.getValue() + " : " + cell.getStyle());
 		}
+	}
+	
+	public static int getValue(mxCell edge)
+	{
+		return Integer.parseInt((String)edge.getValue());
+	}
+	
+	public int getPotential(mxCell vertex) throws Exception
+	{
+		for(Map.Entry<mxCell, String> mapentry : potentials.entrySet()) 
+		{
+			if (mapentry.getKey().equals(vertex))
+				return Integer.parseInt(mapentry.getValue());
+		}
+		throw new Exception ("Le sommet " + vertex + " n'est pas présent dans le tableau de potentiel");
+	}
+	
+	public int getDistanceBetween(mxCell vertex1, mxCell vertex2) throws Exception
+	{
+		Object[] edgesFromVertex1 = graph.getOutgoingEdges(vertex1);
+		for (Object o : edgesFromVertex1)
+		{
+			mxCell edge = (mxCell) o;
+			if (edge.getTarget().equals(vertex2))
+			{
+				return getValue(edge);
+			}
+		}
+		throw new Exception ("Les deux sommets " + vertex1 + " et " + vertex2 + " ne sont pas reliés entre eux");
 	}
 }
 
