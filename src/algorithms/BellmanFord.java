@@ -1,120 +1,140 @@
 package algorithms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.mxgraph.model.mxCell;
-import com.mxgraph.view.mxGraph;
+
+import model.Edge;
+import model.Graph;
+import model.Vertex;
 
 public class BellmanFord extends AbstractShortestPath {
 
-	private static final String INFINITE = "99999";	// Valeur utilisée pour simuler l'infini
-	private HashMap<mxCell, mxCell> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
-	
-	public BellmanFord(mxGraph graph) 
+	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin ï¿½ la fin
+
+	public BellmanFord(Graph graph) 
 	{
 		super(graph);
 	}
-	
-	public void Initialization(mxCell startVertex)
+
+	public void Initialization(Vertex startVertex)
 	{
-		System.out.println("le sommet de départ c'est " + (int)startVertex.getValue());																			
-		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());								// Vertices contient tous les sommets du graphe
-		potentials.put(startVertex, "0");
-		for (Object o : vertices) 																			//On remplit le tableau des distances 
+		//		System.out.println("le sommet de dÃ©part c'est " + startVertex.getIntValue());																			
+
+		startVertex.setPotential(0);
+
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());			// Vertices contient tous les sommets du graphe	
+		for (Object o : vertices) 														//On remplit le tableau des distances 
 		{
-			mxCell vertex = (mxCell) o;
+			Vertex vertex = (Vertex) o;
 			if (!(vertex.equals(startVertex)))
 			{
-				potentials.put(vertex, INFINITE);
-				System.out.println("cell c'est " + (int)vertex.getValue());
+				vertex.setPotential(INFINITE);
+				//				System.out.println("cell c'est " + (int)vertex.getValue());
 				predecessors.put(vertex, vertex);	
 			}
 		}
 	}
-	
-	public void updateDistances(mxCell vertex1, mxCell vertex2)
+
+	public void updateDistances(Vertex vertex1, Vertex vertex2)
 	{
 		try 
 		{
-			System.out.println("Le potentiel de " + vertex2 + " c'est " + getPotential(vertex2));
-			System.out.println("Le potentiel de " + vertex1 + " c'est " + getPotential(vertex1));
-			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + getPotential(vertex1)+getDistanceBetween(vertex1, vertex2));
-			if (getPotential(vertex2) == Integer.parseInt(INFINITE) && getPotential(vertex1) != Integer.parseInt(INFINITE))
+			//			System.out.println("Le potentiel de " + vertex2 + " c'est " + vertex2.getPotential());
+			//			System.out.println("Le potentiel de " + vertex1 + " c'est " + vertex1.getPotential());
+			//			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
+			if (vertex2.getPotential() == INFINITE && vertex1.getPotential() != INFINITE)
 			{
-				System.out.println("Les potentiels avant l'update : " + potentials);
-				potentials.put(vertex2, Integer.toString(getPotential(vertex1)+getDistanceBetween(vertex1, vertex2)));
-				System.out.println("Les potentiels après l'update : " + potentials);
+				//				System.out.println("Les potentiels avant l'update : " + potentials);
+				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
+				//				System.out.println("Les potentiels aprï¿½s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
-			else if (getPotential(vertex2) > getPotential(vertex1)+getDistanceBetween(vertex1, vertex2))
+			else if (vertex2.getPotential() > vertex1.getPotential() + getDistanceBetween(vertex1, vertex2))
 			{
-				System.out.println("Les potentiels avant l'update : " + potentials);
-				potentials.put(vertex2, Integer.toString(getPotential(vertex1)+getDistanceBetween(vertex1, vertex2)));
-				System.out.println("Les potentiels après l'update : " + potentials);
+				//				System.out.println("Les potentiels avant l'update : " + potentials);
+				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
+				//				System.out.println("Les potentiels aprï¿½s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
 		}
 		catch(Exception e) { System.out.println(e.getMessage());}
 	}
-	
+
 	public void findShortestPath()
 	{
-		predecessors = new HashMap<mxCell, mxCell>();
-		
-		mxCell startCell = getBeginning();
-		mxCell endCell = getEnd();
-		
-		// On ajoute l'étape 0 (juste le départ en gras)
+		predecessors = new HashMap<Vertex, Vertex>();
+
+		Vertex startVertex = getBeginning();
+		Vertex endVertex = getEnd();
+
+		// On ajoute l'ï¿½tape 0 (juste le dï¿½part en gras)
 		steps.add(copy(graph));
 		System.out.println("Etape "+currentStep+" OK");
-		
+
 		currentStep++;
-		
-		Initialization(startCell);
-		
+
+		Initialization(startVertex);
+
+		steps.add(copy(graph));
+
 		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		int nbVertices = vertices.length;
-		
+
 		for (int k = 1; k < nbVertices; k++)
 		{
 			for (Object o : edges)
 			{
-				mxCell edge = (mxCell) o;
-				updateDistances((mxCell)edge.getSource(), (mxCell)edge.getTarget());
+				Edge edge = (Edge) o;
+				updateDistances((Vertex)edge.getSource(), (Vertex)edge.getTarget());
+				if(k==1) {
+					steps.add(copy(graph));
+				}
 			}
 			steps.add(copy(graph));
+
 		}
-		
-		graph.getModel().setStyle(endCell, "BOLD_END");
+
+		graph.getModel().setStyle(endVertex, "BOLD_END");
 		steps.add(copy(graph));
-		
-		for (Object o : edges)																// On regarde s'il y a un cycle négatif
+
+		for (Object o : edges)																// On regarde s'il y a un cycle nï¿½gatif
 		{
-			mxCell edge = (mxCell) o;
+			Edge edge = (Edge) o;
 			try 
 			{
-				if ((getPotential((mxCell)edge.getSource())) + getDistanceBetween((mxCell)edge.getSource(), (mxCell)edge.getTarget()) < getPotential((mxCell)edge.getTarget()))
+				if ((((Vertex)edge.getSource())).getPotential() + getDistanceBetween((Vertex)edge.getSource(), (Vertex)edge.getTarget()) < ((Vertex)edge.getTarget()).getPotential())
 				{
 					System.out.println("OHLALA Y'A UN CYCLE NEGATIF IL VA FALLOIR CREER UNE EXCEPTION ICI");
 				}
 			}
 			catch(Exception e) { System.out.println(e.getMessage());}
 		}
-		
-		mxCell vertex = endCell;
-		mxCell edge = new mxCell();
-		while (!(vertex.equals(startCell)))
+
+		Vertex vertex = endVertex;
+		Edge edge = null;
+		while (!(vertex.equals(startVertex)))
 		{
-			for (Object ob : graph.getEdgesBetween(predecessors.get(vertex), vertex))
+			for (Object o : graph.getEdgesBetween(predecessors.get(vertex), vertex))
 			{
-				edge = (mxCell) ob;
+				edge = (Edge)o;
 			}
-			graph.getModel().setStyle(edge, "BOLD_EDGE");
+
 			vertex = predecessors.get(vertex);
-			graph.getModel().setStyle(vertex, "BOLD_VERTEX");
+			
+			graph.getModel().setStyle(edge, "BOLD_EDGE");
+			
+			if(vertex.equals(startVertex)) {
+				graph.getModel().setStyle(vertex, "BOLD_START");
+			}
+			else {
+				graph.getModel().setStyle(vertex, "BOLD_VERTEX");
+			}
+			
 			steps.add(copy(graph));
+			
+			
 		}	
 	}
 }

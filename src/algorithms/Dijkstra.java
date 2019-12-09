@@ -9,8 +9,6 @@ import model.Vertex;
 
 public class Dijkstra extends AbstractShortestPath {
 
-	final int INFINITE = 9999999;				// Valeur utilis�e pour simuler l'infini
-	
 	private ArrayList<Vertex> subGraph; 			//Liste des sommets pr�sents dans le sous graphe
 	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin � la fin
 	
@@ -20,7 +18,7 @@ public class Dijkstra extends AbstractShortestPath {
 
 	public void Initialization(Vertex startVertex)
 	{
-		System.out.println("le sommet de départ c'est " + (int)startVertex.getValue());
+//		System.out.println("le sommet de départ c'est " + startVertex.getIntValue());
 		subGraph.add(startVertex);	
 		startVertex.setPotential(0);
 		
@@ -32,7 +30,7 @@ public class Dijkstra extends AbstractShortestPath {
 			{
 				vertex.setPotential(INFINITE);
 				
-				System.out.println("cell c'est " + vertex.getIntValue());
+//				System.out.println("cell c'est " + vertex.getIntValue());
 				predecessors.put(vertex, vertex);	
 			}
 		}
@@ -40,14 +38,14 @@ public class Dijkstra extends AbstractShortestPath {
 		ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On cr�e la liste de voisin du sommet de d�part
 		for (Object o : graph.getOutgoingEdges(startVertex))
 		{
-			Vertex vertex = (Vertex) o;
+			Edge edge = (Edge) o;
 			Vertex neighboor = new Vertex();
-			neighboor = (Vertex)(vertex.getTarget());
+			neighboor = (Vertex)(edge.getTarget());
 			neighboors.add(neighboor);
 		}
 		for (Vertex c : neighboors)									// On met � jour la liste des potentiels
 		{
-			System.out.println("Je suis l� !");
+			System.out.println("Je suis là !");
 			updateDistances(startVertex, c);
 		}
 		System.out.println("Les potentiels � la fin de l'initialisation : " + potentials);
@@ -153,7 +151,7 @@ public class Dijkstra extends AbstractShortestPath {
 				ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On cr�e la liste de voisin du sommet actuel
 				for (Object o : graph.getOutgoingEdges((Object) cell))
 				{
-					Vertex vertex = (Vertex) o;
+					Edge vertex = (Edge) o;
 					Vertex neighboor = new Vertex();
 					neighboor = (Vertex)(vertex.getTarget());
 					neighboors.add(neighboor);
@@ -180,7 +178,12 @@ public class Dijkstra extends AbstractShortestPath {
 				}
 				graph.getModel().setStyle(edge, "BOLD_EDGE");
 				cell = predecessors.get(cell);
-				graph.getModel().setStyle(cell, "BOLD_VERTEX");
+				if(cell.equals(startCell)) {
+					graph.getModel().setStyle(cell, "BOLD_START");
+				}
+				else {
+					graph.getModel().setStyle(cell, "BOLD_VERTEX");
+				}
 				steps.add(copy(graph));
 			}
 		}

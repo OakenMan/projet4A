@@ -173,23 +173,26 @@ public class MainWindowController {
 		default: break;
 		}
 		System.out.println("ALGO CHOISI : " + view.getActionPanel().getSelectedAlgorithm());
-		asp.displayPotentials();
+		lastStep();
 	}
 
 	/*===== VISUALISATION BUTTONS =====*/
 	public static void firstStep() {
 		graph = asp.getFirstStep();
+		asp.displayPotentials(graph);
 		view.setGraph(graph);
 	}
 
 	public static void lastStep() {
 		graph = asp.getLastStep();
+		asp.displayPotentials(graph);
 		view.setGraph(graph);
 	}
 
 	public static void previousStep() {
 		try {
 			graph = asp.getPreviousStep();
+			asp.displayPotentials(graph);
 			view.setGraph(graph);
 		}
 		catch(Exception e) {
@@ -200,6 +203,7 @@ public class MainWindowController {
 	public static void nextStep() {
 		try {
 			graph = asp.getNextStep();
+			asp.displayPotentials(graph);
 			view.setGraph(graph);
 		}
 		catch(Exception e) {
