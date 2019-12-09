@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import controller.graphBuilder.GraphBuilderController;
 
@@ -20,12 +21,14 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 	private JButton bSaveGraph;
 	private JButton bAddVertex;
 	private JButton bDeleteCells;
+	private JTextField tfX;
+	private JTextField tfY;
 
 	/*===== BUILDER =====*/
 	public GraphBuilderActionsPanel() {
 		setPreferredSize(new Dimension(250, 600));
 
-		JLabel lOptions = new JLabel("Options");
+		JLabel lOptions = new JLabel("OPTIONS", SwingConstants.CENTER);
 		add(lOptions);
 
 		bLoadFile = new JButton("Load graph");
@@ -54,8 +57,21 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 
 		createGap();
 
-		JLabel lActions = new JLabel("Actions");
+		JLabel lActions = new JLabel("ACTIONS", SwingConstants.CENTER);
+		lActions.setPreferredSize(new Dimension(250, 25));
 		add(lActions);
+
+		add(new JLabel("x ="));
+
+		tfX = new JTextField();
+		tfX.setPreferredSize(new Dimension(70, 25));
+		add(tfX);
+
+		add(new JLabel("y ="));
+
+		tfY = new JTextField();
+		tfY.setPreferredSize(new Dimension(70, 25));
+		add(tfY);
 
 		bAddVertex = new JButton("Add vertex");
 		bAddVertex.addActionListener(this);
@@ -75,7 +91,7 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 		case "Load graph" :		GraphBuilderController.loadGraph();		
 		tfGraphFile.setText(GraphBuilderController.getGraphPath()); 	break;
 		case "Save graph" : 	GraphBuilderController.saveGraph();		break;
-		case "Add vertex" : 	GraphBuilderController.addVertex();		break;
+		case "Add vertex" : 	GraphBuilderController.addVertex(tfX.getText(), tfY.getText());		break;
 		case "New graph" :		GraphBuilderController.newGraph();		
 		tfGraphFile.setText("");										break;
 		case "Delete cells" :	GraphBuilderController.deleteCells();	break;

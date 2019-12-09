@@ -9,6 +9,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.mxgraph.model.mxIGraphModel;
 
 import model.Graph;
+import model.Vertex;
 import util.Serialize;
 import util.StyleSheet;
 import view.graphBuilder.GraphBuilderWindow;
@@ -17,66 +18,93 @@ import view.graphBuilder.GraphBuilderWindow;
  * Cette classe utilise le nouveau modèle, avec les surcharges des mxCell et de mxGraph
  */
 public class GraphBuilderController {
-	
+
 	/*===== CONST =====*/
 	private final static int vertexRadius = 40;
-	
+
 	/*===== ATTRIBUTES =====*/
 	private static GraphBuilderWindow view;
 	private static Graph graph;
-	
+
 	private static String graphPath;
-	
+
 	private static int nbVertex;
-	
+
 	/*===== MAIN =====*/
 	public static void main(String[] args) {
 		graphPath = "";
 		nbVertex = 0;
-		
+
 		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
-		
+
 		view = new GraphBuilderWindow(graph);
 	}
-	
+
 	/*===== GETTERS AND SETTERS =====*/
 	public static String getGraphPath() {
 		return graphPath;
 	}
-	
+
 	public static void setGraphPath(String path) {
 		graphPath = path;
 	}
-	
+
 	/*===== METHODS =====*/
 	/**
 	 * Ajoute un sommet au graphe
 	 * TODO : faire une méthode pour calculer la position du vertex à ajouter, pour qu'il soit jamais sur un ancien vertex
 	 */
-	public static void addVertex() {
+	public static void addVertex(String x, String y) {
 		Object parent = graph.getDefaultParent();
 
 		graph.getModel().beginUpdate();
 
 		try {
-			graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
+			if(x.matches("\\d*") && y.matches("\\d*")) {
+				graph.insertVertex(parent, null, nbVertex, Integer.parseInt(x), Integer.parseInt(y), vertexRadius, vertexRadius);
+			}
+			else {
+				graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
+			}
+			
 			nbVertex++;
 		} finally {
 			graph.getModel().endUpdate();
 		}
 	}
 	
+	public static void connectAllVertices() {
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		
+		for (Object o1 : vertices) 																			//On remplit le tableau des distances 
+		{
+			Vertex vertex1 = (Vertex) o1;
+			
+			for (Object o2 : vertices) 																			//On remplit le tableau des distances 
+			{
+				Vertex vertex2 = (Vertex) o2;
+				if (!(vertex.equals(startVertex)))
+				{
+					vertex.setPotential(INFINITE);
+					
+//					System.out.println("cell c'est " + vertex.getIntValue());
+					predecessors.put(vertex, vertex);	
+				}
+			}
+		}
+	}
+
 	/**
 	 * Charge un graphe depuis un fichier *.grp
 	 */
 	public static void loadGraph() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Graph file", "grp"));
-		
+
 		// Ouverture d'une fenêtre de type "Ouvrir fichier"
 		int returnVal = fileChooser.showOpenDialog(new JFrame());
-		
+
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			// Si l'extension est correcte
@@ -90,20 +118,20 @@ public class GraphBuilderController {
 				System.out.println("Error : invalid extension");
 			}
 		} else {
-//			System.out.println("Graph wasn't loaded");
+			//			System.out.println("Graph wasn't loaded");
 		}	
 	}
-	
+
 	/**
 	 * Sauvegarde le graphe
 	 */
 	public static void saveGraph() {
 		JFileChooser fileChooser = new JFileChooser();
 		String path = "";
-		
+
 		// Ouverture d'une fenêtre de type "Sauvegarder fichier"
 		int returnVal = fileChooser.showSaveDialog(new JFrame());
-		
+
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			String name = fileChooser.getSelectedFile().toString();
 			// Si l'utilisateur rajoute déjà l'extension on garde le nom tel quel
@@ -118,10 +146,10 @@ public class GraphBuilderController {
 			Serialize.save(graph.getModel(), path);
 			System.out.println("Graph successfully saved as " + path);
 		} else {
-//			System.out.println("Graph wasn't saved");
+			//			System.out.println("Graph wasn't saved");
 		}	
 	}
-	
+
 	/**
 	 * Créé un nouveau graphe à la place de celui en cours d'édition
 	 */
@@ -130,7 +158,7 @@ public class GraphBuilderController {
 		graph.setStylesheet(new StyleSheet());
 		view.setGraph(graph);
 	}
-	
+
 	/**
 	 * Supprime les cellules (sommets et arcs) sélectionnées
 	 * Attention : lors de la suppression d'un sommet, cette fonction supprime aussi ses arcs liés
