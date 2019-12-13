@@ -69,9 +69,6 @@ public class BellmanFord extends AbstractShortestPath {
 
 		// On ajoute l'�tape 0 (juste le d�part en gras)
 		steps.add(copy(graph));
-		System.out.println("Etape "+currentStep+" OK");
-
-		currentStep++;
 
 		Initialization(startVertex);
 

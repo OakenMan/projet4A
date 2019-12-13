@@ -23,7 +23,6 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	protected ArrayList<Graph> steps;
 	protected int nbSteps;
 	protected int currentStep;
-	protected HashMap<Vertex, String> potentials;
 
 	/*===== BUILDER =====*/
 	public AbstractShortestPath(Graph graph) {

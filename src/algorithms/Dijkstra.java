@@ -83,16 +83,12 @@ public class Dijkstra extends AbstractShortestPath {
 			//			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
 			if (vertex2.getPotential() == INFINITE)
 			{
-				//				System.out.println("Les potentiels avant l'update : " + potentials);
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
-				//				System.out.println("Les potentiels apr�s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
 			else if (vertex2.getPotential() > vertex1.getPotential() + getDistanceBetween(vertex1, vertex2))
 			{
-				//				System.out.println("Les potentiels avant l'update : " + potentials);
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
-				//				System.out.println("Les potentiels apr�s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
 		}
@@ -110,9 +106,6 @@ public class Dijkstra extends AbstractShortestPath {
 
 		// On ajoute l'�tape 0 (juste le d�part en gras)
 		steps.add(copy(graph));
-		//		System.out.println("Etape "+currentStep+" OK");
-
-//		currentStep++;
 
 		initialization(startCell);
 
