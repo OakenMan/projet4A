@@ -3,7 +3,6 @@ package algorithms;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -208,7 +207,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @return
 	 */
 	public Graph getLastStep() {
-		currentStep = steps.size()-1;
+		currentStep = steps.size() - 1;
 		return steps.get(currentStep);
 	}
 

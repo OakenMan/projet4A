@@ -244,8 +244,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		//=============================================================== 
 		
 		//======================== WARNING TEXT =========================
-		warningLabel = new JLabel();
-		center.add(optionsPanel);
+		warningLabel = new JLabel("", SwingConstants.CENTER);
+		warningLabel.setPreferredSize(new Dimension(230, 100));
+		warningLabel.setFont(new java.awt.Font("serif", Font.PLAIN, 15));
+		warningLabel.setForeground(Color.RED);
+		center.add(warningLabel);
 		//=============================================================== 
 		
 		add(center, BorderLayout.CENTER);
@@ -357,6 +360,8 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		
 		case DIJKSTRA :	
 			if(GraphTests.containsNegativeValues(MainWindowController.getGraph())) {
+				warningLabel.setText("<html>Erreur : <br/>Le graphe contient des valeurs négatives.<br/>"
+						+ "Impossible d'appliquer l'algorithme de Dijkstra</html>");
 				calcShortestPath.setEnabled(false);
 				optionsPanel.setVisible(false);
 			}
@@ -371,7 +376,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			break;
 			
 		case VOYAGEUR_COMMERCE :
-			if(GraphTests.isGraphComplete(MainWindowController.getGraph())) {
+			if(!(GraphTests.isGraphComplete(MainWindowController.getGraph()))) {
 				calcShortestPath.setEnabled(false);
 			}
 			break;
