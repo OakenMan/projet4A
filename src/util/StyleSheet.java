@@ -23,7 +23,7 @@ public class StyleSheet extends mxStylesheet {
 		defaultVertex.put(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
 		defaultVertex.put(mxConstants.STYLE_STROKECOLOR, "#6482B9");
 		putCellStyle("DEFAULT", defaultVertex);
-		
+
 		// Style  gras pour un sommet : BOLD_VERTEX
 		Hashtable<String, Object> boldVertex = new Hashtable<String, Object>();
 		boldVertex.put(mxConstants.STYLE_STROKEWIDTH, 3);
@@ -34,7 +34,7 @@ public class StyleSheet extends mxStylesheet {
 		styleStart.put(mxConstants.STYLE_FILLCOLOR, "#99ff99");
 		styleStart.put(mxConstants.STYLE_STROKECOLOR, "#64ff64");
 		putCellStyle("START", styleStart);
-		
+
 		// Style départ gras pour un sommet : BOLD_START
 		Hashtable<String, Object> boldStart = new Hashtable<String, Object>();
 		boldStart.put(mxConstants.STYLE_FILLCOLOR, "#99ff99");
@@ -47,7 +47,7 @@ public class StyleSheet extends mxStylesheet {
 		styleEnd.put(mxConstants.STYLE_FILLCOLOR, "#ff9999");
 		styleEnd.put(mxConstants.STYLE_STROKECOLOR, "#ff6464");
 		putCellStyle("END", styleEnd);
-		
+
 		// Style arrivée gras pour un sommet : BOLD_END
 		Hashtable<String, Object> boldEnd = new Hashtable<String, Object>();
 		boldEnd.put(mxConstants.STYLE_FILLCOLOR, "#ff9999");
@@ -71,7 +71,13 @@ public class StyleSheet extends mxStylesheet {
 		Hashtable<String, Object> styleBoldEdge = new Hashtable<String, Object>();
 		styleBoldEdge.put(mxConstants.STYLE_STROKEWIDTH, 3);
 		putCellStyle("BOLD_EDGE", styleBoldEdge);
-		
+
+		// Style gras pour un arc : INVISIBLE
+		Hashtable<String, Object> styleInvisible = new Hashtable<String, Object>();
+		styleInvisible.put(mxConstants.STYLE_NOLABEL, true);
+		styleInvisible.put(mxConstants.STYLE_OPACITY, 0);
+		putCellStyle("INVISIBLE", styleInvisible);
+
 		setDefaultVertexStyle(defaultVertex);
 		setDefaultEdgeStyle(defaultEdge);
 	}

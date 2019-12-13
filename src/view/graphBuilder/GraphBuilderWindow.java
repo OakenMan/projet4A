@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import com.mxgraph.view.mxGraph;
-
 import model.Graph;
 import view.GraphDisplayPanel;
 

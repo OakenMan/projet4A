@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -82,6 +83,22 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 		bDeleteCells.addActionListener(this);
 		bDeleteCells.setPreferredSize(new Dimension(240, 25));
 		add(bDeleteCells);
+		
+		JButton bConnectAll = new JButton("Connect all vertices");
+		bConnectAll.addActionListener(this);
+		bConnectAll.setPreferredSize(new Dimension(240, 25));
+		add(bConnectAll);
+		
+		JRadioButton rbHideEdges = new JRadioButton("Hide edges ? ");
+		rbHideEdges.addActionListener(new ActionListener () {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.hideEdges(rbHideEdges.isSelected());
+			}
+		});
+		add(rbHideEdges);
+		
+		
 	}
 
 	/*===== METHODS =====*/
@@ -92,9 +109,10 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 		tfGraphFile.setText(GraphBuilderController.getGraphPath()); 	break;
 		case "Save graph" : 	GraphBuilderController.saveGraph();		break;
 		case "Add vertex" : 	GraphBuilderController.addVertex(tfX.getText(), tfY.getText());		break;
-		case "New graph" :		GraphBuilderController.newGraph();		
+		case "New graph" :		GraphBuilderController.resetGraph();		
 		tfGraphFile.setText("");										break;
 		case "Delete cells" :	GraphBuilderController.deleteCells();	break;
+		case "Connect all vertices"	: GraphBuilderController.connectAllVertices();	break;
 		}
 	}
 

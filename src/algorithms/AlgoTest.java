@@ -5,6 +5,10 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * OBSOLETE, à supprimer avant la release finale
+ * @author tom
+ */
 public class AlgoTest extends AbstractShortestPath {
 
 	/*===== BUILDER =====*/

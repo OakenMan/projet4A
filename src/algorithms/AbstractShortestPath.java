@@ -17,7 +17,7 @@ import util.StyleSheet;
 public abstract class AbstractShortestPath implements ShortestPath {
 
 	final int INFINITE = 9999999;
-	
+
 	/*===== ATTRIBUTES =====*/
 	protected Graph graph;
 	protected ArrayList<Graph> steps;
@@ -28,7 +28,6 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	/*===== BUILDER =====*/
 	public AbstractShortestPath(Graph graph) {
 		steps = new ArrayList<Graph>();
-		potentials = new HashMap<Vertex, String>();
 		this.graph = graph;
 		currentStep = 0;
 		findShortestPath();
@@ -38,41 +37,48 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	@Override
 	public abstract void findShortestPath();
 
+	/**
+	 * Affiche les potentiels à l'écran
+	 * @param graph le graphe concerné
+	 */
 	public void displayPotentials(Graph graph) {
-		System.out.println("potentials =");
+		// On récupère le pannel d'affichage des potentiels et on le reset
 		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotentialsPane();
-		//		JViewport potPane = MainWindowController.getView().getGraphPanel().getGraphPane();
-
+		potPane.removeAll();
+		
+		// On récupère tous les sommets du graphe
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 
-		potPane.removeAll();
-
-		for(Object c : vertices) {
-			Vertex vertex = (Vertex) c;
+		for(Object o : vertices) {
+			Vertex vertex = (Vertex) o;
 
 			int pot = vertex.getPotential();
 			String potStr = "";
-			
+
 			if(pot == INFINITE) {
-				potStr = "\u221e";
+				potStr = "\u221e";	// = logo INFINI
 			}
 			else if(pot > 0) {
 				potStr = String.valueOf(pot);
 			}
-				JLabel potential = new JLabel(potStr);
-				System.out.print(vertex.getPotential() + " ");
+			
+			JLabel potential = new JLabel(potStr);
 
-				int x = (int)vertex.getGeometry().getX();
-				int y = (int)vertex.getGeometry().getY()-30;
+			int x = (int)vertex.getGeometry().getX();
+			int y = (int)vertex.getGeometry().getY()-30;
 
-				potential.setBounds(new Rectangle(x, y, 50, 50));
-				potential.setBackground(Color.WHITE);
-				potential.setForeground(Color.RED);
-				potPane.add(potential);
-				potPane.validate();
+			potential.setBounds(new Rectangle(x, y, 50, 50));
+			potential.setBackground(Color.WHITE);
+			potential.setForeground(Color.RED);
+			potPane.add(potential);
+			potPane.validate();
 		}
 	}
 
+	/**
+	 * Renvoie le sommet de départ
+	 * @return
+	 */
 	public Vertex getBeginning()
 	{
 		Vertex startVertex = null;
@@ -87,12 +93,15 @@ public abstract class AbstractShortestPath implements ShortestPath {
 			{
 				startVertex = vertex;
 				graph.getModel().setStyle(startVertex, "BOLD_START");
-				System.out.println("Départ = "+startVertex.getIntValue());
 			}
 		}
 		return startVertex;
 	}
 
+	/**
+	 * Renvoie le sommet d'arrivée
+	 * @return
+	 */
 	public Vertex getEnd()
 	{
 		Vertex endVertex = null;
@@ -106,7 +115,6 @@ public abstract class AbstractShortestPath implements ShortestPath {
 			if(vertex.getIntValue() == MainWindowController.getEnd()) 
 			{
 				endVertex = vertex;
-				System.out.println("Arrivée = "+endVertex.getIntValue());
 			}
 		}
 		return endVertex;
@@ -121,6 +129,10 @@ public abstract class AbstractShortestPath implements ShortestPath {
 
 		// Créé un nouveau graphe
 		Graph copy = new Graph();
+		graph.setCellsEditable(false);
+		graph.setCellsMovable(false);
+		graph.setCellsResizable(false);
+		graph.setCellsDisconnectable(false);
 		copy.setStylesheet(new StyleSheet());
 
 		Object parent = copy.getDefaultParent();
@@ -130,7 +142,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		// Pour chacun de ses sommets...
 		for(Object c : vertices) {
 			Vertex vertex = (Vertex) c;
-
+			// On l'ajoute à la copie
 			Vertex vertexCopy = (Vertex) copy.createVertex(parent, 
 					null, 
 					vertex.getValue(), 
@@ -142,14 +154,13 @@ public abstract class AbstractShortestPath implements ShortestPath {
 					false);
 
 			vertexCopy.setPotential(vertex.getPotential());
-			System.out.print(vertexCopy.getPotential() + " ");
 
 			copy.addCell(vertexCopy, parent);
 		}
-		System.out.println("");
 
 		// On récupère la liste des arcs du graphe à copier
 		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
+
 		// Pour chacun de ses arcs...
 		for(Object c : edges) {
 			Edge edge = (Edge) c;
@@ -158,11 +169,10 @@ public abstract class AbstractShortestPath implements ShortestPath {
 				copy.insertEdge(parent, 
 						null, 
 						edge.getValue(), 
-						getCellFromId(copy, edge.getSource().getId()), 
-						getCellFromId(copy, edge.getTarget().getId()), 
+						getCellFromId(copy, ((Vertex)edge.getSource()).getIntValue()), 
+						getCellFromId(copy, ((Vertex)edge.getTarget()).getIntValue()), 
 						edge.getStyle());
 			}
-			//			System.out.println("add 1 vertex");
 		}
 
 		return copy;
@@ -170,15 +180,15 @@ public abstract class AbstractShortestPath implements ShortestPath {
 
 	/**
 	 * Renvoie un sommet en fonction de son ID
-	 * @param g le graphe où rechercher
+	 * @param graph le graphe où rechercher
 	 * @param id l'idée du sommet à trouver
 	 * @return le sommet lié à l'id, ou null si non trouvé
 	 */
-	public Vertex getCellFromId(Graph graph, String id) {
+	public Vertex getCellFromId(Graph graph, int id) {
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		for(Object c : vertices) {
 			Vertex vertex = (Vertex) c;
-			if(vertex.getId().equals(id)) {
+			if(vertex.getIntValue() == id) {
 				return vertex;
 			}
 		}
@@ -241,6 +251,14 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		return currentStep;
 	}
 
+	/**
+	 * Renvoie la distance entre 2 sommets
+	 * @param vertex1 le 1er sommet
+	 * @param vertex2 le 2ème sommet
+	 * @return la distance entre 2 sommets 
+	 * TODO : return null si pas d'arc ? plutôt qu'une exception ?
+	 * @throws Exception
+	 */
 	public int getDistanceBetween(Vertex vertex1, Vertex vertex2) throws Exception
 	{
 		Object[] edgesFromVertex1 = graph.getOutgoingEdges(vertex1);

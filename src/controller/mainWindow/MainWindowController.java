@@ -1,9 +1,12 @@
 package controller.mainWindow;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
@@ -11,10 +14,11 @@ import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
 import algorithms.AlgoTest;
+import algorithms.Algorithm;
+import algorithms.BellmanFord;
 import algorithms.Dijkstra;
 import model.Graph;
 import model.Vertex;
-import algorithms.BellmanFord;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
@@ -29,9 +33,12 @@ public class MainWindowController {
 	private static int start;					// ID du sommet de départ
 	private static int end;						// ID du sommet d'arrivée
 
-	private static double speed;				// Vitesse de déroulement de l'algo (étapes/s)
+	private static int speed = 500;				// Vitesse de déroulement de l'algo (ms/étape)
 
 	private static String graphPath;			// Chemin du fichier du graphe
+	private static Algorithm algo;				// Le nom de l'algo utilisé
+	
+	private static Timer timer;
 
 	/*===== BUILDER =====*/
 	public static void main(String[] args) {
@@ -42,6 +49,8 @@ public class MainWindowController {
 		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
 		view = new MainWindow(graph);
+		
+		algo = null;
 	}
 
 	/*===== GETTERS AND SETTERS =====*/
@@ -79,12 +88,20 @@ public class MainWindowController {
 		graphPath = path;
 	}
 
-	public static void setSpeed(double s) {
+	public static void setSpeed(int s) {
 		speed = s;
-		System.out.println("set speed to "+speed+" ("+1000/speed+")");
+	}
+	
+	public static void setAlgo(Algorithm newAlgo) {
+		algo = newAlgo;
+	}
+	
+	public static Algorithm getAlgo() {
+		return algo;
 	}
 
 	/*===== METHODS =====*/
+
 	/**
 	 * Ouvre une fenêtre de sélection de fichier et charge le graphe choisi
 	 */
@@ -107,10 +124,18 @@ public class MainWindowController {
 				view.getActionPanel().resetParameters();
 				setStart(-1);
 				setEnd(-1);
-				System.out.println("Graph successfully loaded");
+
+				graph.setCellsEditable(false);
+				graph.setCellsMovable(false);
+				graph.setCellsResizable(false);
+				graph.setCellsDisconnectable(false);
+
+				MainWindowController.getView().getGraphPanel().getPotentialsPane().removeAll();
+				
+				System.out.println("Le graphe a été chargé avec succès");
 			}
 			else {
-				System.err.println("Error : invalid extension");
+				System.err.println("Erreur : extension invalide");
 			}
 		} else {
 			// L'utilisateur n'a pas choisi de graphe, on ne fait rien
@@ -124,18 +149,16 @@ public class MainWindowController {
 	 * TODO : à bouger dans une autre classe ??
 	 */
 	public static boolean containsVertex(int id) {
-		//		System.out.println("did the graph contains "+id+" ?");
 		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
-		//		System.out.println(cells.length == 0);
-		for (Object c : cells)
+
+		for (Object o : cells)
 		{
-			Vertex cell = (Vertex) c;
-			int val = cell.getIntValue();
-			//			System.out.print(val+", ");
-			if(id == val) {
+			Vertex vertex = (Vertex) o;
+			if(id == vertex.getIntValue()) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -149,13 +172,11 @@ public class MainWindowController {
 		{
 			Vertex vertex = (Vertex) c;
 			int val = vertex.getIntValue();
-			System.out.println("val = "+val);
+
 			if(val == start) {
-				System.out.println("val = start = " + start);
 				graph.getModel().setStyle(vertex, "START");
 			}
 			else if(val == end) {
-				System.out.println("val = end = " + end);
 				graph.getModel().setStyle(vertex, "END");
 			}
 			else {
@@ -165,14 +186,16 @@ public class MainWindowController {
 	}
 
 	public static void findPCC() {
+		System.out.println("Execution de l'algorithme [" + view.getActionPanel().getSelectedAlgorithm() + "]");
+
 		switch(view.getActionPanel().getSelectedAlgorithm()) {
-		case "AlgoTest" : 		asp = new AlgoTest(graph); break;
-		case "Dijkstra" : 		asp = new Dijkstra(graph); break;
-		case "Bellman-Ford" : 	asp = new BellmanFord(graph); break;
-		case "A*" : 			asp = new AlgoTest(graph); break;
+		case "AlgoTest" : 		asp = new AlgoTest(graph); 		break;
+		case "Dijkstra" : 		asp = new Dijkstra(graph); 		break;
+		case "Bellman-Ford" : 	asp = new BellmanFord(graph); 	break;
+		case "A*" : 			asp = new AlgoTest(graph);		break;
 		default: break;
 		}
-		System.out.println("ALGO CHOISI : " + view.getActionPanel().getSelectedAlgorithm());
+
 		lastStep();
 	}
 
@@ -212,22 +235,31 @@ public class MainWindowController {
 	}
 
 	public static void playPause() {
-		boolean run = true;
-		while(run) {
-			try {
-				graph = asp.getNextStep();	
+		timer = createTimer();
+		timer.start();
+	}
+
+	private static Timer createTimer(){
+
+		ActionListener action = new ActionListener ()
+		{
+			// Méthode appelée à chaque tic du timer
+			public void actionPerformed (ActionEvent event)
+			{
+				try {
+					graph = asp.getNextStep();
+					asp.displayPotentials(graph);
+					view.setGraph(graph);
+//					view.getGraphPanel().getGraphComponent().refresh();
+				} catch (Exception e) {
+					timer.stop();
+				}
+				
 			}
-			catch(Exception e) {
-				System.out.println("fin");
-				run = false;
-			}
-			try {
-				Thread.sleep(500);
-				view.setGraph(graph);
-			}  catch (InterruptedException e) {
-				// ...(long)((1000/speed))
-			}
-		}
+		};
+
+		System.out.println(speed);
+		return new Timer (speed, action);
 	}
 
 }

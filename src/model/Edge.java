@@ -10,6 +10,10 @@ public class Edge extends mxCell {
 
 	private int potential;
 	
+//	public Edge() {
+//		super();
+//	}
+
 	public Edge(Object value, mxGeometry geometry, String style)
 	{
 		setValue(value);
