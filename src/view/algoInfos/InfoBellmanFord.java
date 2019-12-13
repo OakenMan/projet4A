@@ -2,13 +2,12 @@ package view.algoInfos;
 
 public class InfoBellmanFord extends AbstractAlgoInfos {
 
-	public InfoBellmanFord() {
-		super();
-		
-		append("Caractéristiques :\n");
-		append("- Graphes quelconques\n");
-		append("- Longueurs quelconques\n");
-		append("- One to All\n");
-		append("- Complexité : O(n*m)");
+	public String getText() {
+		return
+				("CaractÃ©ristiques :\n" +
+						"- Graphes quelconques\n" +
+						"- Longueurs quelconques\n" +
+						"- One to All\n" +
+						"- ComplexitÃ© : O(n*m)");
 	}
 }

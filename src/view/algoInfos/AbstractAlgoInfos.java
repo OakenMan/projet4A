@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-public abstract class AbstractAlgoInfos extends JTextArea {
+public class AbstractAlgoInfos extends JTextArea {
 
 	public AbstractAlgoInfos() {
 		super();

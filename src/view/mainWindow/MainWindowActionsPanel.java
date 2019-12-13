@@ -20,7 +20,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import algorithms.Algorithm;
 import controller.mainWindow.MainWindowController;
+import view.algoInfos.AbstractAlgoInfos;
 import view.algoInfos.InfoBellmanFord;
 import view.algoInfos.InfoDijkstra;
 
@@ -50,13 +52,16 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	private JButton bNextStep;
 	private JButton bLastStep;
 
+	private AbstractAlgoInfos infosPanel;
+	private JPanel center;
+
 	/*===== BUILDER =====*/
 	public MainWindowActionsPanel() {
-		
+
 		setPreferredSize(new Dimension(250, 600));
 		setLayout(new BorderLayout());
 
-		JPanel center = new JPanel();
+		center = new JPanel();
 
 		center.add(new JLabel("----- PARAMETRES -----"));
 
@@ -81,13 +86,27 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		cbAlgo.addItem("AlgoTest");
 		cbAlgo.addItem("Dijkstra");
 		cbAlgo.addItem("Bellman-Ford");
-		cbAlgo.addItem("A*");
+		cbAlgo.addItem("Voyageur de commerce");
+
+		cbAlgo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				switch(cbAlgo.getSelectedItem().toString()) {
+				case "AlgoTest" :				MainWindowController.setAlgo(null);							break;
+				case "Dijkstra" :				MainWindowController.setAlgo(Algorithm.DIJKSTRA);			break;
+				case "Bellman-Ford" :			MainWindowController.setAlgo(Algorithm.BELLMAN_FORD);		break;
+				case "Voyageur de commerce" :	MainWindowController.setAlgo(Algorithm.VOYAGEUR_COMMERCE);	break;
+				}
+				updateInfoField();
+			}
+		});
 
 		cbAlgo.setPreferredSize(new Dimension(240, 25));
 		center.add(cbAlgo);
 
 		// Infos liées à l'algo
-		center.add(new InfoDijkstra());
+		infosPanel = new AbstractAlgoInfos();
+		center.add(infosPanel);
 
 		createGap(center);
 
@@ -130,6 +149,8 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 			}
 		});
+
+
 		center.add(tfStartVertex);
 
 		JLabel bEndVertex = new JLabel("Arrivée :");
@@ -181,11 +202,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		south.add(new JLabel("Vitesse (iterations par seconde)"));
 
 		// Spinner pour choisir la vitesse (en étapes/s)
-		speedSpinnerModel = new SpinnerNumberModel(1.0, 0.1, 5.0, 0.1);		// Défaut=1, Min=0.1, Max=5, Step=0.1
+		speedSpinnerModel = new SpinnerNumberModel(0.5, 0.1, 5.0, 0.1);		// Défaut=1, Min=0.1, Max=5, Step=0.1
 		speedSpinnerModel.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {						// A chaque changement on met à jour la valeur de speed
-				MainWindowController.setSpeed((double)speedSpinnerModel.getValue());
+				MainWindowController.setSpeed((int)(1000 * (double)speedSpinnerModel.getNumber()));
 			}
 		});
 
@@ -238,22 +259,27 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 		add(south, BorderLayout.SOUTH);
 	}
-	
+
 	/*===== GETTERS AND SETTERS =====*/
 
 	public String getSelectedAlgorithm() {
 		return (String)cbAlgo.getSelectedItem();
 	}
-	
+
 	/*===== METHODS =====*/
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
-		case "Choix du graphe" :		MainWindowController.loadGraph();
-		tfGraphFile.setText(MainWindowController.getGraphPath()); 	break;
-		case "Calculer le plus court chemin" :		MainWindowController.findPCC(); break;
+		case "Choix du graphe" :		
+			MainWindowController.loadGraph();
+			tfGraphFile.setText(MainWindowController.getGraphPath()); 	
+			break;
+		case "Calculer le plus court chemin" :		
+			MainWindowController.findPCC(); 
+			break;
 		}
+		
 		if(e.getSource() == bFirstStep) { MainWindowController.firstStep(); }
 		else if(e.getSource() == bPreviousStep) { MainWindowController.previousStep(); }
 		else if(e.getSource() == bPlayPause) { MainWindowController.playPause(); }
@@ -271,10 +297,23 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		tfEndVertex.setText("");
 		tfEndVertex.setBackground(null);
 	}
-	
+
 	private void createGap(JPanel panel) {
 		JLabel separator = new JLabel("");
 		separator.setPreferredSize(new Dimension(240, 10));
 		panel.add(separator);
+	}
+
+	public void updateInfoField() {
+		switch(MainWindowController.getAlgo()) {
+		case DIJKSTRA :	
+			infosPanel.append((new InfoDijkstra()).getText());
+			break;
+		case BELLMAN_FORD :	
+			infosPanel.append((new InfoBellmanFord()).getText());
+			break;
+		default:
+			break;
+		}
 	}
 }

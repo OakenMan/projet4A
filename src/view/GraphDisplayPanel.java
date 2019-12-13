@@ -2,11 +2,6 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Image;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -56,6 +51,10 @@ public class GraphDisplayPanel extends JPanel {
 	
 	public JViewport getGraphPane() {
 		return graphComponent.getViewport();
+	}
+	
+	public mxGraphComponent getGraphComponent() {
+		return graphComponent;
 	}
 	
 	/*===== METHODS =====*/

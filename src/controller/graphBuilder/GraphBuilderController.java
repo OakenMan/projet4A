@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
 
+import model.Edge;
 import model.Graph;
 import model.Vertex;
 import util.Serialize;
@@ -36,9 +37,10 @@ public class GraphBuilderController {
 		nbVertex = 0;
 
 		graph = new Graph();
-		graph.setStylesheet(new StyleSheet());
 
 		view = new GraphBuilderWindow(graph);
+		
+		resetGraph();
 	}
 
 	/*===== GETTERS AND SETTERS =====*/
@@ -51,9 +53,9 @@ public class GraphBuilderController {
 	}
 
 	/*===== METHODS =====*/
+
 	/**
 	 * Ajoute un sommet au graphe
-	 * TODO : faire une méthode pour calculer la position du vertex à ajouter, pour qu'il soit jamais sur un ancien vertex
 	 */
 	public static void addVertex(String x, String y) {
 		Object parent = graph.getDefaultParent();
@@ -61,17 +63,69 @@ public class GraphBuilderController {
 		graph.getModel().beginUpdate();
 
 		try {
-			if(x.matches("\\d*") && y.matches("\\d*")) {
-				graph.insertVertex(parent, null, nbVertex, Integer.parseInt(x), Integer.parseInt(y), vertexRadius, vertexRadius);
+			// Si on a spécifié une position :
+			if(x != null && y != null) {
+				if(x.matches("[0-9]+") && y.matches("[0-9]+")) {
+					graph.insertVertex(parent, null, nbVertex, Integer.parseInt(x), Integer.parseInt(y), vertexRadius, vertexRadius);
+				}
+				else {
+					graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
+				}
 			}
+			// Sinon :
 			else {
 				graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
 			}
-			
 			nbVertex++;
 		} finally {
 			graph.getModel().endUpdate();
 		}
+	}
+
+	/**
+	 * Relie tous les sommets entre eux, en calculant automatiquement les distances
+	 */
+	public static void connectAllVertices() {
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+
+		// Pour chaque couple de sommets
+		for (Object o1 : vertices) 																			
+		{
+			for (Object o2 : vertices) 																			
+			{
+				Vertex vertex1 = (Vertex) o1;
+				Vertex vertex2 = (Vertex) o2;
+
+				// On ajoute un arc entre les 2 sommets (sauf boucle)
+				if (!(vertex1.equals(vertex2)))
+				{
+					double x1 = graph.getCellGeometry(vertex1).getX();
+					double y1 = graph.getCellGeometry(vertex1).getY();
+					double x2 = graph.getCellGeometry(vertex2).getX();
+					double y2 = graph.getCellGeometry(vertex2).getY();
+
+					int distance = (int)Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
+
+					graph.insertEdge(graph.getDefaultParent(), null, distance, vertex1, vertex2);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Met à jour le style pour cacher les arcs
+	 * @param b true pour cacher les arcs, false sinon
+	 */
+	public static void hideEdges(boolean b) {
+		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
+
+		for (Object o : edges) 		
+		{
+			Edge edge = (Edge) o;
+			if(b) {	graph.getModel().setStyle(edge, "INVISIBLE");    }
+			else  { graph.getModel().setStyle(edge, "DEFAULT_EDGE"); }		
+		}
+
 	}
 
 	/**
@@ -91,13 +145,13 @@ public class GraphBuilderController {
 				// On change le graphPath et on charge le graphe
 				setGraphPath(file.getPath());
 				graph.setModel((mxIGraphModel)Serialize.load(graphPath));
-				System.out.println("Graph successfully loaded");
+				System.out.println("Le charge a été chargé avec succès");
 			}
 			else {
-				System.out.println("Error : invalid extension");
+				System.err.println("Erreur : extension invalide");
 			}
 		} else {
-			//			System.out.println("Graph wasn't loaded");
+			// L'utilisateur n'a pas choisi de graphe, on ne fait rien
 		}	
 	}
 
@@ -123,18 +177,22 @@ public class GraphBuilderController {
 			}
 			// On enregistre le graphe
 			Serialize.save(graph.getModel(), path);
-			System.out.println("Graph successfully saved as " + path);
+			System.out.println("Le graphe a été sauvegardé au chemin : " + path);
 		} else {
-			//			System.out.println("Graph wasn't saved");
+			// Le graphe n'a pas été sauvegardé
 		}	
 	}
 
 	/**
 	 * Créé un nouveau graphe à la place de celui en cours d'édition
 	 */
-	public static void newGraph() {
+	public static void resetGraph() {
 		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
+		
+		graph.setCellsResizable(false);
+		graph.setAllowDanglingEdges(false);
+		
 		view.setGraph(graph);
 	}
 
@@ -146,3 +204,4 @@ public class GraphBuilderController {
 		graph.removeCells(graph.getSelectionModel().getCells());
 	}
 }
+

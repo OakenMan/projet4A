@@ -2,8 +2,6 @@ package algorithms;
 
 import java.util.HashMap;
 
-import com.mxgraph.model.mxCell;
-
 import model.Edge;
 import model.Graph;
 import model.Vertex;
@@ -61,6 +59,7 @@ public class BellmanFord extends AbstractShortestPath {
 		catch(Exception e) { System.out.println(e.getMessage());}
 	}
 
+	@Override
 	public void findShortestPath()
 	{
 		predecessors = new HashMap<Vertex, Vertex>();

@@ -9,44 +9,43 @@ import model.Vertex;
 
 public class Dijkstra extends AbstractShortestPath {
 
-	private ArrayList<Vertex> subGraph; 			//Liste des sommets pr�sents dans le sous graphe
-	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin � la fin
-	
+	private ArrayList<Vertex> subGraph; 			// Liste des sommets présents dans le sous graphe
+	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
+
 	public Dijkstra(Graph graph) {
 		super(graph);
 	}
 
-	public void Initialization(Vertex startVertex)
+	public void initialization(Vertex startVertex)
 	{
-//		System.out.println("le sommet de départ c'est " + startVertex.getIntValue());
+		// On ajoute le sommet de départ au sous-graphe et on met à jour son potentiel
 		subGraph.add(startVertex);	
 		startVertex.setPotential(0);
-		
-		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());								// Vertices contient tous les sommets du graphe
-		for (Object o : vertices) 																			//On remplit le tableau des distances 
+
+		// Pour chaque sommet (sauf le départ), on met à jour son potentiel et la liste des prédécesseurs
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());	
+		for (Object o : vertices) 												
 		{
 			Vertex vertex = (Vertex) o;
 			if (!(vertex.equals(startVertex)))
 			{
 				vertex.setPotential(INFINITE);
-				
-//				System.out.println("cell c'est " + vertex.getIntValue());
 				predecessors.put(vertex, vertex);	
 			}
 		}
-
-		ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On cr�e la liste de voisin du sommet de d�part
+		
+		// On crée la liste de voisin du sommet de départ
+		ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		
 		for (Object o : graph.getOutgoingEdges(startVertex))
 		{
 			Edge edge = (Edge) o;
-			Vertex neighboor = new Vertex();
-			neighboor = (Vertex)(edge.getTarget());
+			Vertex neighboor = (Vertex)(edge.getTarget());
 			neighboors.add(neighboor);
 		}
-		for (Vertex c : neighboors)									// On met � jour la liste des potentiels
+		// On met à jour la liste des potentiels
+		for (Vertex v : neighboors)									
 		{
-			System.out.println("Je suis là !");
-			updateDistances(startVertex, c);
+			updateDistances(startVertex, v);
 		}
 	}
 
@@ -54,13 +53,12 @@ public class Dijkstra extends AbstractShortestPath {
 	{
 		int min = INFINITE;
 		Vertex minCell = null;
+		
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent()); 
-
 		for (Object o : vertices)
 		{
-			System.out.println("La minCell c'est " + minCell);
 			Vertex cell = (Vertex) o;
-			if (!(subGraph.contains(cell)))						// Si le sommet n'est pas dans le sous graphe alors
+			if (!(subGraph.contains(cell)))		// Si le sommet n'est pas dans le sous graphe alors
 			{
 				try 
 				{
@@ -80,9 +78,9 @@ public class Dijkstra extends AbstractShortestPath {
 	{
 		try 
 		{
-			System.out.println("Le potentiel de " + vertex2 + " c'est " + vertex2.getPotential());
-			System.out.println("Le potentiel de " + vertex1 + " c'est " + vertex1.getPotential());
-			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
+			//			System.out.println("Le potentiel de " + vertex2 + " c'est " + vertex2.getPotential());
+			//			System.out.println("Le potentiel de " + vertex1 + " c'est " + vertex1.getPotential());
+			//			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
 			if (vertex2.getPotential() == INFINITE)
 			{
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
@@ -109,7 +107,7 @@ public class Dijkstra extends AbstractShortestPath {
 		// On ajoute l'�tape 0 (juste le d�part en gras)
 		steps.add(copy(graph));
 
-		Initialization(startCell);
+		initialization(startCell);
 
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		ArrayList<Vertex> leGraph = new ArrayList<Vertex>();
@@ -122,11 +120,11 @@ public class Dijkstra extends AbstractShortestPath {
 		Vertex cell = new Vertex();
 		boolean the_end = false;
 
-		System.out.println(subGraph + " et " + leGraph);
+		//		System.out.println(subGraph + " et " + leGraph);
 		while (!(subGraph.equals(leGraph)) && the_end == false)
 		{
 			cell = getMin();
-			System.out.println("Mon minimum c'est " + cell);
+			//			System.out.println("Mon minimum c'est " + cell);
 			graph.getModel().setStyle(cell, "BOLD_VERTEX");
 			if (!(cell.equals(startCell)))
 			{
@@ -141,7 +139,7 @@ public class Dijkstra extends AbstractShortestPath {
 			else
 			{
 				ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On cr�e la liste de voisin du sommet actuel
-				for (Object o : graph.getOutgoingEdges((Object) cell))
+				for (Object o : graph.getOutgoingEdges(cell))
 				{
 					Edge vertex = (Edge) o;
 					Vertex neighboor = new Vertex();
