@@ -10,13 +10,12 @@ import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
-import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
-import algorithms.AlgoTest;
 import algorithms.Algorithm;
 import algorithms.BellmanFord;
 import algorithms.Dijkstra;
+import algorithms.TravellingSalesman;
 import model.Graph;
 import model.Vertex;
 import util.Serialize;
@@ -193,7 +192,7 @@ public class MainWindowController {
 		case BELLMAN_FORD : 	
 			asp = new BellmanFord(graph); 	break;
 		case VOYAGEUR_COMMERCE : 			
-			asp = new AlgoTest(graph);		break;
+			asp = new TravellingSalesman(graph);		break;
 		default: break;
 		}
 

@@ -372,7 +372,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			
 		case VOYAGEUR_COMMERCE :
 			if(GraphTests.isGraphComplete(MainWindowController.getGraph())) {
-				calcShortestPath.setEnabled(false);
+				calcShortestPath.setEnabled(true);
 			}
 			break;
 			

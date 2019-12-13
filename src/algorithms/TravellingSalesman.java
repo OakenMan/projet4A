@@ -18,11 +18,14 @@ public class TravellingSalesman extends AbstractShortestPath
 	public Solution ShortestNeighboor() throws Exception
 	{
 		ArrayList<Vertex> vertexList = new ArrayList<Vertex>();
-		
+		System.out.println(graph);
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		System.out.println("COUCOU");
+		
 		int randomNumber = 0 + (int)(Math.random() * ((vertices.length - 1 - 0) + 1));
 		Vertex startVertex = (Vertex) vertices[randomNumber];
 		vertexList.add(startVertex);
+		System.out.println(vertexList);
 		
 		Vertex lastVertex = startVertex;
 		Vertex actualVertex = null;
@@ -95,11 +98,13 @@ public class TravellingSalesman extends AbstractShortestPath
 		try 
 		{
 			firstSolution = ShortestNeighboor();
+			System.out.println("COUCOU");
 		}
 		catch (Exception e)
 		{
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage() + " ERREUR DANS SHORTEST NEIGHBOOR");
 		}
+		
 		firstSolution.calculateWeight();
 		bestSolution = firstSolution;
 		
