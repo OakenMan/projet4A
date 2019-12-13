@@ -2,11 +2,12 @@ package algorithms;
 
 import model.Edge;
 import model.Graph;
+import model.Vertex;
 
 public class GraphTests {
 
 	/**
-	 * Methode utile pour savoir si un graphe contient des valeurs négatives
+	 * Méthode utilisée pour savoir si un graphe contient des valeurs négatives
 	 * @param graph le graphe à analyser
 	 * @return true si graph contient des longueurs négatives, false sinon
 	 */
@@ -21,5 +22,27 @@ public class GraphTests {
 		}
 		
 		return false;	
+	}
+	
+	/**
+	 * Méthode utilisée pour savoir si un graphe est complet ou non
+	 * @param graph le graphe à analyser
+	 * @return true si graph est complet, false sinon
+	 */
+	public static boolean isGraphComplete(Graph graph) {
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		int nbVertices = vertices.length;
+		
+		boolean isComplete = true;
+		
+		for(Object o : vertices) {
+			Vertex vertex = (Vertex) o;
+			Object[] edges = graph.getOutgoingEdges(vertex);
+			if(edges.length != nbVertices-1) {
+				isComplete = false;
+			}
+		}
+		
+		return isComplete;
 	}
 }
