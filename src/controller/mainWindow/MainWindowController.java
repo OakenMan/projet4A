@@ -37,7 +37,7 @@ public class MainWindowController {
 
 	private static String graphPath;			// Chemin du fichier du graphe
 	private static Algorithm algo;				// Le nom de l'algo utilisé
-	
+
 	private static Timer timer;
 
 	/*===== BUILDER =====*/
@@ -49,12 +49,12 @@ public class MainWindowController {
 		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
 		view = new MainWindow(graph);
-		
+
 		algo = null;
 	}
 
 	/*===== GETTERS AND SETTERS =====*/
-	public static mxGraph getGraph() {
+	public static Graph getGraph() {
 		return graph;
 	}
 
@@ -91,11 +91,11 @@ public class MainWindowController {
 	public static void setSpeed(int s) {
 		speed = s;
 	}
-	
+
 	public static void setAlgo(Algorithm newAlgo) {
 		algo = newAlgo;
 	}
-	
+
 	public static Algorithm getAlgo() {
 		return algo;
 	}
@@ -131,7 +131,7 @@ public class MainWindowController {
 				graph.setCellsDisconnectable(false);
 
 				MainWindowController.getView().getGraphPanel().getPotentialsPane().removeAll();
-				
+
 				System.out.println("Le graphe a été chargé avec succès");
 			}
 			else {
@@ -186,13 +186,14 @@ public class MainWindowController {
 	}
 
 	public static void findPCC() {
-		System.out.println("Execution de l'algorithme [" + view.getActionPanel().getSelectedAlgorithm() + "]");
-
-		switch(view.getActionPanel().getSelectedAlgorithm()) {
-		case "AlgoTest" : 		asp = new AlgoTest(graph); 		break;
-		case "Dijkstra" : 		asp = new Dijkstra(graph); 		break;
-		case "Bellman-Ford" : 	asp = new BellmanFord(graph); 	break;
-		case "A*" : 			asp = new AlgoTest(graph);		break;
+		//		System.out.println("Execution de l'algorithme [" + algo + "]");
+		switch(algo) {
+		case DIJKSTRA: 		
+			asp = new Dijkstra(graph); 		break;
+		case BELLMAN_FORD : 	
+			asp = new BellmanFord(graph); 	break;
+		case VOYAGEUR_COMMERCE : 			
+			asp = new AlgoTest(graph);		break;
 		default: break;
 		}
 
@@ -250,15 +251,13 @@ public class MainWindowController {
 					graph = asp.getNextStep();
 					asp.displayPotentials(graph);
 					view.setGraph(graph);
-//					view.getGraphPanel().getGraphComponent().refresh();
 				} catch (Exception e) {
 					timer.stop();
 				}
-				
+
 			}
 		};
 
-		System.out.println(speed);
 		return new Timer (speed, action);
 	}
 

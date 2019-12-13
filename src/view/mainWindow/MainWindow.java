@@ -18,7 +18,8 @@ public class MainWindow extends JFrame {
 	/*===== BUILDER =====*/
 	public MainWindow(Graph graph) {
 		// Window configuration (name, size and minimum size, location...)
-		setTitle("Create graph");
+		setTitle("Simulation d'algorithmes");
+		setSize(1920, 1080);
 		setMinimumSize(new Dimension(1000, 600));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

@@ -112,7 +112,7 @@ public class Dijkstra extends AbstractShortestPath {
 		steps.add(copy(graph));
 		//		System.out.println("Etape "+currentStep+" OK");
 
-		currentStep++;
+//		currentStep++;
 
 		initialization(startCell);
 

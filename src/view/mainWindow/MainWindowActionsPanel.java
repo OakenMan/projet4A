@@ -3,6 +3,7 @@ package view.mainWindow;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -15,16 +16,16 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import algorithms.Algorithm;
+import algorithms.GraphTests;
 import controller.mainWindow.MainWindowController;
 import view.algoInfos.AbstractAlgoInfos;
-import view.algoInfos.InfoBellmanFord;
-import view.algoInfos.InfoDijkstra;
 
 public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
@@ -46,6 +47,8 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 	private SpinnerNumberModel speedSpinnerModel;
 
+	private JButton calcShortestPath;
+
 	private JButton bFirstStep;
 	private JButton bPreviousStep;
 	private JButton bPlayPause;
@@ -53,7 +56,12 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	private JButton bLastStep;
 
 	private AbstractAlgoInfos infosPanel;
+	
+	private JLabel warningLabel;
+
 	private JPanel center;
+	private JPanel algoChoicePanel;
+	private JPanel optionsPanel;
 
 	/*===== BUILDER =====*/
 	public MainWindowActionsPanel() {
@@ -63,27 +71,50 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 
 		center = new JPanel();
 
-		center.add(new JLabel("----- PARAMETRES -----"));
+		createGap(center);
+
+		//====================== CHOIX DU GRAPHE ======================= 
+		JLabel lParams = new JLabel("Paramètres", SwingConstants.CENTER);
+		lParams.setPreferredSize(new Dimension(230, 25));
+		lParams.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		center.add(lParams);
 
 		// Bouton "choix du graphe"
 		JButton bLoadFile = new JButton("Choix du graphe");
-		bLoadFile.addActionListener(this);
-		bLoadFile.setPreferredSize(new Dimension(240, 25));
+		bLoadFile.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindowController.loadGraph();
+				tfGraphFile.setText(MainWindowController.getGraphPath()); 
+				algoChoicePanel.setVisible(true);
+			}
+
+		});
+		bLoadFile.setPreferredSize(new Dimension(230, 25));
 		center.add(bLoadFile);
 
 		// Champ texte avec chemin du graphe
 		tfGraphFile = new JTextField();
-		tfGraphFile.setPreferredSize(new Dimension(240, 25));
+		tfGraphFile.setPreferredSize(new Dimension(230, 25));
 		tfGraphFile.setEditable(false);
 		center.add(tfGraphFile);
 
 		createGap(center);
+		//=============================================================== 
 
-		center.add(new JLabel("Choix de l'algorithme"));
+		//====================== CHOIX DE L'ALGO  ======================= 
+		algoChoicePanel = new JPanel();
+		algoChoicePanel.setPreferredSize(new Dimension(240, 150));
+
+		JLabel lAlgo = new JLabel("Choix de l'algorithme", SwingConstants.CENTER);
+		lAlgo.setPreferredSize(new Dimension(230, 25));
+		lAlgo.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		algoChoicePanel.add(lAlgo);
 
 		// Liste des algos
 		cbAlgo = new JComboBox<String>();
-		cbAlgo.addItem("AlgoTest");
+		cbAlgo.addItem(null);
 		cbAlgo.addItem("Dijkstra");
 		cbAlgo.addItem("Bellman-Ford");
 		cbAlgo.addItem("Voyageur de commerce");
@@ -91,30 +122,47 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		cbAlgo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				switch(cbAlgo.getSelectedItem().toString()) {
-				case "AlgoTest" :				MainWindowController.setAlgo(null);							break;
-				case "Dijkstra" :				MainWindowController.setAlgo(Algorithm.DIJKSTRA);			break;
-				case "Bellman-Ford" :			MainWindowController.setAlgo(Algorithm.BELLMAN_FORD);		break;
-				case "Voyageur de commerce" :	MainWindowController.setAlgo(Algorithm.VOYAGEUR_COMMERCE);	break;
+				if(cbAlgo.getSelectedItem() == null) {
+
 				}
+				else {
+					switch(cbAlgo.getSelectedItem().toString()) {
+					case "Dijkstra" :				MainWindowController.setAlgo(Algorithm.DIJKSTRA);			break;
+					case "Bellman-Ford" :			MainWindowController.setAlgo(Algorithm.BELLMAN_FORD);		break;
+					case "Voyageur de commerce" :	MainWindowController.setAlgo(Algorithm.VOYAGEUR_COMMERCE);	break;
+					}
+				}
+				updateOnGraphChanges();
 				updateInfoField();
 			}
 		});
 
-		cbAlgo.setPreferredSize(new Dimension(240, 25));
-		center.add(cbAlgo);
+		cbAlgo.setPreferredSize(new Dimension(230, 25));
+		algoChoicePanel.add(cbAlgo);
 
 		// Infos liées à l'algo
 		infosPanel = new AbstractAlgoInfos();
-		center.add(infosPanel);
+		algoChoicePanel.add(infosPanel);
+
+		center.add(algoChoicePanel);
+
+		algoChoicePanel.setVisible(false);
 
 		createGap(center);
+		//=============================================================== 
 
-		center.add(new JLabel("Choix du départ et de l'arrivée"));
+		//================== INFORMATIONS SUR L'ALGO  =================== 
+		optionsPanel = new JPanel();
+		optionsPanel.setPreferredSize(new Dimension(240, 150));
+		
+		JLabel lOptions = new JLabel("Options", SwingConstants.CENTER);
+		lOptions.setPreferredSize(new Dimension(230, 25));
+		lOptions.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		optionsPanel.add(lOptions);
 
 		JLabel bStartVertex = new JLabel("Départ :");
 		bStartVertex.setPreferredSize(new Dimension(60, 25));
-		center.add(bStartVertex);
+		optionsPanel.add(bStartVertex);
 
 		// Champ départ
 		tfStartVertex = new JTextField();
@@ -149,13 +197,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 			}
 		});
-
-
-		center.add(tfStartVertex);
+		optionsPanel.add(tfStartVertex);
 
 		JLabel bEndVertex = new JLabel("Arrivée :");
 		bEndVertex.setPreferredSize(new Dimension(60, 25));
-		center.add(bEndVertex);
+		optionsPanel.add(bEndVertex);
 
 		// Champ arrivée
 		tfEndVertex = new JTextField();
@@ -190,8 +236,18 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 			}
 		});
-		center.add(tfEndVertex);
+		optionsPanel.add(tfEndVertex);
 
+		center.add(optionsPanel);
+		
+		optionsPanel.setVisible(false);
+		//=============================================================== 
+		
+		//======================== WARNING TEXT =========================
+		warningLabel = new JLabel();
+		center.add(optionsPanel);
+		//=============================================================== 
+		
 		add(center, BorderLayout.CENTER);
 
 		JPanel south = new JPanel();
@@ -217,7 +273,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		createGap(south);
 
 		// Bouton "Calcul du plus court chemin"
-		JButton calcShortestPath = new JButton("Calculer le plus court chemin");
+		calcShortestPath = new JButton("Calculer le plus court chemin");
 		calcShortestPath.addActionListener(this);
 		calcShortestPath.setPreferredSize(new Dimension(240, 25));
 		south.add(calcShortestPath);
@@ -260,31 +316,21 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		add(south, BorderLayout.SOUTH);
 	}
 
-	/*===== GETTERS AND SETTERS =====*/
-
-	public String getSelectedAlgorithm() {
-		return (String)cbAlgo.getSelectedItem();
-	}
-
 	/*===== METHODS =====*/
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
-		case "Choix du graphe" :		
-			MainWindowController.loadGraph();
-			tfGraphFile.setText(MainWindowController.getGraphPath()); 	
-			break;
 		case "Calculer le plus court chemin" :		
 			MainWindowController.findPCC(); 
 			break;
 		}
-		
-		if(e.getSource() == bFirstStep) { MainWindowController.firstStep(); }
-		else if(e.getSource() == bPreviousStep) { MainWindowController.previousStep(); }
-		else if(e.getSource() == bPlayPause) { MainWindowController.playPause(); }
-		else if(e.getSource() == bNextStep) { MainWindowController.nextStep(); }
-		else if(e.getSource() == bLastStep) { MainWindowController.lastStep(); }
+
+		if(e.getSource() == bFirstStep) 		{ MainWindowController.firstStep(); 	}
+		else if(e.getSource() == bPreviousStep) { MainWindowController.previousStep(); 	}
+		else if(e.getSource() == bPlayPause) 	{ MainWindowController.playPause(); 	}
+		else if(e.getSource() == bNextStep) 	{ MainWindowController.nextStep(); 		}
+		else if(e.getSource() == bLastStep) 	{ MainWindowController.lastStep(); 		}
 
 	}
 
@@ -304,13 +350,61 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		panel.add(separator);
 	}
 
+	public void updateOnGraphChanges() {
+		calcShortestPath.setEnabled(true);
+		
+		switch(MainWindowController.getAlgo()) {
+		
+		case DIJKSTRA :	
+			if(GraphTests.containsNegativeValues(MainWindowController.getGraph())) {
+				calcShortestPath.setEnabled(false);
+				optionsPanel.setVisible(false);
+			}
+			else {
+				optionsPanel.setVisible(true);
+			}
+			break;
+			
+		case BELLMAN_FORD :	
+			System.out.println("BELLMAN-FORD");
+			optionsPanel.setVisible(true);
+			break;
+			
+		case VOYAGEUR_COMMERCE :
+			if(GraphTests.isGraphComplete(MainWindowController.getGraph())) {
+				calcShortestPath.setEnabled(false);
+			}
+			break;
+			
+		default:
+			calcShortestPath.setEnabled(false);
+			break;
+		}
+
+	}
+
 	public void updateInfoField() {
+		infosPanel.setText(null);
 		switch(MainWindowController.getAlgo()) {
 		case DIJKSTRA :	
-			infosPanel.append((new InfoDijkstra()).getText());
+			infosPanel.append(("Caractéristiques :\n" +
+					"- Graphes quelconques\n" +
+					"- Longueurs positives\n" +
+					"- One to All\n" +
+					"- Complexité : O(n.log(n))"));
 			break;
 		case BELLMAN_FORD :	
-			infosPanel.append((new InfoBellmanFord()).getText());
+			infosPanel.append(("Caractéristiques :\n" +
+					"- Graphes quelconques\n" +
+					"- Longueurs quelconques\n" +
+					"- One to All\n" +
+					"- Complexité : O(n*m)"));
+			break;
+		case VOYAGEUR_COMMERCE :
+			infosPanel.append(("Caractéristiques :\n" +
+					"- Graphes complets\n" +
+					"- Longueurs quelconques\n" +
+					"- Complexité : O(beaucoup)"));
 			break;
 		default:
 			break;
