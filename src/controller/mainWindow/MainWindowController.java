@@ -191,8 +191,7 @@ public class MainWindowController {
 			asp = new Dijkstra(graph); 		break;
 		case BELLMAN_FORD : 	
 			asp = new BellmanFord(graph); 	break;
-		case VOYAGEUR_COMMERCE : 	
-			System.out.println("ok");
+		case VOYAGEUR_COMMERCE : 			
 			asp = new TravellingSalesman(graph);		break;
 		default: break;
 		}
