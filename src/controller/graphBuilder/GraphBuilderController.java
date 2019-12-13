@@ -73,27 +73,6 @@ public class GraphBuilderController {
 			graph.getModel().endUpdate();
 		}
 	}
-	
-	public static void connectAllVertices() {
-		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
-		
-		for (Object o1 : vertices) 																			//On remplit le tableau des distances 
-		{
-			Vertex vertex1 = (Vertex) o1;
-			
-			for (Object o2 : vertices) 																			//On remplit le tableau des distances 
-			{
-				Vertex vertex2 = (Vertex) o2;
-				if (!(vertex.equals(startVertex)))
-				{
-					vertex.setPotential(INFINITE);
-					
-//					System.out.println("cell c'est " + vertex.getIntValue());
-					predecessors.put(vertex, vertex);	
-				}
-			}
-		}
-	}
 
 	/**
 	 * Charge un graphe depuis un fichier *.grp

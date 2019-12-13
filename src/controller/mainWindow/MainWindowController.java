@@ -11,10 +11,10 @@ import com.mxgraph.view.mxGraph;
 
 import algorithms.AbstractShortestPath;
 import algorithms.AlgoTest;
+import algorithms.BellmanFord;
 import algorithms.Dijkstra;
 import model.Graph;
 import model.Vertex;
-import algorithms.BellmanFord;
 import util.Serialize;
 import util.StyleSheet;
 import view.mainWindow.MainWindow;
