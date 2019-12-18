@@ -91,7 +91,7 @@ public class TravellingSalesman extends AbstractShortestPath
 				graph.getModel().setStyle(edge, "BOLD_EDGE");
 			}
 		}
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph), "Poids de la solution : " + solution.getWeight()));
 		for (int index = 0; index < solution.getSolution().size(); index += 1)
 		{
 			if (index == solution.getSolution().size() -1)
@@ -130,7 +130,7 @@ public class TravellingSalesman extends AbstractShortestPath
 		firstSolution.calculateWeight();
 		bestSolution = firstSolution;
 		
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));	
 		printSolution(bestSolution);
 		
 		while (counter < 1)

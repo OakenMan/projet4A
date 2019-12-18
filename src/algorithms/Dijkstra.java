@@ -3,6 +3,8 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.XPath.Step;
+
 import controller.mainWindow.MainWindowController;
 import model.Edge;
 import model.Graph;
