@@ -31,7 +31,7 @@ public class Solution
 		Edge edge = null;
 		Vertex vertex1 = null;
 		Vertex vertex2 = null;
-		for (int i = 0; i<solution.size()-2; i++)
+		for (int i = 0; i<solution.size()-1; i++)
 		{
 			vertex1 = solution.get(i);
 			vertex2 = solution.get(i+1);
@@ -39,6 +39,17 @@ public class Solution
 			edge = (Edge) edges[0];
 			weight += edge.getIntValue();
 		}
+		vertex1 = solution.get(0);
+		Object[] edges = graph.getEdgesBetween(vertex2, vertex1);
+		edge = (Edge) edges[0];
+		weight += edge.getIntValue();
+	}
+	
+	public Solution copy()
+	{
+		ArrayList<Vertex> solu = (ArrayList<Vertex>)solution.clone();
+		Solution sol = new Solution(solu, graph, weight);
+		return sol;
 	}
 	
 	public int getWeight() 
