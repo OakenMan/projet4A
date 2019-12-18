@@ -1,6 +1,7 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import model.Edge;
 import model.Graph;
@@ -52,7 +53,23 @@ public class TravellingSalesman extends AbstractShortestPath
 		return solution;
 	}
 	
-	public Solution randomEdgeExchange(Solution solution)
+	public Solution randomSolution()
+	{
+		ArrayList<Vertex> vertexList = new ArrayList<Vertex>();
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
+		Vertex vertex = null;
+		
+		for (Object o : vertices)
+		{
+			vertex = (Vertex) o;
+			vertexList.add(vertex);
+		}
+		Collections.shuffle(vertexList);
+		Solution solution = new Solution(vertexList, graph);
+		return solution;
+	}
+	
+	public Solution randomVertexExchange(Solution solution)
 	{
 		int firstRandomVertex = 0 + (int)(Math.random() * ((solution.getSolution().size() - 1 - 0) + 1));
 		int secondRandomVertex = 0 + (int)(Math.random() * ((solution.getSolution().size() - 1 - 0) + 1));
@@ -64,7 +81,7 @@ public class TravellingSalesman extends AbstractShortestPath
 		return solution;
 	}
 	
-	public Solution edgeExchange(Solution solution, int index1, int index2)
+	public Solution vertexExchange(Solution solution, int index1, int index2)
 	{
 		Vertex temp = solution.getSolution().get(index1);
 		solution.getSolution().set(index1, solution.getSolution().get(index2));
@@ -82,6 +99,9 @@ public class TravellingSalesman extends AbstractShortestPath
 			if (index == solution.getSolution().size() -1)
 			{
 				graph.getModel().setStyle(solution.getSolution().get(index), "BOLD_VERTEX");
+				o = graph.getEdgesBetween(solution.getSolution().get(index), solution.getSolution().get(0), true);
+				edge = (Edge) o[0];
+				graph.getModel().setStyle(edge, "BOLD_EDGE");
 			}
 			else
 			{
@@ -91,12 +111,15 @@ public class TravellingSalesman extends AbstractShortestPath
 				graph.getModel().setStyle(edge, "BOLD_EDGE");
 			}
 		}
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph), "Poids de la solution : " + solution.getWeight()));
 		for (int index = 0; index < solution.getSolution().size(); index += 1)
 		{
 			if (index == solution.getSolution().size() -1)
 			{
 				graph.getModel().setStyle(solution.getSolution().get(index), "DEFAULT");
+				o = graph.getEdgesBetween(solution.getSolution().get(index), solution.getSolution().get(0), true);
+				edge = (Edge) o[0];
+				graph.getModel().setStyle(edge, "INVISIBLE");
 			}
 			else
 			{
@@ -115,10 +138,15 @@ public class TravellingSalesman extends AbstractShortestPath
 		Solution bestSolution = null;
 		Solution currentSolution = null;
 		Solution currentNeighboor = null;
+		Solution bestNeighboor = null;
 		
 		try 
 		{
-			firstSolution = ShortestNeighboor();
+			//voisin le plus proche
+			//firstSolution = ShortestNeighboor();
+			
+			//random
+			firstSolution = randomSolution();
 		}
 		catch (Exception e)
 		{
@@ -128,29 +156,60 @@ public class TravellingSalesman extends AbstractShortestPath
 		}
 		
 		firstSolution.calculateWeight();
-		bestSolution = firstSolution;
+		bestSolution = firstSolution.copy();
+		bestNeighboor = firstSolution.copy();
 		
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));	
 		printSolution(bestSolution);
 		
-		while (counter < 1)
+		while (counter < 5)
 		{
-			currentSolution = bestSolution;
-			for(int i = 0; i < 1; i++)
+			//échange de sommet aléatoire
+			/*for(int i = 0; i < 1000; i++)
 			{
-				currentNeighboor = randomEdgeExchange(currentSolution);
+				currentNeighboor = randomVertexExchange(currentSolution.copy()).copy();
 				if (currentNeighboor.getWeight() < currentSolution.getWeight())
 				{
 					System.out.println("on échange !");
-					currentSolution = currentNeighboor;
+					currentSolution = currentNeighboor.copy();
+				}
+			}*/
+			//échange de tous les sommets deux par deux
+			/*for (int i = 0; i < currentSolution.getSolution().size(); i++)
+			{
+				for (int j = 0; j < currentSolution.getSolution().size(); j++)
+				{
+					currentNeighboor = vertexExchange(currentSolution.copy(), i, j);
+					if (currentNeighboor.getWeight() < currentSolution.getWeight())
+					{
+						System.out.println("on échange !");
+						currentSolution = currentNeighboor.copy();
+					}
+				}
+			}*/
+			//échange aléatoire de toutes les arrêtes
+			for (int i = 0; i < bestNeighboor.getSolution().size(); i++)
+			{
+				for (int j = 0; j < bestNeighboor.getSolution().size(); j++)
+				{
+					if (i == bestNeighboor.getSolution().size() - 1)
+						currentNeighboor = vertexExchange(bestNeighboor.copy(), 0, j);
+					else
+						currentNeighboor = vertexExchange(bestNeighboor.copy(), i+1, j);
+					if (currentNeighboor.getWeight() < bestNeighboor.getWeight())
+					{
+						bestNeighboor = currentNeighboor.copy();
+						printSolution(bestNeighboor);
+					}
 				}
 			}
+			currentSolution = bestNeighboor.copy();
 			System.out.println("poid du meilleur : " + bestSolution.getWeight() + "        poid de ma solution actuelle : " + currentSolution.getWeight());
 			System.out.println(bestSolution.getSolution());
-			if (currentSolution.getWeight() != bestSolution.getWeight())
+			if (currentSolution.getWeight() < bestSolution.getWeight())
 			{
 				System.out.println("j'ai échangé ma meilleure solution !");
-				bestSolution = currentSolution;
+				bestSolution = currentSolution.copy();
 				counter = 0;
 				printSolution(bestSolution);
 			}
