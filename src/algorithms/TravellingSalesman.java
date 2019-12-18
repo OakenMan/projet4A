@@ -8,15 +8,13 @@ import model.Vertex;
 
 public class TravellingSalesman extends AbstractShortestPath
 {
-	private Graph graph;
-	
 	public TravellingSalesman(Graph graph)
 	{
 		super(graph);
 		System.out.println("je suis construit !");
 	}
 	
-	public Solution ShortestNeighboor() throws Exception
+	public Solution ShortestNeighboor()
 	{
 		ArrayList<Vertex> vertexList = new ArrayList<Vertex>();
 		System.out.println(graph);
@@ -38,10 +36,15 @@ public class TravellingSalesman extends AbstractShortestPath
 				Vertex vertex = (Vertex) o;
 				if (!vertexList.contains(vertex))
 				{
+					try {
 					if (min > getDistanceBetween(lastVertex, vertex))
 					{
 						actualVertex = vertex;
 						min = getDistanceBetween(lastVertex, vertex);
+					}
+					}
+					catch(Exception e) {
+						e.printStackTrace();
 					}
 				}
 				lastVertex = actualVertex;
@@ -103,7 +106,9 @@ public class TravellingSalesman extends AbstractShortestPath
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			System.out.println(e.getMessage() + " ERREUR DANS SHORTEST NEIGHBOOR");
+			System.exit(0);
 		}
 		
 		firstSolution.calculateWeight();

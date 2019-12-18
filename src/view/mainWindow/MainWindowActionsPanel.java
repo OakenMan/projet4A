@@ -56,12 +56,13 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	private JButton bLastStep;
 
 	private AbstractAlgoInfos infosPanel;
-	
+
 	private JLabel warningLabel;
 
 	private JPanel center;
 	private JPanel algoChoicePanel;
 	private JPanel optionsPanel;
+	private JPanel south;
 
 	/*===== BUILDER =====*/
 	public MainWindowActionsPanel() {
@@ -88,6 +89,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				MainWindowController.loadGraph();
 				tfGraphFile.setText(MainWindowController.getGraphPath()); 
 				algoChoicePanel.setVisible(true);
+				updateOnGraphChanges();
 			}
 
 		});
@@ -123,7 +125,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if(cbAlgo.getSelectedItem() == null) {
-
+					MainWindowController.setAlgo(null);
 				}
 				else {
 					switch(cbAlgo.getSelectedItem().toString()) {
@@ -134,6 +136,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 				updateOnGraphChanges();
 				updateInfoField();
+				MainWindowController.clearStyle();
 			}
 		});
 
@@ -154,7 +157,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		//================== INFORMATIONS SUR L'ALGO  =================== 
 		optionsPanel = new JPanel();
 		optionsPanel.setPreferredSize(new Dimension(240, 150));
-		
+
 		JLabel lOptions = new JLabel("Options", SwingConstants.CENTER);
 		lOptions.setPreferredSize(new Dimension(230, 25));
 		lOptions.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
@@ -175,6 +178,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			@Override
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
+				MainWindowController.clearStyle();
 				if(tfStartVertex.getText().matches("[0-9]*") && !tfStartVertex.getText().equals("")) {		// Si c'est bien un nombre
 					if (MainWindowController.containsVertex(Integer.parseInt(tfStartVertex.getText()))) {	// Si le sommet est bien dans le graphe
 						if(Integer.parseInt(tfStartVertex.getText()) != MainWindowController.getEnd()) {	// Si c'est pas déjà la fin
@@ -214,6 +218,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			@Override
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
+				MainWindowController.clearStyle();
 				if(tfEndVertex.getText().matches("[0-9]*") && !tfEndVertex.getText().equals("")) {			// Si c'est bien un nombre
 					if (MainWindowController.containsVertex(Integer.parseInt(tfEndVertex.getText()))) {		// Si le sommet est bien dans le graphe
 						if(Integer.parseInt(tfEndVertex.getText()) != MainWindowController.getStart()) {	// Si c'est pas déjà la départ
@@ -239,10 +244,10 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		optionsPanel.add(tfEndVertex);
 
 		center.add(optionsPanel);
-		
+
 		optionsPanel.setVisible(false);
 		//=============================================================== 
-		
+
 		//======================== WARNING TEXT =========================
 		warningLabel = new JLabel("", SwingConstants.CENTER);
 		warningLabel.setPreferredSize(new Dimension(230, 100));
@@ -250,13 +255,17 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		warningLabel.setForeground(Color.RED);
 		center.add(warningLabel);
 		//=============================================================== 
-		
+
 		add(center, BorderLayout.CENTER);
 
-		JPanel south = new JPanel();
+		//===================== SIMULATION BUTTONS ======================
+		south = new JPanel();
 		south.setPreferredSize(new Dimension(240, 160));
 
-		south.add(new JLabel("----- SIMULATION -----"));
+		JLabel lSimulation = new JLabel("Simulation", SwingConstants.CENTER);
+		lSimulation.setPreferredSize(new Dimension(230, 25));
+		lSimulation.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		south.add(lSimulation);
 
 		south.add(new JLabel("Vitesse (iterations par seconde)"));
 
@@ -317,6 +326,9 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		south.add(bLastStep);
 
 		add(south, BorderLayout.SOUTH);
+
+		south.setVisible(false);
+		//=============================================================== 
 	}
 
 	/*===== METHODS =====*/
@@ -354,65 +366,72 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	}
 
 	public void updateOnGraphChanges() {
-		calcShortestPath.setEnabled(true);
-		
-		switch(MainWindowController.getAlgo()) {
-		
-		case DIJKSTRA :	
-			if(GraphTests.containsNegativeValues(MainWindowController.getGraph())) {
-				warningLabel.setText("<html>Erreur : <br/>Le graphe contient des valeurs négatives.<br/>"
-						+ "Impossible d'appliquer l'algorithme de Dijkstra</html>");
-				calcShortestPath.setEnabled(false);
-				optionsPanel.setVisible(false);
-			}
-			else {
-				optionsPanel.setVisible(true);
-			}
-			break;
-			
-		case BELLMAN_FORD :	
-			System.out.println("BELLMAN-FORD");
-			optionsPanel.setVisible(true);
-			break;
-			
-		case VOYAGEUR_COMMERCE :
-			if(!(GraphTests.isGraphComplete(MainWindowController.getGraph()))) {
-				calcShortestPath.setEnabled(false);
-			}
-			break;
-			
-		default:
-			calcShortestPath.setEnabled(false);
-			break;
-		}
+		south.setVisible(false);
+		optionsPanel.setVisible(false);
+		warningLabel.setText("");
 
+		if(MainWindowController.getAlgo() != null) {
+			switch(MainWindowController.getAlgo()) {
+
+			case DIJKSTRA :	
+				if(GraphTests.containsNegativeValues(MainWindowController.getGraph())) {
+					warningLabel.setText("<html>Erreur : <br/>Le graphe contient des valeurs négatives.<br/>"
+							+ "Impossible d'appliquer l'algorithme de Dijkstra</html>");	
+				}
+				else {
+					optionsPanel.setVisible(true);
+					south.setVisible(true);
+				}
+				break;
+
+			case BELLMAN_FORD :	
+				optionsPanel.setVisible(true);
+				south.setVisible(true);
+				break;
+
+			case VOYAGEUR_COMMERCE :
+				if(!(GraphTests.isGraphComplete(MainWindowController.getGraph()))) {
+					warningLabel.setText("<html>Erreur : <br/>Le graphe n'est pas complet.<br/>"
+							+ "Impossible d'appliquer l'algorithme du voyageur de commerce.</html>");
+				}
+				else {
+					south.setVisible(true);
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 
 	public void updateInfoField() {
 		infosPanel.setText(null);
-		switch(MainWindowController.getAlgo()) {
-		case DIJKSTRA :	
-			infosPanel.append(("Caractéristiques :\n" +
-					"- Graphes quelconques\n" +
-					"- Longueurs positives\n" +
-					"- One to All\n" +
-					"- Complexité : O(n.log(n))"));
-			break;
-		case BELLMAN_FORD :	
-			infosPanel.append(("Caractéristiques :\n" +
-					"- Graphes quelconques\n" +
-					"- Longueurs quelconques\n" +
-					"- One to All\n" +
-					"- Complexité : O(n*m)"));
-			break;
-		case VOYAGEUR_COMMERCE :
-			infosPanel.append(("Caractéristiques :\n" +
-					"- Graphes complets\n" +
-					"- Longueurs quelconques\n" +
-					"- Complexité : O(beaucoup)"));
-			break;
-		default:
-			break;
+		if(MainWindowController.getAlgo() != null) {
+			switch(MainWindowController.getAlgo()) {
+			case DIJKSTRA :	
+				infosPanel.append(("Caractéristiques :\n" +
+						"- Graphes quelconques\n" +
+						"- Longueurs positives\n" +
+						"- One to All\n" +
+						"- Complexité : O(n.log(n))"));
+				break;
+			case BELLMAN_FORD :	
+				infosPanel.append(("Caractéristiques :\n" +
+						"- Graphes quelconques\n" +
+						"- Longueurs quelconques\n" +
+						"- One to All\n" +
+						"- Complexité : O(n*m)"));
+				break;
+			case VOYAGEUR_COMMERCE :
+				infosPanel.append(("Caractéristiques :\n" +
+						"- Graphes complets\n" +
+						"- Longueurs quelconques\n" +
+						"- Complexité : O(beaucoup)"));
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

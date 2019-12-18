@@ -3,6 +3,7 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controller.mainWindow.MainWindowController;
 import model.Edge;
 import model.Graph;
 import model.Vertex;
@@ -105,7 +106,7 @@ public class Dijkstra extends AbstractShortestPath {
 		Vertex endCell = getEnd();
 
 		// On ajoute l'�tape 0 (juste le d�part en gras)
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));
 
 		initialization(startCell);
 
@@ -124,7 +125,15 @@ public class Dijkstra extends AbstractShortestPath {
 		while (!(subGraph.equals(leGraph)) && the_end == false)
 		{
 			cell = getMin();
-			//			System.out.println("Mon minimum c'est " + cell);
+			
+			if(cell == null) {
+				int start = MainWindowController.getStart();
+				int end = MainWindowController.getEnd();
+				steps.add(new Step(copy(graph), "Erreur : il n'existe pas de chemin entre " + start + " et " + end));
+				MainWindowController.openErrorPopup("Il n'existe pas de plus court chemin entre " + start + " et " + end);
+				return ;
+			}
+			
 			graph.getModel().setStyle(cell, "BOLD_VERTEX");
 			if (!(cell.equals(startCell)))
 			{
@@ -151,7 +160,7 @@ public class Dijkstra extends AbstractShortestPath {
 					updateDistances(cell, c);
 				}
 			}
-			steps.add(copy(graph));	
+			steps.add(new Step(copy(graph)));	
 			if (!(cell.equals(endCell)))									// Apr�s avoir explor� le sommet on le remet normal
 			{
 				graph.getModel().setStyle(cell, "DEFAULT_VERTEX");
@@ -174,7 +183,7 @@ public class Dijkstra extends AbstractShortestPath {
 				else {
 					graph.getModel().setStyle(cell, "BOLD_VERTEX");
 				}
-				steps.add(copy(graph));
+				steps.add(new Step(copy(graph)));
 			}
 		}
 	}

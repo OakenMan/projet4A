@@ -1,6 +1,7 @@
 package algorithms;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
@@ -19,16 +20,23 @@ public abstract class AbstractShortestPath implements ShortestPath {
 
 	/*===== ATTRIBUTES =====*/
 	protected Graph graph;
-	protected ArrayList<Graph> steps;
+	protected ArrayList<Step> steps;
 	protected int nbSteps;
 	protected int currentStep;
 
 	/*===== BUILDER =====*/
 	public AbstractShortestPath(Graph graph) {
-		steps = new ArrayList<Graph>();
+		steps = new ArrayList<Step>();
 		this.graph = graph;
 		currentStep = 0;
+		
+		long time = System.currentTimeMillis();
+		
 		findShortestPath();
+		
+		time = System.currentTimeMillis() - time;
+		
+		steps.add(new Step(copy(graph), "Time = " + (float)((float)time/1000) + "s"));
 	}
 
 	/*===== METHODS =====*/
@@ -43,6 +51,11 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		// On récupère le pannel d'affichage des potentiels et on le reset
 		JPanel potPane = MainWindowController.getView().getGraphPanel().getPotentialsPane();
 		potPane.removeAll();
+		
+		JLabel text = new JLabel(steps.get(currentStep).getInfo());
+		text.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		text.setBounds(new Rectangle(10, 10, 1000, 25));
+		potPane.add(text);
 		
 		// On récupère tous les sommets du graphe
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
@@ -199,7 +212,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 */
 	public Graph getFirstStep() {
 		currentStep = 0;
-		return steps.get(currentStep);
+		return steps.get(currentStep).getGraph();
 	}
 
 	/**
@@ -208,7 +221,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 */
 	public Graph getLastStep() {
 		currentStep = steps.size() - 1;
-		return steps.get(currentStep);
+		return steps.get(currentStep).getGraph();
 	}
 
 	/**
@@ -219,7 +232,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	public Graph getPreviousStep() throws Exception {
 		if(currentStep > 0) {
 			currentStep--;
-			return steps.get(currentStep);
+			return steps.get(currentStep).getGraph();
 		}
 		else {
 			throw new Exception("Can't go to previous step");
@@ -234,20 +247,20 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	public Graph getNextStep() throws Exception {
 		if(currentStep < steps.size()) {
 			currentStep++;
-			return steps.get(currentStep);
+			return steps.get(currentStep).getGraph();
 		}
 		else {
 			throw new Exception("Can't go to next step");
 		}
 	}
 
-	public int getNbSteps() {
-		return steps.size();
-	}
+//	public int getNbSteps() {
+//		return steps.size();
+//	}
 
-	public int getCurrentStep() {
-		return currentStep;
-	}
+//	public int getCurrentStep() {
+//		return currentStep;
+//	}
 
 	/**
 	 * Renvoie la distance entre 2 sommets

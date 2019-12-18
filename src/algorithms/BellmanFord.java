@@ -2,6 +2,7 @@ package algorithms;
 
 import java.util.HashMap;
 
+import controller.mainWindow.MainWindowController;
 import model.Edge;
 import model.Graph;
 import model.Vertex;
@@ -68,11 +69,11 @@ public class BellmanFord extends AbstractShortestPath {
 		Vertex endVertex = getEnd();
 
 		// On ajoute l'�tape 0 (juste le d�part en gras)
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));
 
 		Initialization(startVertex);
 
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));
 
 		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
@@ -85,24 +86,27 @@ public class BellmanFord extends AbstractShortestPath {
 				Edge edge = (Edge) o;
 				updateDistances((Vertex)edge.getSource(), (Vertex)edge.getTarget());
 				if(k==1) {
-					steps.add(copy(graph));
+					steps.add(new Step(copy(graph)));
 				}
 			}
-			steps.add(copy(graph));
+			steps.add(new Step(copy(graph)));
 
 		}
 
 		graph.getModel().setStyle(endVertex, "BOLD_END");
-		steps.add(copy(graph));
+		steps.add(new Step(copy(graph)));
 
 		for (Object o : edges)																// On regarde s'il y a un cycle n�gatif
 		{
 			Edge edge = (Edge) o;
 			try 
 			{
+				// Détection d'un cycle négatif
 				if ((((Vertex)edge.getSource())).getPotential() + getDistanceBetween((Vertex)edge.getSource(), (Vertex)edge.getTarget()) < ((Vertex)edge.getTarget()).getPotential())
 				{
-					System.out.println("OHLALA Y'A UN CYCLE NEGATIF IL VA FALLOIR CREER UNE EXCEPTION ICI");
+					steps.add(new Step(copy(graph), "Erreur : détection d'un cycle négatif"));
+					MainWindowController.openErrorPopup("Presence d'un cycle négatif. Impossible de calculer le plus court chemin.");
+					return ;
 				}
 			}
 			catch(Exception e) { System.out.println(e.getMessage());}
@@ -119,6 +123,14 @@ public class BellmanFord extends AbstractShortestPath {
 
 			vertex = predecessors.get(vertex);
 			
+			if(edge == null) {
+				int start = MainWindowController.getStart();
+				int end = MainWindowController.getEnd();
+				steps.add(new Step(copy(graph), "Erreur : il n'existe pas de chemin entre " + start + " et " + end));
+				MainWindowController.openErrorPopup("Il n'existe pas de plus court chemin entre " + start + " et " + end);
+				return ;
+			}
+			
 			graph.getModel().setStyle(edge, "BOLD_EDGE");
 			
 			if(vertex.equals(startVertex)) {
@@ -128,7 +140,7 @@ public class BellmanFord extends AbstractShortestPath {
 				graph.getModel().setStyle(vertex, "BOLD_VERTEX");
 			}
 			
-			steps.add(copy(graph));
+			steps.add(new Step(copy(graph)));
 			
 			
 		}	

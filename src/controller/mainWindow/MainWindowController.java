@@ -6,6 +6,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -15,7 +16,9 @@ import algorithms.AbstractShortestPath;
 import algorithms.Algorithm;
 import algorithms.BellmanFord;
 import algorithms.Dijkstra;
+import algorithms.GraphTests;
 import algorithms.TravellingSalesman;
+import model.Edge;
 import model.Graph;
 import model.Vertex;
 import util.Serialize;
@@ -130,6 +133,11 @@ public class MainWindowController {
 				graph.setCellsDisconnectable(false);
 
 				MainWindowController.getView().getGraphPanel().getPotentialsPane().removeAll();
+				
+				System.out.println(file.getName());
+				if(file.getName().equals("france_with_edges.grp")) {
+					// On charge la carte de la france
+				}
 
 				System.out.println("Le graphe a été chargé avec succès");
 			}
@@ -183,20 +191,44 @@ public class MainWindowController {
 			}
 		}
 	}
+	
+	public static void clearStyle() {
+		Object[] cells = graph.getChildVertices(graph.getDefaultParent());
+		for (Object c : cells)
+		{
+			Vertex vertex = (Vertex) c;
+			graph.getModel().setStyle(vertex, "ROUNDED");
+		}
+		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
+		for (Object c : edges)
+		{
+			Edge edge = (Edge) c;
+			if(GraphTests.isGraphComplete(graph)) {
+				graph.getModel().setStyle(edge, "INVISIBLE");
+			}
+			else {
+				graph.getModel().setStyle(edge, "DEFAULT_EDGE");
+			}	
+		}
+		view.getGraphPanel().getPotentialsPane().removeAll();
+	}
 
 	public static void findPCC() {
-		//		System.out.println("Execution de l'algorithme [" + algo + "]");
 		switch(algo) {
 		case DIJKSTRA: 		
-			asp = new Dijkstra(graph); 		break;
+			asp = new Dijkstra(graph); 					break;
 		case BELLMAN_FORD : 	
-			asp = new BellmanFord(graph); 	break;
+			asp = new BellmanFord(graph); 				break;
 		case VOYAGEUR_COMMERCE : 			
 			asp = new TravellingSalesman(graph);		break;
 		default: break;
 		}
 
 		lastStep();
+	}
+	
+	public static void openErrorPopup(String message) {
+		JOptionPane.showMessageDialog(new JFrame(), message, "Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 
 	/*===== VISUALISATION BUTTONS =====*/
