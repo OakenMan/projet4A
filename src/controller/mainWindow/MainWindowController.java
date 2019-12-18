@@ -18,6 +18,7 @@ import algorithms.BellmanFord;
 import algorithms.Dijkstra;
 import algorithms.GraphTests;
 import algorithms.TravellingSalesman;
+import algorithms.VertexColor;
 import model.Edge;
 import model.Graph;
 import model.Vertex;
@@ -221,13 +222,15 @@ public class MainWindowController {
 			asp = new BellmanFord(graph); 				break;
 		case VOYAGEUR_COMMERCE : 			
 			asp = new TravellingSalesman(graph);		break;
+		case VERTEX_COVER :
+			asp = new VertexColor(graph);				break;
 		default: break;
 		}
 
 		lastStep();
 	}
 	
-	public static void openErrorPopup(String message) {
+	public static void interruptAlgorithm(String message) {
 		JOptionPane.showMessageDialog(new JFrame(), message, "Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 

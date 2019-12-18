@@ -78,6 +78,37 @@ public class StyleSheet extends mxStylesheet {
 		styleInvisible.put(mxConstants.STYLE_OPACITY, 0);
 		putCellStyle("INVISIBLE", styleInvisible);
 
+		// Styles pour le Vertex Color
+		Hashtable<String, Object> vcRed = new Hashtable<String, Object>();
+		vcRed.put(mxConstants.STYLE_FILLCOLOR, "#ff0000");
+		vcRed.put(mxConstants.STYLE_STROKECOLOR, "#ff0000");
+		putCellStyle("VC_RED", vcRed);
+		
+		Hashtable<String, Object> vcGreen = new Hashtable<String, Object>();
+		vcGreen.put(mxConstants.STYLE_FILLCOLOR, "#00ff00");
+		vcGreen.put(mxConstants.STYLE_STROKECOLOR, "#00ff00");
+		putCellStyle("VC_GREEN", vcGreen);
+		
+		Hashtable<String, Object> vcBlue = new Hashtable<String, Object>();
+		vcBlue.put(mxConstants.STYLE_FILLCOLOR, "#0000ff");
+		vcBlue.put(mxConstants.STYLE_STROKECOLOR, "#0000ff");
+		putCellStyle("VC_BLUE", vcBlue);
+		
+		Hashtable<String, Object> vcMagenta = new Hashtable<String, Object>();
+		vcMagenta.put(mxConstants.STYLE_FILLCOLOR, "#ff00ff");
+		vcMagenta.put(mxConstants.STYLE_STROKECOLOR, "#ff00ff");
+		putCellStyle("VC_MAGENTA", vcMagenta);
+		
+		Hashtable<String, Object> vcYellow = new Hashtable<String, Object>();
+		vcYellow.put(mxConstants.STYLE_FILLCOLOR, "#ffff00");
+		vcYellow.put(mxConstants.STYLE_STROKECOLOR, "#ffff00");
+		putCellStyle("VC_YELLOW", vcYellow);
+		
+		Hashtable<String, Object> vcCyan = new Hashtable<String, Object>();
+		vcCyan.put(mxConstants.STYLE_FILLCOLOR, "#00ffff");
+		vcCyan.put(mxConstants.STYLE_STROKECOLOR, "#00ffff");
+		putCellStyle("VC_CYAN", vcCyan);
+
 		setDefaultVertexStyle(defaultVertex);
 		setDefaultEdgeStyle(defaultEdge);
 	}

@@ -120,6 +120,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		cbAlgo.addItem("Dijkstra");
 		cbAlgo.addItem("Bellman-Ford");
 		cbAlgo.addItem("Voyageur de commerce");
+		cbAlgo.addItem("Vertex Color");
 
 		cbAlgo.addActionListener(new ActionListener() {
 			@Override
@@ -132,6 +133,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 					case "Dijkstra" :				MainWindowController.setAlgo(Algorithm.DIJKSTRA);			break;
 					case "Bellman-Ford" :			MainWindowController.setAlgo(Algorithm.BELLMAN_FORD);		break;
 					case "Voyageur de commerce" :	MainWindowController.setAlgo(Algorithm.VOYAGEUR_COMMERCE);	break;
+					case "Vertex Color" :			MainWindowController.setAlgo(Algorithm.VERTEX_COVER);		break;
 					}
 				}
 				updateOnGraphChanges();
@@ -397,6 +399,10 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				else {
 					south.setVisible(true);
 				}
+				break;
+				
+			case VERTEX_COVER :
+				south.setVisible(true);
 				break;
 
 			default:

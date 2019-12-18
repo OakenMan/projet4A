@@ -105,7 +105,7 @@ public class BellmanFord extends AbstractShortestPath {
 				if ((((Vertex)edge.getSource())).getPotential() + getDistanceBetween((Vertex)edge.getSource(), (Vertex)edge.getTarget()) < ((Vertex)edge.getTarget()).getPotential())
 				{
 					steps.add(new Step(copy(graph), "Erreur : détection d'un cycle négatif"));
-					MainWindowController.openErrorPopup("Presence d'un cycle négatif. Impossible de calculer le plus court chemin.");
+					MainWindowController.interruptAlgorithm("Presence d'un cycle négatif. Impossible de calculer le plus court chemin.");
 					return ;
 				}
 			}
@@ -127,7 +127,7 @@ public class BellmanFord extends AbstractShortestPath {
 				int start = MainWindowController.getStart();
 				int end = MainWindowController.getEnd();
 				steps.add(new Step(copy(graph), "Erreur : il n'existe pas de chemin entre " + start + " et " + end));
-				MainWindowController.openErrorPopup("Il n'existe pas de plus court chemin entre " + start + " et " + end);
+				MainWindowController.interruptAlgorithm("Il n'existe pas de plus court chemin entre " + start + " et " + end);
 				return ;
 			}
 			

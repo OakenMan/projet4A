@@ -130,7 +130,7 @@ public class Dijkstra extends AbstractShortestPath {
 				int start = MainWindowController.getStart();
 				int end = MainWindowController.getEnd();
 				steps.add(new Step(copy(graph), "Erreur : il n'existe pas de chemin entre " + start + " et " + end));
-				MainWindowController.openErrorPopup("Il n'existe pas de plus court chemin entre " + start + " et " + end);
+				MainWindowController.interruptAlgorithm("Il n'existe pas de plus court chemin entre " + start + " et " + end);
 				return ;
 			}
 			
