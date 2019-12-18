@@ -11,6 +11,7 @@ public class TravellingSalesman extends AbstractShortestPath
 	public TravellingSalesman(Graph graph)
 	{
 		super(graph);
+		System.out.println("je suis construit !");
 	}
 	
 	public Solution ShortestNeighboor() throws Exception
