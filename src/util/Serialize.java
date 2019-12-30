@@ -10,14 +10,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Contains the methods used to serialize and deserialize an object
+ * Contient les méthodes pour serialiser et déserialiser un objet
  */
 public abstract class Serialize {
 
 	/**
-	 * Can be used to save any object on a given path
-	 * @param object the object to serialize
-	 * @param path the path where to save the object
+	 * Sauvegarde un objet au chemin choisi
+	 * @param object l'objet à serialiser
+	 * @param path le chemin où sauvegarder l'objet
 	 */
 	public static void save(Object object, String path) {
 		ObjectOutputStream output;
@@ -32,9 +32,9 @@ public abstract class Serialize {
 	}
 
 	/**
-	 * Can be used to load an object depending on his path
-	 * @param path the path where to load the object
-	 * @return the object loaded, else null if the object isn't found
+	 * Charge un objet situé au chemin passé en paramètres
+	 * @param path le chemin depuis lequel on charge l'objet
+	 * @return l'objet en question, on null si il n'est pas trouvé
 	 */
 	public static Object load(String path) {
 		ObjectInputStream input;

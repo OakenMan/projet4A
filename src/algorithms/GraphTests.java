@@ -4,6 +4,10 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe contient des méthodes permettant d'effectuer des tests sur des graphes,
+ * afin de connaître certaines de leurs propriétés.
+ */
 public class GraphTests {
 
 	/**

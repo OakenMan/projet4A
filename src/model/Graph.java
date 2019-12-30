@@ -28,8 +28,6 @@ public class Graph extends mxGraph {
 		vertex.setVertex(true);
 		vertex.setConnectable(true);
 
-//		System.out.println("On créé un vertex avec potentiel = "+vertex.getPotential());
-
 		return vertex;
 	}
 
@@ -45,11 +43,7 @@ public class Graph extends mxGraph {
 		edge.setEdge(true);
 		edge.getGeometry().setRelative(true);
 
-//		System.out.println("On créé un edge avec potentiel = "+edge.getPotential());
-
 		return edge;
 	}
-
-	//---------------------------------------------
 
 }

@@ -136,7 +136,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @param graph le graphe à copier
 	 * @return une copie du graphe
 	 */
-	public static Graph copy(Graph graph) {
+	public Graph copy(Graph graph) {
 
 		// Créé un nouveau graphe
 		Graph copy = new Graph();
@@ -195,7 +195,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	 * @param id l'idée du sommet à trouver
 	 * @return le sommet lié à l'id, ou null si non trouvé
 	 */
-	public static Vertex getCellFromId(Graph graph, int id) {
+	public Vertex getCellFromId(Graph graph, int id) {
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		for(Object c : vertices) {
 			Vertex vertex = (Vertex) c;

@@ -1,6 +1,7 @@
 package view.graphBuilder;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,83 +14,140 @@ import javax.swing.SwingConstants;
 
 import controller.graphBuilder.GraphBuilderController;
 
-public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
+/**
+ * Panel d'actions pour la création de graphes
+ */
+public class GraphBuilderActionsPanel extends JPanel {
 
 	/*===== ATTRIBUTES =====*/
 	private JTextField tfGraphFile;
-	private JButton bLoadFile;
-	private JButton bNewGraph;
-	private JButton bSaveGraph;
-	private JButton bAddVertex;
-	private JButton bDeleteCells;
 	private JTextField tfX;
 	private JTextField tfY;
 
 	/*===== BUILDER =====*/
 	public GraphBuilderActionsPanel() {
+		
 		setPreferredSize(new Dimension(250, 600));
 
-		JLabel lOptions = new JLabel("OPTIONS", SwingConstants.CENTER);
+		createGap();
+		
+		// Label "Options"
+		JLabel lOptions = new JLabel("Options", SwingConstants.CENTER);
+		lOptions.setPreferredSize(new Dimension(230, 25));
+		lOptions.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
 		add(lOptions);
+		
+		createGap();
 
-		bLoadFile = new JButton("Load graph");
-		bLoadFile.addActionListener(this);
-		bLoadFile.setPreferredSize(new Dimension(240, 25));
+		// Bouton "Charger un graphe"
+		JButton bLoadFile = new JButton("Charger un graphe");
+		bLoadFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.loadGraph();		
+				tfGraphFile.setText(GraphBuilderController.getGraphPath());
+			}
+		});
+		bLoadFile.setPreferredSize(new Dimension(230, 25));
 		add(bLoadFile);
 
+		// Champ text pour le chemin du graphe
 		tfGraphFile = new JTextField();
-		tfGraphFile.setPreferredSize(new Dimension(240, 25));
+		tfGraphFile.setPreferredSize(new Dimension(230, 25));
 		tfGraphFile.setEditable(false);
 		add(tfGraphFile);
 
 		createGap();
 
-		bNewGraph = new JButton("New graph");
-		bNewGraph.addActionListener(this);
-		bNewGraph.setPreferredSize(new Dimension(240, 25));
+		// Bouton "Nouveau graphe"
+		JButton bNewGraph = new JButton("Nouveau graphe");
+		bNewGraph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.newGraph();		
+				tfGraphFile.setText("");
+			}
+		});
+		bNewGraph.setPreferredSize(new Dimension(230, 25));
 		add(bNewGraph);
 
 		createGap();
 
-		bSaveGraph = new JButton("Save graph");
-		bSaveGraph.addActionListener(this);
-		bSaveGraph.setPreferredSize(new Dimension(240, 25));
+		// Bouton "Sauvegarder le graphe"
+		JButton bSaveGraph = new JButton("Sauvegarder le graphe");
+		bSaveGraph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.saveGraph();
+			}
+		});
+		bSaveGraph.setPreferredSize(new Dimension(230, 25));
 		add(bSaveGraph);
 
 		createGap();
+		createGap();
 
-		JLabel lActions = new JLabel("ACTIONS", SwingConstants.CENTER);
-		lActions.setPreferredSize(new Dimension(250, 25));
+		// Label "Actions"
+		JLabel lActions = new JLabel("Actions", SwingConstants.CENTER);
+		lActions.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		lActions.setPreferredSize(new Dimension(230, 25));
 		add(lActions);
+		
+		createGap();
 
+		// Bouton "Ajouter un sommet"
+		JButton bAddVertex = new JButton("Ajouter un sommet");
+		bAddVertex.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.addVertex(tfX.getText(), tfY.getText());
+			}
+		});
+		bAddVertex.setPreferredSize(new Dimension(230, 25));
+		add(bAddVertex);
+		
 		add(new JLabel("x ="));
 
 		tfX = new JTextField();
 		tfX.setPreferredSize(new Dimension(70, 25));
 		add(tfX);
 
-		add(new JLabel("y ="));
+		add(new JLabel("      y ="));
 
 		tfY = new JTextField();
 		tfY.setPreferredSize(new Dimension(70, 25));
 		add(tfY);
 
-		bAddVertex = new JButton("Add vertex");
-		bAddVertex.addActionListener(this);
-		bAddVertex.setPreferredSize(new Dimension(240, 25));
-		add(bAddVertex);
-
-		bDeleteCells = new JButton("Delete cells");
-		bDeleteCells.addActionListener(this);
-		bDeleteCells.setPreferredSize(new Dimension(240, 25));
+		createGap();
+		
+		// Bouton "Supprimer des cellules"
+		JButton bDeleteCells = new JButton("Supprimer des cellules");
+		bDeleteCells.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.deleteCells();
+			}
+		});
+		bDeleteCells.setPreferredSize(new Dimension(230, 25));
 		add(bDeleteCells);
 		
-		JButton bConnectAll = new JButton("Connect all vertices");
-		bConnectAll.addActionListener(this);
-		bConnectAll.setPreferredSize(new Dimension(240, 25));
+		createGap();
+		
+		// Bouton "Connecter tous les arcs"
+		JButton bConnectAll = new JButton("Connecter tous les arcs");
+		bConnectAll.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GraphBuilderController.connectAllVertices();
+			}
+		});
+		bConnectAll.setPreferredSize(new Dimension(230, 25));
 		add(bConnectAll);
 		
-		JRadioButton rbHideEdges = new JRadioButton("Hide edges ? ");
+		createGap();
+		
+		// Option "Cacher les arcs"
+		JRadioButton rbHideEdges = new JRadioButton("Cacher les arcs");
 		rbHideEdges.addActionListener(new ActionListener () {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -97,27 +155,12 @@ public class GraphBuilderActionsPanel extends JPanel implements ActionListener {
 			}
 		});
 		add(rbHideEdges);
-		
-		
+			
 	}
 
 	/*===== METHODS =====*/
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		switch(e.getActionCommand()) {
-		case "Load graph" :		GraphBuilderController.loadGraph();		
-		tfGraphFile.setText(GraphBuilderController.getGraphPath()); 	break;
-		case "Save graph" : 	GraphBuilderController.saveGraph();		break;
-		case "Add vertex" : 	GraphBuilderController.addVertex(tfX.getText(), tfY.getText());		break;
-		case "New graph" :		GraphBuilderController.resetGraph();		
-		tfGraphFile.setText("");										break;
-		case "Delete cells" :	GraphBuilderController.deleteCells();	break;
-		case "Connect all vertices"	: GraphBuilderController.connectAllVertices();	break;
-		}
-	}
-
-	public void createGap() {
-		JLabel separator = new JLabel("");
+	private void createGap() {
+		JLabel separator = new JLabel();
 		separator.setPreferredSize(new Dimension(240, 15));
 		add(separator);
 	}

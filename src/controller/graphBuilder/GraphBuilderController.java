@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
@@ -16,7 +17,9 @@ import util.StyleSheet;
 import view.graphBuilder.GraphBuilderWindow;
 
 /**
- * Cette classe utilise le nouveau modèle, avec les surcharges des mxCell et de mxGraph
+ * Controlleur de l'application de construction de graphe. 
+ * Contient la méthode main qui lance l'application, ainsi que des méthodes relatives à la
+ * construction du graphe.
  */
 public class GraphBuilderController {
 
@@ -24,12 +27,12 @@ public class GraphBuilderController {
 	private final static int vertexRadius = 40;
 
 	/*===== ATTRIBUTES =====*/
-	private static GraphBuilderWindow view;
-	private static Graph graph;
+	private static GraphBuilderWindow view;		/** Fenêtre pour la création de graphes	**/
+	private static Graph graph;					/** Graphe								**/
 
-	private static String graphPath;
+	private static String graphPath;			/** Chemin du fichier du graphe			**/
 
-	private static int nbVertex;
+	private static int nbVertex;				/** Nombre de sommets dans le graphe	**/
 
 	/*===== MAIN =====*/
 	public static void main(String[] args) {
@@ -39,8 +42,8 @@ public class GraphBuilderController {
 		graph = new Graph();
 
 		view = new GraphBuilderWindow(graph);
-		
-		resetGraph();
+
+		newGraph();
 	}
 
 	/*===== GETTERS AND SETTERS =====*/
@@ -55,7 +58,7 @@ public class GraphBuilderController {
 	/*===== METHODS =====*/
 
 	/**
-	 * Ajoute un sommet au graphe
+	 * Ajoute un sommet au graphe.
 	 */
 	public static void addVertex(String x, String y) {
 		Object parent = graph.getDefaultParent();
@@ -65,10 +68,13 @@ public class GraphBuilderController {
 		try {
 			// Si on a spécifié une position :
 			if(x != null && y != null) {
+				// Et que cette position est dans le bon format
 				if(x.matches("[0-9]+") && y.matches("[0-9]+")) {
+					// On insère un sommet à cette position
 					graph.insertVertex(parent, null, nbVertex, Integer.parseInt(x), Integer.parseInt(y), vertexRadius, vertexRadius);
 				}
 				else {
+					// Sinon on l'insère à une position prédéfinie
 					graph.insertVertex(parent, null, nbVertex, 340, 250, vertexRadius, vertexRadius);
 				}
 			}
@@ -83,7 +89,8 @@ public class GraphBuilderController {
 	}
 
 	/**
-	 * Relie tous les sommets entre eux, en calculant automatiquement les distances
+	 * Relie tous les sommets entre eux pour rendre le graphe complet.
+	 * Cette méthode calcule et applique automatiquement les distances (en pixels) entre chaque sommet.
 	 */
 	public static void connectAllVertices() {
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
@@ -114,16 +121,16 @@ public class GraphBuilderController {
 
 	/**
 	 * Met à jour le style pour cacher les arcs
-	 * @param b true pour cacher les arcs, false sinon
+	 * @param hideEdges true pour cacher les arcs, false sinon
 	 */
-	public static void hideEdges(boolean b) {
+	public static void hideEdges(boolean hideEdges) {
 		Object[] edges = graph.getChildEdges(graph.getDefaultParent());
 
 		for (Object o : edges) 		
 		{
 			Edge edge = (Edge) o;
-			if(b) {	graph.getModel().setStyle(edge, "INVISIBLE");    }
-			else  { graph.getModel().setStyle(edge, "DEFAULT_EDGE"); }		
+			if(hideEdges) {	graph.getModel().setStyle(edge, "INVISIBLE");    }
+			else  		  { graph.getModel().setStyle(edge, "DEFAULT_EDGE"); }		
 		}
 
 	}
@@ -145,10 +152,9 @@ public class GraphBuilderController {
 				// On change le graphPath et on charge le graphe
 				setGraphPath(file.getPath());
 				graph.setModel((mxIGraphModel)Serialize.load(graphPath));
-				System.out.println("Le charge a été chargé avec succès");
 			}
 			else {
-				System.err.println("Erreur : extension invalide");
+				JOptionPane.showMessageDialog(new JFrame(), "Erreur : extension invalide", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		} else {
 			// L'utilisateur n'a pas choisi de graphe, on ne fait rien
@@ -160,6 +166,7 @@ public class GraphBuilderController {
 	 */
 	public static void saveGraph() {
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Graph file", "grp"));
 		String path = "";
 
 		// Ouverture d'une fenêtre de type "Sauvegarder fichier"
@@ -177,7 +184,7 @@ public class GraphBuilderController {
 			}
 			// On enregistre le graphe
 			Serialize.save(graph.getModel(), path);
-			System.out.println("Le graphe a été sauvegardé au chemin : " + path);
+			JOptionPane.showMessageDialog(new JFrame(), "Le graphe a été sauvegardé au chemin : " + path, "Information", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			// Le graphe n'a pas été sauvegardé
 		}	
@@ -186,13 +193,13 @@ public class GraphBuilderController {
 	/**
 	 * Créé un nouveau graphe à la place de celui en cours d'édition
 	 */
-	public static void resetGraph() {
+	public static void newGraph() {
 		graph = new Graph();
 		graph.setStylesheet(new StyleSheet());
-		
-		graph.setCellsResizable(false);
-		graph.setAllowDanglingEdges(false);
-		
+
+		graph.setCellsResizable(false);		// Impossible de redimensionner les cellules
+		graph.setAllowDanglingEdges(false);	// Impossible de créer des arcs dans le vide
+
 		view.setGraph(graph);
 	}
 

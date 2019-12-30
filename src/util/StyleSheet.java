@@ -6,6 +6,27 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxPerimeter;
 import com.mxgraph.view.mxStylesheet;
 
+/**
+ * Contient tous les styles utilisés par l'application.
+ * 
+ * Styles communs à plusieurs algorithmes :
+ * - DEFAULT 		= style par défaut pour un sommet ou un arc
+ * - BOLD_VERTEX	= sommet en gras
+ * - BOLD_EDGE		= arc en gras
+ * 
+ * Pour le problème du plus court chemin :
+ * - START			= sommet en vert
+ * - BOLD_START		= sommet en vert et en gras
+ * - END			= sommet en rouge
+ * - BOLD_END		= sommet en rouge et en gras
+ * 
+ * Pour le problème du voyageur de commerce :
+ * - INVISIBLE		= sommet ou arc invisible
+ * 
+ * Pour le problème du vertex color :
+ * - VC_RED, VC_GREEN, VC_BLUE, VC_MAGENTA, VC_YELLOW, VC_CYAN = sommets colorés
+ * 
+ */
 public class StyleSheet extends mxStylesheet {
 
 	public StyleSheet() {
@@ -72,7 +93,7 @@ public class StyleSheet extends mxStylesheet {
 		styleBoldEdge.put(mxConstants.STYLE_STROKEWIDTH, 3);
 		putCellStyle("BOLD_EDGE", styleBoldEdge);
 
-		// Style gras pour un arc : INVISIBLE
+		// Style invisible pour un arc ou un sommet : INVISIBLE
 		Hashtable<String, Object> styleInvisible = new Hashtable<String, Object>();
 		styleInvisible.put(mxConstants.STYLE_NOLABEL, true);
 		styleInvisible.put(mxConstants.STYLE_OPACITY, 0);

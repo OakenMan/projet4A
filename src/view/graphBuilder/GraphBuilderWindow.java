@@ -9,14 +9,22 @@ import javax.swing.WindowConstants;
 import model.Graph;
 import view.GraphDisplayPanel;
 
+/**
+ * Fenêtre de création de graphe
+ * @see GraphDisplayPanel
+ * @see GraphBuilderActionsPanel
+ */
 public class GraphBuilderWindow extends JFrame {
 
-	private GraphDisplayPanel graphPanel;
-	private GraphBuilderActionsPanel actionPanel;
+	/*===== ATTRIBUTES =====*/
+	private GraphDisplayPanel graphPanel;			/** Le panel d'affichage du graphe **/
+	private GraphBuilderActionsPanel actionPanel;	/** Le panel d'actions			   **/
 
+	/*===== BUIDER =====*/
 	public GraphBuilderWindow(Graph graph) {
-		// Window configuration (name, size and minimum size, location...)
-		setTitle("Create graph");
+		// Configuration de la fenetre
+		setTitle("Création de graphes");
+		setSize(1920, 1080);
 		setMinimumSize(new Dimension(1000, 600));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -33,6 +41,7 @@ public class GraphBuilderWindow extends JFrame {
 		setVisible(true);
 	}
 	
+	/*===== GETTERS AND SETTERS =====*/
 	public void setGraph(Graph g) {
 		graphPanel.setGraph(g);
 	}

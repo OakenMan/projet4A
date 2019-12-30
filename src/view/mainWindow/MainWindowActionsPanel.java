@@ -14,9 +14,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -25,9 +27,11 @@ import javax.swing.event.DocumentListener;
 import algorithms.Algorithm;
 import algorithms.GraphTests;
 import controller.mainWindow.MainWindowController;
-import view.algoInfos.AbstractAlgoInfos;
 
-public class MainWindowActionsPanel extends JPanel implements ActionListener {
+/**
+ * Panel d'actions pour la simulation d'algorithmes
+ */
+public class MainWindowActionsPanel extends JPanel {
 
 	/*===== ICONS PATHS =====*/
 	protected static final URL rewindIcon = MainWindowActionsPanel.class.getResource("/icons/rewind.png");
@@ -46,52 +50,50 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 	private JTextField tfEndVertex;
 
 	private SpinnerNumberModel speedSpinnerModel;
+	private SpinnerNumberModel triesSpinnerModel;
+	private SpinnerNumberModel exchangesSpinnerModel;
 
 	private JButton calcShortestPath;
-
-	private JButton bFirstStep;
-	private JButton bPreviousStep;
+	
 	private JButton bPlayPause;
-	private JButton bNextStep;
-	private JButton bLastStep;
 
-	private AbstractAlgoInfos infosPanel;
+	private JTextArea infosPanel;
 
 	private JLabel warningLabel;
 
 	private JPanel center;
 	private JPanel algoChoicePanel;
-	private JPanel optionsPanel;
+	private JPanel paramsTsp;
+	private JPanel paramsPcc;
 	private JPanel south;
 
 	/*===== BUILDER =====*/
 	public MainWindowActionsPanel() {
 
-		setPreferredSize(new Dimension(250, 600));
 		setLayout(new BorderLayout());
+		setPreferredSize(new Dimension(250, 600));
 
 		center = new JPanel();
 
 		createGap(center);
 
 		//====================== CHOIX DU GRAPHE ======================= 
+		// Label "Paramètres"
 		JLabel lParams = new JLabel("Paramètres", SwingConstants.CENTER);
 		lParams.setPreferredSize(new Dimension(230, 25));
 		lParams.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
 		center.add(lParams);
 
-		// Bouton "choix du graphe"
+		// Bouton "Choix du graphe"
 		JButton bLoadFile = new JButton("Choix du graphe");
 		bLoadFile.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainWindowController.loadGraph();
-				tfGraphFile.setText(MainWindowController.getGraphPath()); 
-				algoChoicePanel.setVisible(true);
-				updateOnGraphChanges();
+				MainWindowController.loadGraph();							// On charge le graphe
+				tfGraphFile.setText(MainWindowController.getGraphPath()); 	// On met à jour le chemin
+				algoChoicePanel.setVisible(true);							// On affiche le panel de choix d'algo
+				updateOnGraphChanges();										// On met à jour les infos en fonction du graphe
 			}
-
 		});
 		bLoadFile.setPreferredSize(new Dimension(230, 25));
 		center.add(bLoadFile);
@@ -109,6 +111,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		algoChoicePanel = new JPanel();
 		algoChoicePanel.setPreferredSize(new Dimension(240, 150));
 
+		// Label "Choix de l'algorithme"
 		JLabel lAlgo = new JLabel("Choix de l'algorithme", SwingConstants.CENTER);
 		lAlgo.setPreferredSize(new Dimension(230, 25));
 		lAlgo.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
@@ -122,6 +125,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		cbAlgo.addItem("Voyageur de commerce");
 		cbAlgo.addItem("Vertex Color");
 
+		// ActionListener qui actualise les informations en fonction de l'algo choisi
 		cbAlgo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -133,7 +137,7 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 					case "Dijkstra" :				MainWindowController.setAlgo(Algorithm.DIJKSTRA);			break;
 					case "Bellman-Ford" :			MainWindowController.setAlgo(Algorithm.BELLMAN_FORD);		break;
 					case "Voyageur de commerce" :	MainWindowController.setAlgo(Algorithm.VOYAGEUR_COMMERCE);	break;
-					case "Vertex Color" :			MainWindowController.setAlgo(Algorithm.VERTEX_COVER);		break;
+					case "Vertex Color" :			MainWindowController.setAlgo(Algorithm.VERTEX_COLOR);		break;
 					}
 				}
 				updateOnGraphChanges();
@@ -145,8 +149,10 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		cbAlgo.setPreferredSize(new Dimension(230, 25));
 		algoChoicePanel.add(cbAlgo);
 
-		// Infos liées à l'algo
-		infosPanel = new AbstractAlgoInfos();
+		// Infos techniques liées à l'algo
+		infosPanel = new JTextArea();
+		infosPanel.setPreferredSize(new Dimension(230, 100));
+		infosPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		algoChoicePanel.add(infosPanel);
 
 		center.add(algoChoicePanel);
@@ -156,18 +162,20 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		createGap(center);
 		//=============================================================== 
 
-		//================== INFORMATIONS SUR L'ALGO  =================== 
-		optionsPanel = new JPanel();
-		optionsPanel.setPreferredSize(new Dimension(240, 150));
+		//================== OPTIONS PLUS COURT CHEMIN ================== 
+		paramsPcc = new JPanel();
+		paramsPcc.setPreferredSize(new Dimension(240, 150));
 
-		JLabel lOptions = new JLabel("Options", SwingConstants.CENTER);
-		lOptions.setPreferredSize(new Dimension(230, 25));
-		lOptions.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
-		optionsPanel.add(lOptions);
+		// Label "Options PCC"
+		JLabel lOptionsPCC = new JLabel("Options PCC", SwingConstants.CENTER);
+		lOptionsPCC.setPreferredSize(new Dimension(230, 25));
+		lOptionsPCC.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		paramsPcc.add(lOptionsPCC);
 
+		// Label "Départ"
 		JLabel bStartVertex = new JLabel("Départ :");
 		bStartVertex.setPreferredSize(new Dimension(60, 25));
-		optionsPanel.add(bStartVertex);
+		paramsPcc.add(bStartVertex);
 
 		// Champ départ
 		tfStartVertex = new JTextField();
@@ -181,16 +189,12 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
 				MainWindowController.clearStyle();
-				if(tfStartVertex.getText().matches("[0-9]*") && !tfStartVertex.getText().equals("")) {		// Si c'est bien un nombre
-					if (MainWindowController.containsVertex(Integer.parseInt(tfStartVertex.getText()))) {	// Si le sommet est bien dans le graphe
-						if(Integer.parseInt(tfStartVertex.getText()) != MainWindowController.getEnd()) {	// Si c'est pas déjà la fin
-							tfStartVertex.setBackground(Color.GREEN);
-							MainWindowController.setStart(Integer.parseInt(tfStartVertex.getText()));		// Alors on modifie le départ
-						}
-						else {
-							tfStartVertex.setBackground(Color.ORANGE);
-							MainWindowController.setStart(-1);
-						}
+				if(tfStartVertex.getText().matches("[0-9]+")) {												// Si c'est bien un nombre
+					if (MainWindowController.containsVertex(Integer.parseInt(tfStartVertex.getText())) &&	// Si le sommet est bien dans le graphe
+							Integer.parseInt(tfStartVertex.getText()) != MainWindowController.getEnd()) {	// Et si c'est pas déjà l'arrivée
+
+						tfStartVertex.setBackground(Color.GREEN);
+						MainWindowController.setStart(Integer.parseInt(tfStartVertex.getText()));			// Alors on modifie le départ
 					}
 					else {
 						tfStartVertex.setBackground(Color.ORANGE);
@@ -203,11 +207,12 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 			}
 		});
-		optionsPanel.add(tfStartVertex);
+		paramsPcc.add(tfStartVertex);
 
+		// Label "Arrivée"
 		JLabel bEndVertex = new JLabel("Arrivée :");
 		bEndVertex.setPreferredSize(new Dimension(60, 25));
-		optionsPanel.add(bEndVertex);
+		paramsPcc.add(bEndVertex);
 
 		// Champ arrivée
 		tfEndVertex = new JTextField();
@@ -221,16 +226,12 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 			public void insertUpdate(DocumentEvent e) { warn(); }
 			public void warn() {
 				MainWindowController.clearStyle();
-				if(tfEndVertex.getText().matches("[0-9]*") && !tfEndVertex.getText().equals("")) {			// Si c'est bien un nombre
-					if (MainWindowController.containsVertex(Integer.parseInt(tfEndVertex.getText()))) {		// Si le sommet est bien dans le graphe
-						if(Integer.parseInt(tfEndVertex.getText()) != MainWindowController.getStart()) {	// Si c'est pas déjà la départ
-							tfEndVertex.setBackground(Color.GREEN);
-							MainWindowController.setEnd(Integer.parseInt(tfEndVertex.getText()));			// Alors on modifie l'arrivée
-						}
-						else {
-							tfEndVertex.setBackground(Color.ORANGE);
-							MainWindowController.setEnd(-1);
-						}
+				if(tfEndVertex.getText().matches("[0-9]+")) {												// Si c'est bien un nombre
+					if (MainWindowController.containsVertex(Integer.parseInt(tfEndVertex.getText())) &&		// Si le sommet est bien dans le graphe
+							Integer.parseInt(tfEndVertex.getText()) != MainWindowController.getStart()) {	// Et si c'est pas déjà le départ
+
+						tfEndVertex.setBackground(Color.GREEN);
+						MainWindowController.setEnd(Integer.parseInt(tfEndVertex.getText()));			// Alors on modifie l'arrivée
 					}
 					else {
 						tfEndVertex.setBackground(Color.ORANGE);
@@ -243,11 +244,11 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				}
 			}
 		});
-		optionsPanel.add(tfEndVertex);
+		paramsPcc.add(tfEndVertex);
 
-		center.add(optionsPanel);
+		center.add(paramsPcc);
 
-		optionsPanel.setVisible(false);
+		paramsPcc.setVisible(false);
 		//=============================================================== 
 
 		//======================== WARNING TEXT =========================
@@ -258,11 +259,100 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		center.add(warningLabel);
 		//=============================================================== 
 
+		//======================= PARAMETRES TSP ========================
+		paramsTsp = new JPanel();
+		paramsTsp.setPreferredSize(new Dimension(240, 250));
+
+		// Label "Options TSP"
+		JLabel lOptionsTSP = new JLabel("Options TSP", SwingConstants.CENTER);
+		lOptionsTSP.setPreferredSize(new Dimension(230, 25));
+		lOptionsTSP.setFont(new java.awt.Font("serif", Font.PLAIN, 20));
+		paramsPcc.add(lOptionsTSP);
+
+		// Label "Choix de la solution de base"
+		JLabel lSolutionBase = new JLabel("Choix de la solution de base :", SwingConstants.CENTER);
+		lSolutionBase.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(lSolutionBase);
+
+		// ComboBox des solutions de base
+		JComboBox<String> cbSolutionBase = new JComboBox<String>();
+		cbSolutionBase.addItem("Shortest Neighboor (best)");
+		cbSolutionBase.addItem("Shortest Neighboor (random)");
+		cbSolutionBase.addItem("Random");
+		cbSolutionBase.setPreferredSize(new Dimension(230, 25));
+		cbSolutionBase.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindowController.setBaseSolution(cbSolutionBase.getSelectedItem().toString());
+			}
+		});
+		MainWindowController.setBaseSolution("Shortest Neighboor (best)");
+		paramsTsp.add(cbSolutionBase);
+
+		// Label "Choix de l'heurtistique"
+		JLabel lHeurtistique = new JLabel("Choix de l'heurtistique :", SwingConstants.CENTER);
+		lHeurtistique.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(lHeurtistique);
+
+		// ComboBox des heurtistiques
+		JComboBox<String> cbHeurtistique = new JComboBox<String>();
+		cbHeurtistique.addItem("Echanges d'arcs aléatoires");
+		cbHeurtistique.addItem("Tous les échanges possibles");
+		cbHeurtistique.setPreferredSize(new Dimension(230, 25));
+		cbHeurtistique.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindowController.setHeurtistique(cbHeurtistique.getSelectedItem().toString());
+			}
+		});
+		MainWindowController.setHeurtistique("Echanges d'arcs aléatoires");
+		paramsTsp.add(cbHeurtistique);
+
+		// Label "Nbr. d'essais d'améliorations"
+		JLabel lTries = new JLabel("Nbr. d'essais d'améliorations :", SwingConstants.CENTER);
+		lTries.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(lTries);
+
+		// Spinner essais d'améliorations
+		triesSpinnerModel = new SpinnerNumberModel(20, 1, null, 1);
+		triesSpinnerModel.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				MainWindowController.setNbTries((int)triesSpinnerModel.getValue());
+			}
+		});
+		MainWindowController.setNbTries(20);
+		JSpinner triesSpinner = new JSpinner(triesSpinnerModel);
+		triesSpinner.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(triesSpinner);
+
+		// Label "Nbr. d'échanges par essai"
+		JLabel lIterations = new JLabel("Nbr. d'échanges par essai :", SwingConstants.CENTER);
+		lIterations.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(lIterations);
+
+		// Spinner échanges par essai
+		exchangesSpinnerModel = new SpinnerNumberModel(150, 50, null, 50);
+		exchangesSpinnerModel.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				MainWindowController.setNbExchanges((int)exchangesSpinnerModel.getValue());
+			}
+		});
+		MainWindowController.setNbExchanges(150);
+		JSpinner exchangesSpinner = new JSpinner(exchangesSpinnerModel);
+		exchangesSpinner.setPreferredSize(new Dimension(230, 25));
+		paramsTsp.add(exchangesSpinner);
+
+		center.add(paramsTsp);
+
+		//=============================================================== 
+
 		add(center, BorderLayout.CENTER);
 
 		//===================== SIMULATION BUTTONS ======================
 		south = new JPanel();
-		south.setPreferredSize(new Dimension(240, 160));
+		south.setPreferredSize(new Dimension(240, 170));
 
 		JLabel lSimulation = new JLabel("Simulation", SwingConstants.CENTER);
 		lSimulation.setPreferredSize(new Dimension(230, 25));
@@ -281,75 +371,82 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		});
 
 		JSpinner speedSpinner = new JSpinner(speedSpinnerModel);
-		speedSpinner.setPreferredSize(new Dimension(240, 25));
+		speedSpinner.setPreferredSize(new Dimension(230, 25));
 		south.add(speedSpinner);
 
 		createGap(south);
 
-		// Bouton "Calcul du plus court chemin"
-		calcShortestPath = new JButton("Calculer le plus court chemin");
-		calcShortestPath.addActionListener(this);
-		calcShortestPath.setPreferredSize(new Dimension(240, 25));
+		// Bouton "Executer l'algorithme"
+		calcShortestPath = new JButton("Executer l'algorithme");
+		calcShortestPath.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindowController.executeAlgorithm(); 
+			}	
+		});
+		calcShortestPath.setPreferredSize(new Dimension(230, 25));
 		south.add(calcShortestPath);
 
 		// Bouton "première étape"
-		bFirstStep = new JButton();
-		bFirstStep.addActionListener(this);
-		bFirstStep.setPreferredSize(new Dimension(44, 25));
+		JButton bFirstStep = new JButton();
+		bFirstStep.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { MainWindowController.firstStep(); }	
+		});
+		bFirstStep.setPreferredSize(new Dimension(42, 25));
 		bFirstStep.setIcon(new ImageIcon(rewindIcon));
 		south.add(bFirstStep);
 
 		// Bouton "étape précédente"
-		bPreviousStep = new JButton();
-		bPreviousStep.addActionListener(this);
-		bPreviousStep.setPreferredSize(new Dimension(44, 25));
+		JButton bPreviousStep = new JButton();
+		bPreviousStep.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { MainWindowController.previousStep(); }	
+		});
+		bPreviousStep.setPreferredSize(new Dimension(42, 25));
 		bPreviousStep.setIcon(new ImageIcon(backIcon));
 		south.add(bPreviousStep);
 
 		// Bouton "play/pause"
 		bPlayPause = new JButton();
-		bPlayPause.addActionListener(this);
-		bPlayPause.setPreferredSize(new Dimension(44, 25));
+		bPlayPause.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { MainWindowController.playPause(); }	
+		});
+		bPlayPause.setPreferredSize(new Dimension(42, 25));
 		bPlayPause.setIcon(new ImageIcon(playIcon));
 		south.add(bPlayPause);
 
 		// Bouton "étape suivante"
-		bNextStep = new JButton();
-		bNextStep.addActionListener(this);
-		bNextStep.setPreferredSize(new Dimension(44, 25));
+		JButton bNextStep = new JButton();
+		bNextStep.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { MainWindowController.nextStep(); }	
+		});
+		bNextStep.setPreferredSize(new Dimension(42, 25));
 		bNextStep.setIcon(new ImageIcon(nextIcon));
 		south.add(bNextStep);
 
 		// Bouton "dernière étape"
-		bLastStep = new JButton();
-		bLastStep.addActionListener(this);
-		bLastStep.setPreferredSize(new Dimension(44, 25));
+		JButton bLastStep = new JButton();
+		bLastStep.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { MainWindowController.lastStep(); }	
+		});
+		bLastStep.setPreferredSize(new Dimension(42, 25));
 		bLastStep.setIcon(new ImageIcon(fastForwardIcon));
 		south.add(bLastStep);
+
+		createGap(south);
 
 		add(south, BorderLayout.SOUTH);
 
 		south.setVisible(false);
+		paramsTsp.setVisible(false);
 		//=============================================================== 
 	}
 
 	/*===== METHODS =====*/
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		switch(e.getActionCommand()) {
-		case "Calculer le plus court chemin" :		
-			MainWindowController.findPCC(); 
-			break;
-		}
-
-		if(e.getSource() == bFirstStep) 		{ MainWindowController.firstStep(); 	}
-		else if(e.getSource() == bPreviousStep) { MainWindowController.previousStep(); 	}
-		else if(e.getSource() == bPlayPause) 	{ MainWindowController.playPause(); 	}
-		else if(e.getSource() == bNextStep) 	{ MainWindowController.nextStep(); 		}
-		else if(e.getSource() == bLastStep) 	{ MainWindowController.lastStep(); 		}
-
-	}
 
 	/**
 	 * Reset les paramètres (départ et arrivée)
@@ -361,47 +458,53 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		tfEndVertex.setBackground(null);
 	}
 
-	private void createGap(JPanel panel) {
-		JLabel separator = new JLabel("");
-		separator.setPreferredSize(new Dimension(240, 10));
-		panel.add(separator);
-	}
-
+	/**
+	 * À chaque changement d'algorithme ou de graphe, cette méthode est appelée pour met à jour
+	 * certains informations conçernant ces graphes et ces algorithmes.
+	 */
 	public void updateOnGraphChanges() {
+		// Reset tous les champs et les panels
 		south.setVisible(false);
-		optionsPanel.setVisible(false);
+		paramsPcc.setVisible(false);
+		paramsTsp.setVisible(false);
 		warningLabel.setText("");
 
+		// Si un algo a été choisi...
 		if(MainWindowController.getAlgo() != null) {
 			switch(MainWindowController.getAlgo()) {
 
 			case DIJKSTRA :	
+				// Dijkstra : impossible si le graphe contient des valeurs négatives
 				if(GraphTests.containsNegativeValues(MainWindowController.getGraph())) {
 					warningLabel.setText("<html>Erreur : <br/>Le graphe contient des valeurs négatives.<br/>"
 							+ "Impossible d'appliquer l'algorithme de Dijkstra</html>");	
 				}
 				else {
-					optionsPanel.setVisible(true);
+					paramsPcc.setVisible(true);	// Affiche les options pour les algos de PCC
 					south.setVisible(true);
 				}
 				break;
 
 			case BELLMAN_FORD :	
-				optionsPanel.setVisible(true);
+				// Bellman-Ford : peut être exécuté dans tous les cas
+				paramsPcc.setVisible(true);
 				south.setVisible(true);
 				break;
 
 			case VOYAGEUR_COMMERCE :
+				// Voyageur de commerce : nécessite un graphe complet
 				if(!(GraphTests.isGraphComplete(MainWindowController.getGraph()))) {
 					warningLabel.setText("<html>Erreur : <br/>Le graphe n'est pas complet.<br/>"
 							+ "Impossible d'appliquer l'algorithme du voyageur de commerce.</html>");
 				}
 				else {
+					paramsTsp.setVisible(true);		// Affiche les options pour TSP
 					south.setVisible(true);
 				}
 				break;
-				
-			case VERTEX_COVER :
+
+			case VERTEX_COLOR :
+				// Vertex Color : peut être exécuté dans tous les cas
 				south.setVisible(true);
 				break;
 
@@ -411,6 +514,9 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Met à jour le texte informatif en fonction de l'algorithme choisi
+	 */
 	public void updateInfoField() {
 		infosPanel.setText(null);
 		if(MainWindowController.getAlgo() != null) {
@@ -433,11 +539,35 @@ public class MainWindowActionsPanel extends JPanel implements ActionListener {
 				infosPanel.append(("Caractéristiques :\n" +
 						"- Graphes complets\n" +
 						"- Longueurs quelconques\n" +
-						"- Complexité : O(beaucoup)"));
+						"- Complexité : O(?)"));
+				break;
+			case VERTEX_COLOR :
+				infosPanel.append(("Caractéristiques :\n" +
+						"Work In Progress"));
 				break;
 			default:
 				break;
 			}
 		}
 	}
+	
+	/**
+	 * Change l'état de certains boutons si on joue la simulation de l'algorithme
+	 * @param isPlaying vaut true si on a appuyé sur le bouton "Play", false sinon
+	 */
+	public void updateIfPlaying(boolean isPlaying) {
+		if(isPlaying) {
+			bPlayPause.setIcon(new ImageIcon(pauseIcon));
+		}
+		else {
+			bPlayPause.setIcon(new ImageIcon(playIcon));
+		}
+	}
+	
+	private void createGap(JPanel panel) {
+		JLabel separator = new JLabel();
+		separator.setPreferredSize(new Dimension(230, 10));
+		panel.add(separator);
+	}
+
 }

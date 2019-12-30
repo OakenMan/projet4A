@@ -8,22 +8,20 @@ import model.Vertex;
 
 public class Solution 
 {
+	/*===== ATTRIBUTES =====*/
 	private int weight;
 	private ArrayList<Vertex> solution = new ArrayList<Vertex>();
 	private Graph graph;
 	
+	/*===== BUILDER =====*/
 	public Solution(ArrayList<Vertex> solution, Graph graph)
 	{
 		this.solution = solution;
 		this.graph = graph;
 		calculateWeight();
 	}
-	public Solution(ArrayList<Vertex> solution, Graph graph, int weight)
-	{
-		this.solution = solution;
-		this.graph = graph;
-		this.weight = weight;
-	}
+	
+	/*===== METHODS =====*/
 	
 	public void calculateWeight()
 	{
@@ -31,14 +29,15 @@ public class Solution
 		Edge edge = null;
 		Vertex vertex1 = null;
 		Vertex vertex2 = null;
-		for (int i = 0; i<solution.size()-1; i++)
-		{
+		
+		for (int i = 0; i<solution.size()-1; i++) {
 			vertex1 = solution.get(i);
 			vertex2 = solution.get(i+1);
 			Object[] edges = graph.getEdgesBetween(vertex1, vertex2);
 			edge = (Edge) edges[0];
 			weight += edge.getIntValue();
 		}
+		
 		vertex1 = solution.get(0);
 		Object[] edges = graph.getEdgesBetween(vertex2, vertex1);
 		edge = (Edge) edges[0];
@@ -47,33 +46,26 @@ public class Solution
 	
 	public Solution copy()
 	{
-		ArrayList<Vertex> solu = (ArrayList<Vertex>)solution.clone();
-		Solution sol = new Solution(solu, graph, weight);
-		return sol;
+		@SuppressWarnings("unchecked")
+		Solution copy = new Solution((ArrayList<Vertex>)solution.clone(), graph);
+		copy.setWeight(weight);
+		return copy;
 	}
+	
+	/*===== GETTERS AND SETTERS =====*/
 	
 	public int getWeight() 
 	{
 		return weight;
 	}
+	
 	public void setWeight(int weight) 
 	{
 		this.weight = weight;
 	}
+	
 	public ArrayList<Vertex> getSolution() 
 	{
 		return solution;
-	}
-	public void setSolution(ArrayList<Vertex> solution) 
-	{
-		this.solution = solution;
-	}
-	public Graph getGraph() 
-	{
-		return graph;
-	}
-	public void setGraph(Graph graph) 
-	{
-		this.graph = graph;
 	}
 }

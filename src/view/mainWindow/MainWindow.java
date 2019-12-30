@@ -9,15 +9,20 @@ import javax.swing.WindowConstants;
 import model.Graph;
 import view.GraphDisplayPanel;
 
+/**
+ * Fenetre principale, pour la simulation d'algorithmes
+ * @see GraphDisplayPanel
+ * @see MainWindowActionsPanel
+ */
 public class MainWindow extends JFrame {
 
 	/*===== ATTRIBUTES =====*/
-	private GraphDisplayPanel graphPanel;			// Panel d'affichage du graphe
-	private MainWindowActionsPanel actionPanel;		// Panel des actions
+	private GraphDisplayPanel graphPanel;			/** Panel d'affichage du graphe **/
+	private MainWindowActionsPanel actionPanel;		/** Panel des actions			**/
 
 	/*===== BUILDER =====*/
 	public MainWindow(Graph graph) {
-		// Window configuration (name, size and minimum size, location...)
+		// Configuration de la fenetre
 		setTitle("Simulation d'algorithmes");
 		setSize(1920, 1080);
 		setMinimumSize(new Dimension(1000, 600));
@@ -37,11 +42,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	/*===== GETTERS AND SETTERS =====*/
-	
-	/**
-	 * Permet de mettre à jour le graphe
-	 * @param graph le nouveau graphe à afficher
-	 */
 	public void setGraph(Graph graph) {
 		graphPanel.setGraph(graph);
 	}
