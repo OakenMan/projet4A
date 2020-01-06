@@ -7,7 +7,7 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
-public class VertexColor extends AbstractShortestPath {
+public class VertexColor extends AbstractAlgorithm {
 
 	HashMap<Vertex, Integer> map;
 
@@ -16,7 +16,7 @@ public class VertexColor extends AbstractShortestPath {
 	}
 
 	@Override
-	public void findShortestPath() {
+	public void executeAlgorithm() {
 
 		map = new HashMap<Vertex, Integer>();
 		

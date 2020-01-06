@@ -7,7 +7,7 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
-public class BellmanFord extends AbstractShortestPath {
+public class BellmanFord extends AbstractAlgorithm {
 
 	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin � la fin
 
@@ -61,7 +61,7 @@ public class BellmanFord extends AbstractShortestPath {
 	}
 
 	@Override
-	public void findShortestPath()
+	public void executeAlgorithm()
 	{
 		predecessors = new HashMap<Vertex, Vertex>();
 

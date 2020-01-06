@@ -8,7 +8,7 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
-public class Dijkstra extends AbstractShortestPath {
+public class Dijkstra extends AbstractAlgorithm {
 
 	private ArrayList<Vertex> subGraph; 			// Liste des sommets présents dans le sous graphe
 	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
@@ -97,7 +97,7 @@ public class Dijkstra extends AbstractShortestPath {
 	}
 
 	@Override
-	public void findShortestPath() 
+	public void executeAlgorithm() 
 	{
 		subGraph = new ArrayList<Vertex>();
 		predecessors = new HashMap<Vertex, Vertex>();

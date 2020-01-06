@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mxgraph.model.mxIGraphModel;
 
-import algorithms.AbstractShortestPath;
+import algorithms.AbstractAlgorithm;
 import algorithms.Algorithm;
 import algorithms.BellmanFord;
 import algorithms.Dijkstra;
@@ -36,7 +36,7 @@ public class MainWindowController {
 	/*===== ATTRIBUTES =====*/
 	private static MainWindow view;				/** Fenêtre principale							**/
 	private static Graph graph;					/** Graphe										**/
-	private static AbstractShortestPath asp;	/** Algorithme (contient le tableau d'étapes)	**/
+	private static AbstractAlgorithm asp;	/** Algorithme (contient le tableau d'étapes)	**/
 
 	// Paramètres pour PCC
 	private static int start;					/** ID du sommet de départ						**/
@@ -358,9 +358,8 @@ public class MainWindowController {
 	}
 
 	private static Timer createTimer(){
-
-		ActionListener action = new ActionListener ()
-		{
+		ActionListener action = new ActionListener () {
+			
 			// Méthode appelée à chaque tic du timer
 			@Override
 			public void actionPerformed (ActionEvent event)

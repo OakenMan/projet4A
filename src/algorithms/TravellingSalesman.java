@@ -8,7 +8,7 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
-public class TravellingSalesman extends AbstractShortestPath {
+public class TravellingSalesman extends AbstractAlgorithm {
 
 	private long time;
 
@@ -207,7 +207,7 @@ public class TravellingSalesman extends AbstractShortestPath {
 	}
 
 	@Override
-	public void findShortestPath()
+	public void executeAlgorithm()
 	{
 		int counter = 0;
 

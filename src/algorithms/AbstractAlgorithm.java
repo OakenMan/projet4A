@@ -14,9 +14,10 @@ import model.Graph;
 import model.Vertex;
 import util.StyleSheet;
 
-public abstract class AbstractShortestPath implements ShortestPath {
+public abstract class AbstractAlgorithm implements IAlgorithm {
 
-	final int INFINITE = 9999999;
+	/*===== CONSTANTS =====*/
+	protected final int INFINITE = 9999999;
 
 	/*===== ATTRIBUTES =====*/
 	protected Graph graph;
@@ -25,14 +26,14 @@ public abstract class AbstractShortestPath implements ShortestPath {
 	protected int currentStep;
 
 	/*===== BUILDER =====*/
-	public AbstractShortestPath(Graph graph) {
+	public AbstractAlgorithm(Graph graph) {
 		steps = new ArrayList<Step>();
 		this.graph = graph;
 		currentStep = 0;
 		
 		long time = System.currentTimeMillis();
 		
-		findShortestPath();
+		executeAlgorithm();
 		
 		time = System.currentTimeMillis() - time;
 		
@@ -41,7 +42,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 
 	/*===== METHODS =====*/
 	@Override
-	public abstract void findShortestPath();
+	public abstract void executeAlgorithm();
 
 	/**
 	 * Affiche les potentiels à l'écran
