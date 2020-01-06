@@ -362,6 +362,7 @@ public class MainWindowController {
 		ActionListener action = new ActionListener ()
 		{
 			// Méthode appelée à chaque tic du timer
+			@Override
 			public void actionPerformed (ActionEvent event)
 			{
 				try {

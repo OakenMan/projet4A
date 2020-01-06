@@ -36,7 +36,7 @@ public abstract class AbstractShortestPath implements ShortestPath {
 		
 		time = System.currentTimeMillis() - time;
 		
-		steps.add(new Step(copy(graph), "Time = " + (float)((float)time/1000) + "s"));
+		steps.add(new Step(copy(graph), "Time = " + (float)time/1000 + "s"));
 	}
 
 	/*===== METHODS =====*/
