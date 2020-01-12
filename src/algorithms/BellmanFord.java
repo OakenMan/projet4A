@@ -7,59 +7,69 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de Bellman-Ford
+ * @author Aymeric Le Moal
+ * @author Tom Suchel 
+ */
 public class BellmanFord extends AbstractAlgorithm {
 
-	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin � la fin
+	/**
+	 * HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée à la fin de l'algorithme en remontant les sommets un par un 
+	 */
+	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
 
 	public BellmanFord(Graph graph) 
 	{
 		super(graph);
 	}
 
+	/**
+	 * Permet de mettre tous les potentiels à + l'infini, sauf le sommet de départ pour lequel son potentiel est mis à 0
+	 * @param startVertex : le sommet de départ
+	 */
 	public void Initialization(Vertex startVertex)
-	{
-		//		System.out.println("le sommet de départ c'est " + startVertex.getIntValue());																			
-
+	{																		
 		startVertex.setPotential(0);
 
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());			// Vertices contient tous les sommets du graphe	
-		for (Object o : vertices) 														//On remplit le tableau des distances 
+		for (Object o : vertices) 														// On remplit le tableau des distances 
 		{
 			Vertex vertex = (Vertex) o;
 			if (!(vertex.equals(startVertex)))
 			{
 				vertex.setPotential(INFINITE);
-				//				System.out.println("cell c'est " + (int)vertex.getValue());
 				predecessors.put(vertex, vertex);	
 			}
 		}
 	}
 
+	/**
+	 * Permet de mettre à jour les distances d'une itération de l'algorithme à l'autre
+	 * @param vertex1 : sommet de départ de l'arc
+	 * @param vertex2 : sommet d'arrivée de l'arc
+	 */
 	public void updateDistances(Vertex vertex1, Vertex vertex2)
 	{
 		try 
 		{
-			//			System.out.println("Le potentiel de " + vertex2 + " c'est " + vertex2.getPotential());
-			//			System.out.println("Le potentiel de " + vertex1 + " c'est " + vertex1.getPotential());
-			//			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
 			if (vertex2.getPotential() == INFINITE && vertex1.getPotential() != INFINITE)
 			{
-				//				System.out.println("Les potentiels avant l'update : " + potentials);
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
-				//				System.out.println("Les potentiels apr�s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
 			else if (vertex2.getPotential() > vertex1.getPotential() + getDistanceBetween(vertex1, vertex2))
 			{
-				//				System.out.println("Les potentiels avant l'update : " + potentials);
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
-				//				System.out.println("Les potentiels apr�s l'update : " + potentials);
 				predecessors.put(vertex2, vertex1);
 			}
 		}
 		catch(Exception e) { System.out.println(e.getMessage());}
 	}
 
+	/**
+	 * Fonction qui execute l'algorithme de Bellman-Ford. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 */
 	@Override
 	public void executeAlgorithm()
 	{
@@ -68,7 +78,7 @@ public class BellmanFord extends AbstractAlgorithm {
 		Vertex startVertex = getBeginning();
 		Vertex endVertex = getEnd();
 
-		// On ajoute l'�tape 0 (juste le d�part en gras)
+		// On ajoute l'étape 0 (juste le départ en gras)
 		steps.add(new Step(copy(graph)));
 
 		Initialization(startVertex);
@@ -96,7 +106,7 @@ public class BellmanFord extends AbstractAlgorithm {
 		graph.getModel().setStyle(endVertex, "BOLD_END");
 		steps.add(new Step(copy(graph)));
 
-		for (Object o : edges)																// On regarde s'il y a un cycle n�gatif
+		for (Object o : edges)																// On regarde s'il y a un cycle négatif
 		{
 			Edge edge = (Edge) o;
 			try 

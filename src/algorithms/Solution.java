@@ -6,10 +6,22 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe est utilisée dans le cadre de la résolution du problème du plus court chemin. Elle représente une solution : la liste des sommets et son poids.
+ * @author Aymeric Le Moal
+ * @author Tom Suchel
+ * @see TravellingSalesman
+ */
 public class Solution 
 {
 	/*===== ATTRIBUTES =====*/
+	/**
+	 * Poids total de la solution
+	 */
 	private int weight;
+	/**
+	 * Ordre des sommets dans la solution
+	 */
 	private ArrayList<Vertex> solution = new ArrayList<Vertex>();
 	private Graph graph;
 	
@@ -22,7 +34,9 @@ public class Solution
 	}
 	
 	/*===== METHODS =====*/
-	
+	/**
+	 * Permet de calculer le poids de la solution à partir de son ArrayList de sommets.
+	 */
 	public void calculateWeight()
 	{
 		weight = 0;
@@ -44,6 +58,10 @@ public class Solution
 		weight += edge.getIntValue();
 	}
 	
+	/**
+	 * Permet de copier une solution dans une autre
+	 * @return Solution : une copie de la solution 
+	 */
 	public Solution copy()
 	{
 		@SuppressWarnings("unchecked")

@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/tom/Téléchargements/Java Librairies/jgraphx-master/lib/jgraphx.jar"/>
+	<classpathentry kind="lib" path="D:/workspace eclipse/projet4A/jgraphx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

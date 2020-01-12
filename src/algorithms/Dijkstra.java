@@ -8,15 +8,32 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de Dijkstra
+ * @author Aymeric Le Moal
+ * @author Tom Suchel 
+ */
 public class Dijkstra extends AbstractAlgorithm {
 
-	private ArrayList<Vertex> subGraph; 			// Liste des sommets présents dans le sous graphe
-	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
+	/**
+	 * ArrayList de sommets correspondant à la liste des sommets présents dans le sous graphe
+	 */
+	private ArrayList<Vertex> subGraph; 			
+	
+	/**
+	 * HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée à la fin de l'algorithme en remontant les sommets un par un 
+	 */
+	private HashMap<Vertex, Vertex> predecessors;	
 
 	public Dijkstra(Graph graph) {
 		super(graph);
 	}
 
+	/**
+	 * Permet de mettre tous les potentiels à + l'infini, sauf le sommet de départ pour lequel son potentiel est mis à 0
+	 * De plus, on ajoute le sommet de départ au sous graphe et on initialise la liste des prédécesseurs
+	 * @param startVertex : le sommet de départ
+	 */
 	public void initialization(Vertex startVertex)
 	{
 		// On ajoute le sommet de départ au sous-graphe et on met à jour son potentiel
@@ -50,6 +67,10 @@ public class Dijkstra extends AbstractAlgorithm {
 		}
 	}
 
+	/**
+	 * Permet de renvoyer le sommet au potentiel minimum qui n'est pas encore présent dans le sous graphe
+	 * @return Vertex : sommet au potentiel minimum
+	 */
 	public Vertex getMin()
 	{
 		int min = INFINITE;
@@ -75,13 +96,15 @@ public class Dijkstra extends AbstractAlgorithm {
 		return minCell;
 	}
 
+	/**
+	 * Permet de mettre à jour les distances d'une itération de l'algorithme à l'autre
+	 * @param vertex1 : sommet actuel
+	 * @param vertex2 : sommet sommet voisin
+	 */
 	public void updateDistances(Vertex vertex1, Vertex vertex2)
 	{
 		try 
 		{
-			//			System.out.println("Le potentiel de " + vertex2 + " c'est " + vertex2.getPotential());
-			//			System.out.println("Le potentiel de " + vertex1 + " c'est " + vertex1.getPotential());
-			//			System.out.println("Le nouveau potentiel de " + vertex2 + " ce serait " + vertex1.getPotential()+getDistanceBetween(vertex1, vertex2));
 			if (vertex2.getPotential() == INFINITE)
 			{
 				vertex2.setPotential(vertex1.getPotential() + getDistanceBetween(vertex1, vertex2));
@@ -96,6 +119,9 @@ public class Dijkstra extends AbstractAlgorithm {
 		catch(Exception e) { System.out.println(e.getMessage());}
 	}
 
+	/**
+	 * Fonction qui execute l'algorithme de Dijkstra. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 */
 	@Override
 	public void executeAlgorithm() 
 	{
