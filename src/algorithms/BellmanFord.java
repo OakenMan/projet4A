@@ -1,5 +1,6 @@
 package algorithms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import controller.mainWindow.MainWindowController;
@@ -66,6 +67,51 @@ public class BellmanFord extends AbstractAlgorithm {
 		}
 		catch(Exception e) { System.out.println(e.getMessage());}
 	}
+	
+	/**
+	 * Permet de comparer les potentiels de deux itérations consécutives
+	 * @return un booléen indiquant si les potentiels sont égaux ou non
+	 */
+	public boolean comparePotentials()
+	{
+		Step lastStep = steps.get(steps.size() - 2);
+		Step actualStep = steps.get(steps.size() - 1);
+		ArrayList<Integer> lastPotentials = new ArrayList<Integer>();
+		ArrayList<Integer> actualPotentials = new ArrayList<Integer>();
+		Object[] lastVertices = lastStep.getGraph().getChildVertices(lastStep.getGraph().getDefaultParent());
+		Object[] actualVertices = actualStep.getGraph().getChildVertices(actualStep.getGraph().getDefaultParent());
+		
+		for (Object o : lastVertices)
+		{
+			Vertex vertex = (Vertex) o;
+			lastPotentials.add(vertex.getPotential());
+		}
+		for (Object o : actualVertices)
+		{
+			Vertex vertex = (Vertex) o;
+			actualPotentials.add(vertex.getPotential());
+		}
+		
+		System.out.println(lastPotentials);
+		System.out.println(actualPotentials);
+		
+		boolean isThisTrue = false;
+		int compteur = 0;
+		for (Integer i : lastPotentials)
+		{
+			if (i == actualPotentials.get(lastPotentials.indexOf(i)))
+				compteur++;
+		}
+		if (compteur == lastPotentials.size() - 1) isThisTrue = true;
+		
+		if (isThisTrue)
+		{
+			System.out.println("coucou");
+			return true;
+		}
+		else 
+			return false;
+	}
 
 	/**
 	 * Fonction qui execute l'algorithme de Bellman-Ford. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
@@ -73,6 +119,7 @@ public class BellmanFord extends AbstractAlgorithm {
 	@Override
 	public void executeAlgorithm()
 	{
+		
 		predecessors = new HashMap<Vertex, Vertex>();
 
 		Vertex startVertex = getBeginning();
@@ -95,12 +142,12 @@ public class BellmanFord extends AbstractAlgorithm {
 			{
 				Edge edge = (Edge) o;
 				updateDistances((Vertex)edge.getSource(), (Vertex)edge.getTarget());
-				if(k==1) {
-					steps.add(new Step(copy(graph)));
-				}
 			}
 			steps.add(new Step(copy(graph)));
-
+			if (comparePotentials())
+			{
+				k = nbVertices;
+			}
 		}
 
 		graph.getModel().setStyle(endVertex, "BOLD_END");
