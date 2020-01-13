@@ -7,6 +7,11 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de coloration de graphe
+ * @author Aymeric Le Moal
+ * @author Tom Suchel
+ */
 public class VertexColor extends AbstractAlgorithm {
 
 	/*===== ATTRIBUTES =====*/
@@ -19,6 +24,9 @@ public class VertexColor extends AbstractAlgorithm {
 
 	/*===== METHODS =====*/
 	
+	/**
+	 * Fonction qui execute l'algorithme de coloration de graphe. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 */
 	@Override
 	public void executeAlgorithm() {
 
@@ -90,7 +98,7 @@ public class VertexColor extends AbstractAlgorithm {
 	
 	/**
 	 * Cette méthode change le style du graphe pour appliquer les couleurs à chaque sommet
-	 */
+	*/
 	public void paintSolution() {
 		for(Entry<Vertex, Integer> entry : map.entrySet()) {
 			switch(entry.getValue()) {

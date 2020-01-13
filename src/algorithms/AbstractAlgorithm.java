@@ -14,6 +14,9 @@ import model.Graph;
 import model.Vertex;
 import util.StyleSheet;
 
+/**
+ * Classe abstraite de laquelle tous les algorithmes héritent. Elle permet notamment de gérer les différentes étapes, et de lancer l'algorithme.
+ */
 public abstract class AbstractAlgorithm {
 
 	/*===== CONSTANTS =====*/
@@ -88,7 +91,7 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie le sommet de départ
-	 * @return
+	 * @return Vertex
 	 */
 	public Vertex getBeginning()
 	{
@@ -111,7 +114,7 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie le sommet d'arrivée
-	 * @return
+	 * @return Vertex
 	 */
 	public Vertex getEnd()
 	{
