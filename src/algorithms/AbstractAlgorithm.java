@@ -14,7 +14,7 @@ import model.Graph;
 import model.Vertex;
 import util.StyleSheet;
 
-public abstract class AbstractAlgorithm implements IAlgorithm {
+public abstract class AbstractAlgorithm {
 
 	/*===== CONSTANTS =====*/
 	protected final int INFINITE = 9999999;
@@ -22,7 +22,6 @@ public abstract class AbstractAlgorithm implements IAlgorithm {
 	/*===== ATTRIBUTES =====*/
 	protected Graph graph;
 	protected ArrayList<Step> steps;
-	protected int nbSteps;
 	protected int currentStep;
 
 	/*===== BUILDER =====*/
@@ -41,7 +40,7 @@ public abstract class AbstractAlgorithm implements IAlgorithm {
 	}
 
 	/*===== METHODS =====*/
-	@Override
+	//@Override
 	public abstract void executeAlgorithm();
 
 	/**
@@ -254,14 +253,6 @@ public abstract class AbstractAlgorithm implements IAlgorithm {
 			throw new Exception("Can't go to next step");
 		}
 	}
-
-//	public int getNbSteps() {
-//		return steps.size();
-//	}
-
-//	public int getCurrentStep() {
-//		return currentStep;
-//	}
 
 	/**
 	 * Renvoie la distance entre 2 sommets

@@ -36,7 +36,7 @@ public class MainWindowController {
 	/*===== ATTRIBUTES =====*/
 	private static MainWindow view;				/** Fenêtre principale							**/
 	private static Graph graph;					/** Graphe										**/
-	private static AbstractAlgorithm asp;	/** Algorithme (contient le tableau d'étapes)	**/
+	private static AbstractAlgorithm asp;		/** Algorithme (contient le tableau d'étapes)	**/
 
 	// Paramètres pour PCC
 	private static int start;					/** ID du sommet de départ						**/

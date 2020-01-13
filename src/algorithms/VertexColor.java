@@ -9,66 +9,73 @@ import model.Vertex;
 
 public class VertexColor extends AbstractAlgorithm {
 
-	HashMap<Vertex, Integer> map;
+	/*===== ATTRIBUTES =====*/
+	HashMap<Vertex, Integer> map;		/** HashMap qui attribut une couleur (sous la forme d'un Integer) à chaque sommet **/
 
+	/*===== BUILDER =====*/
 	public VertexColor(Graph graph) {
 		super(graph);	
 	}
 
+	/*===== METHODS =====*/
+	
 	@Override
 	public void executeAlgorithm() {
 
+		// On intialise la hashmap (on attribue la couleur -1 à chaque sommet)
 		map = new HashMap<Vertex, Integer>();
-		
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());	
-
-		// On intialise la hashmap
 		for(Object o : vertices) {
 			Vertex v = (Vertex) o;
 			map.put(v, -1);
 		}
 
+		// On ajoute l'étape de départ
 		steps.add(new Step(copy(graph)));
 		
 		int color = 0;
 
+		// On colorie le premier sommet avec la première couleur
 		Vertex actualVertex = (Vertex) vertices[0];
-		System.out.println("On colorie "+actualVertex.getIntValue()+" en "+color);
 		map.put(actualVertex, color);
 
+		int nbVertices = graph.getChildVertices(graph.getDefaultParent()).length;
+		
 		// On répète N fois l'algo suivant :
-		for(int i = 0; i < graph.getChildVertices(graph.getDefaultParent()).length; i++) {
+		for(int i = 0; i < nbVertices; i++) {
 
 			// Pour chaque sommet...
 			for (Object o : vertices) 												
 			{
 				actualVertex = (Vertex) o;
 
+				// On vérifie si il a déjà été colorié
 				boolean coloried = map.get(actualVertex) != -1;
 
 				// Si il a pas déjà été colorié
 				if(!coloried) {
 					
 					// On regarde chez tous ses voisins si y'en a un de la même couleur
-					Object[] voisinsOut = graph.getOutgoingEdges(actualVertex);
-					Object[] voisinsIn = graph.getIncomingEdges(actualVertex);
+					Object[] neighboorsOut = graph.getOutgoingEdges(actualVertex);
+					Object[] neighboorsIn = graph.getIncomingEdges(actualVertex);
 					
-					boolean voisinMemeCouleur = false;
+					boolean sameColorNeighboor = false;
 					
-					for(Object o2 : voisinsOut) {
+					for(Object o2 : neighboorsOut) {
 						Vertex voisin = (Vertex)(((Edge) o2).getTarget());
 						if(map.get(voisin) == color) {
-							voisinMemeCouleur = true;
+							sameColorNeighboor = true;
 						}
 					}
-					for(Object o2 : voisinsIn) {
+					for(Object o2 : neighboorsIn) {
 						Vertex voisin = (Vertex)(((Edge) o2).getSource());
 						if(map.get(voisin) == color) {
-							voisinMemeCouleur = true;
+							sameColorNeighboor = true;
 						}
 					}
-
-					if(!voisinMemeCouleur) {
+					
+					// Si il en a pas de la même couleur, on lui donne cette couleur
+					if(!sameColorNeighboor) {
 						map.put(actualVertex, color);
 						paintSolution();
 						steps.add(new Step(copy(graph)));
@@ -76,19 +83,23 @@ public class VertexColor extends AbstractAlgorithm {
 				}
 			}
 
+			// Une fois qu'on a regardé tous les sommets, on change de couleur et on recommence
 			color++;	
 		}
 	}
 	
+	/**
+	 * Cette méthode change le style du graphe pour appliquer les couleurs à chaque sommet
+	 */
 	public void paintSolution() {
 		for(Entry<Vertex, Integer> entry : map.entrySet()) {
 			switch(entry.getValue()) {
-			case 0 : graph.getModel().setStyle(entry.getKey(), "VC_RED"); break;
-			case 1 : graph.getModel().setStyle(entry.getKey(), "VC_GREEN"); break;
-			case 2 : graph.getModel().setStyle(entry.getKey(), "VC_BLUE"); break;
-			case 3 : graph.getModel().setStyle(entry.getKey(), "VC_YELLOW"); break;
-			case 4 : graph.getModel().setStyle(entry.getKey(), "VC_CYAN"); break;
-			case 5 : graph.getModel().setStyle(entry.getKey(), "VC_MAGENTA"); break;
+			case 0 : graph.getModel().setStyle(entry.getKey(), "VC_RED"); 		break;
+			case 1 : graph.getModel().setStyle(entry.getKey(), "VC_GREEN"); 	break;
+			case 2 : graph.getModel().setStyle(entry.getKey(), "VC_BLUE"); 		break;
+			case 3 : graph.getModel().setStyle(entry.getKey(), "VC_YELLOW"); 	break;
+			case 4 : graph.getModel().setStyle(entry.getKey(), "VC_CYAN"); 		break;
+			case 5 : graph.getModel().setStyle(entry.getKey(), "VC_MAGENTA"); 	break;
 			default : break;
 			}
 		}
