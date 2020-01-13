@@ -17,9 +17,12 @@ import model.Graph;
 public class GraphDisplayPanel extends JPanel {
 
 	/*===== ATTRIBUTES =====*/
-	private JLayeredPane lpane;					/** Panel qui permet d'afficher le graphe + les potentiels  **/
-	private mxGraphComponent graphComponent;	/** Composant d'affichage du graphe							**/
-	private JPanel potentialsPane;				/** Panel d'affichage des potentiels						**/
+	/** Panel qui permet d'afficher le graphe + les potentiels  **/
+	private JLayeredPane lpane;	
+	/** Composant d'affichage du graphe							**/
+	private mxGraphComponent graphComponent;	
+	/** Panel d'affichage des potentiels						**/
+	private JPanel potentialsPane;				
 
 	/*===== BUILDER =====*/
 	public GraphDisplayPanel(Graph graph) {

@@ -10,25 +10,23 @@ import model.Vertex;
 
 /**
  * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de Dijkstra
- * @author Aymeric Le Moal
- * @author Tom Suchel 
  */
 public class Dijkstra extends AbstractAlgorithm {
 
-	/**
-	 * ArrayList de sommets correspondant à la liste des sommets présents dans le sous graphe
-	 */
+	/*===== ATTRIBUTES =====*/
+	/** ArrayList de sommets correspondant à la liste des sommets présents dans le sous graphe **/
 	private ArrayList<Vertex> subGraph; 			
 	
-	/**
-	 * HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée à la fin de l'algorithme en remontant les sommets un par un 
-	 */
+	/** HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée **/ 
 	private HashMap<Vertex, Vertex> predecessors;	
 
+	/*===== BUILDER =====*/
 	public Dijkstra(Graph graph) {
 		super(graph);
 	}
 
+	/*===== METHODS =====*/
+	
 	/**
 	 * Permet de mettre tous les potentiels à + l'infini, sauf le sommet de départ pour lequel son potentiel est mis à 0
 	 * De plus, on ajoute le sommet de départ au sous graphe et on initialise la liste des prédécesseurs
@@ -120,7 +118,7 @@ public class Dijkstra extends AbstractAlgorithm {
 	}
 
 	/**
-	 * Fonction qui execute l'algorithme de Dijkstra. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 * Fonction qui execute l'algorithme de Dijkstra. Elle fait appel aux fonctions de la classe, et est appelée dans le constructeur
 	 */
 	@Override
 	public void executeAlgorithm() 
@@ -128,13 +126,13 @@ public class Dijkstra extends AbstractAlgorithm {
 		subGraph = new ArrayList<Vertex>();
 		predecessors = new HashMap<Vertex, Vertex>();
 
-		Vertex startCell = getBeginning();
-		Vertex endCell = getEnd();
-
-		// On ajoute l'�tape 0 (juste le d�part en gras)
-		steps.add(new Step(copy(graph)));
+		Vertex startCell = getStartVertex();
+		Vertex endCell = getEndVertex();
 
 		initialization(startCell);
+		
+		// On ajoute l'étape 0 (juste le départ en gras)
+		steps.add(new Step(copy(graph)));
 
 		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());
 		ArrayList<Vertex> leGraph = new ArrayList<Vertex>();
@@ -147,7 +145,6 @@ public class Dijkstra extends AbstractAlgorithm {
 		Vertex cell = new Vertex();
 		boolean the_end = false;
 
-		//		System.out.println(subGraph + " et " + leGraph);
 		while (!(subGraph.equals(leGraph)) && the_end == false)
 		{
 			cell = getMin();
@@ -166,14 +163,14 @@ public class Dijkstra extends AbstractAlgorithm {
 				subGraph.add(cell);
 			}
 
-			if (cell.equals(endCell))										// Si on a atteint la fin on arr�te
+			if (cell.equals(endCell))										// Si on a atteint la fin on arrête
 			{
 				the_end = true;
 				graph.getModel().setStyle(cell, "BOLD_END");
 			}
 			else
 			{
-				ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On cr�e la liste de voisin du sommet actuel
+				ArrayList<Vertex> neighboors = new ArrayList<Vertex>();		// On crée la liste de voisin du sommet actuel
 				for (Object o : graph.getOutgoingEdges(cell))
 				{
 					Edge vertex = (Edge) o;
@@ -181,13 +178,13 @@ public class Dijkstra extends AbstractAlgorithm {
 					neighboor = (Vertex)(vertex.getTarget());
 					neighboors.add(neighboor);
 				}
-				for (Vertex c : neighboors)									// On met � jour la liste des potentiels
+				for (Vertex c : neighboors)									// On met à jour la liste des potentiels
 				{
 					updateDistances(cell, c);
 				}
 			}
 			steps.add(new Step(copy(graph)));	
-			if (!(cell.equals(endCell)))									// Apr�s avoir explor� le sommet on le remet normal
+			if (!(cell.equals(endCell)))									// Après avoir exploré le sommet on le remet normal
 			{
 				graph.getModel().setStyle(cell, "DEFAULT_VERTEX");
 			}

@@ -8,31 +8,31 @@ import model.Graph;
 import model.Vertex;
 
 /**
- * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de Bellman-Ford
- * @author Aymeric Le Moal
- * @author Tom Suchel 
+ * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de Bellman-Ford 
  */
 public class BellmanFord extends AbstractAlgorithm {
 
-	/**
-	 * HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée à la fin de l'algorithme en remontant les sommets un par un 
-	 */
-	private HashMap<Vertex, Vertex> predecessors;	// Predecesseurs des sommets pour afficher le chemin à la fin
+	/*===== ATTRIBUTES =====*/
+	/** HashMap permettant de récupérer le chemin du sommet de départ au sommet d'arrivée **/
+	private HashMap<Vertex, Vertex> predecessors;
 
+	/*===== BUILDER =====*/
 	public BellmanFord(Graph graph) 
 	{
 		super(graph);
 	}
 
+	/*===== METHODS =====*/
+	
 	/**
 	 * Permet de mettre tous les potentiels à + l'infini, sauf le sommet de départ pour lequel son potentiel est mis à 0
 	 * @param startVertex : le sommet de départ
 	 */
-	public void Initialization(Vertex startVertex)
+	public void initialization(Vertex startVertex)
 	{																		
 		startVertex.setPotential(0);
 
-		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());			// Vertices contient tous les sommets du graphe	
+		Object[] vertices = graph.getChildVertices(graph.getDefaultParent());			// "vertices" contient tous les sommets du graphe	
 		for (Object o : vertices) 														// On remplit le tableau des distances 
 		{
 			Vertex vertex = (Vertex) o;
@@ -68,20 +68,20 @@ public class BellmanFord extends AbstractAlgorithm {
 	}
 
 	/**
-	 * Fonction qui execute l'algorithme de Bellman-Ford. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 * Fonction qui execute l'algorithme de Bellman-Ford. Elle fait appel aux fonctions de la classe, et est appelée dans le constructeur
 	 */
 	@Override
 	public void executeAlgorithm()
 	{
 		predecessors = new HashMap<Vertex, Vertex>();
 
-		Vertex startVertex = getBeginning();
-		Vertex endVertex = getEnd();
+		Vertex startVertex = getStartVertex();
+		Vertex endVertex = getEndVertex();
 
 		// On ajoute l'étape 0 (juste le départ en gras)
 		steps.add(new Step(copy(graph)));
 
-		Initialization(startVertex);
+		initialization(startVertex);
 
 		steps.add(new Step(copy(graph)));
 

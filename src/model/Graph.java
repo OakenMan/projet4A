@@ -8,10 +8,13 @@ import com.mxgraph.view.mxGraph;
  */
 public class Graph extends mxGraph {
 
+	/*===== BUILDER =====*/
 	public Graph() {
 		super();
 	}
 
+	/*===== METHODS =====*/
+	
 	/**
 	 * Surchage la fonction createVertex de mxGraph afin de créer un Vertex au lieu d'un mxCell
 	 */

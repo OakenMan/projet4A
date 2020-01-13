@@ -15,7 +15,8 @@ import model.Vertex;
 import util.StyleSheet;
 
 /**
- * Classe abstraite de laquelle tous les algorithmes héritent. Elle permet notamment de gérer les différentes étapes, et de lancer l'algorithme.
+ * Classe abstraite de laquelle tous les algorithmes héritent. 
+ * Elle permet notamment de gérer les différentes étapes, et de lancer l'algorithme.
  */
 public abstract class AbstractAlgorithm {
 
@@ -23,11 +24,20 @@ public abstract class AbstractAlgorithm {
 	protected final int INFINITE = 9999999;
 
 	/*===== ATTRIBUTES =====*/
+	/** Le graphe utilisé par l'algorithme **/
 	protected Graph graph;
+	/** La liste d'étapes représentant la résolution de l'algorithme @see Step **/
 	protected ArrayList<Step> steps;
+	/** L'étape affichée actuellement **/
 	protected int currentStep;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Constructeur par défaut pour tous les algorithmes.
+	 * Initialise les différents paramètres (tableau d'étapes, graphes...) puis lance l'exécution de l'algo.
+	 * Calcule le temps de calcul pour l'algorithme et l'affiche sur la dernière étape.
+	 * @param graph
+	 */
 	public AbstractAlgorithm(Graph graph) {
 		steps = new ArrayList<Step>();
 		this.graph = graph;
@@ -43,7 +53,12 @@ public abstract class AbstractAlgorithm {
 	}
 
 	/*===== METHODS =====*/
-	//@Override
+	
+	/**
+	 * Méthode abstraite qui doit être implémentée dans tous les algorithmes. 
+	 * Cette méthode doit appliquer l'algorithme sur le graphe et ajouter chaque étape importante en utilisant le code ci-dessous :
+	 * <code>steps.add(new Step(copy(graph)), "informations supplémentaires");</code>
+	 */
 	public abstract void executeAlgorithm();
 
 	/**
@@ -91,9 +106,9 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie le sommet de départ
-	 * @return Vertex
+	 * @return Vertex le sommet de départ
 	 */
-	public Vertex getBeginning()
+	public Vertex getStartVertex()
 	{
 		Vertex startVertex = null;
 
@@ -114,9 +129,9 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie le sommet d'arrivée
-	 * @return Vertex
+	 * @return Vertex le sommet d'arrivée
 	 */
-	public Vertex getEnd()
+	public Vertex getEndVertex()
 	{
 		Vertex endVertex = null;
 
@@ -211,7 +226,6 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie la première étape de l'algo
-	 * @return
 	 */
 	public Graph getFirstStep() {
 		currentStep = 0;
@@ -220,7 +234,6 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie la dernière étape de l'algo
-	 * @return
 	 */
 	public Graph getLastStep() {
 		currentStep = steps.size() - 1;
@@ -229,8 +242,7 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie l'étape précédente de l'algo
-	 * @return
-	 * @throws Exception
+	 * @throws Exception lorsqu'on est déjà à la première étape
 	 */
 	public Graph getPreviousStep() throws Exception {
 		if(currentStep > 0) {
@@ -244,8 +256,7 @@ public abstract class AbstractAlgorithm {
 
 	/**
 	 * Renvoie l'étape suivante de l'algo
-	 * @return
-	 * @throws Exception
+	 * @throws Exception lorsqu'on est déjà à la dernière étape
 	 */
 	public Graph getNextStep() throws Exception {
 		if(currentStep < steps.size()) {
@@ -262,8 +273,7 @@ public abstract class AbstractAlgorithm {
 	 * @param vertex1 le 1er sommet
 	 * @param vertex2 le 2ème sommet
 	 * @return la distance entre 2 sommets 
-	 * TODO : return null si pas d'arc ? plutôt qu'une exception ?
-	 * @throws Exception
+	 * @throws Exception lorsque les 2 sommets ne sont pas reliés entre eux
 	 */
 	public int getDistanceBetween(Vertex vertex1, Vertex vertex2) throws Exception
 	{

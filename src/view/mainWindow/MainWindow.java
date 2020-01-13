@@ -17,10 +17,16 @@ import view.GraphDisplayPanel;
 public class MainWindow extends JFrame {
 
 	/*===== ATTRIBUTES =====*/
-	private GraphDisplayPanel graphPanel;			/** Panel d'affichage du graphe **/
-	private MainWindowActionsPanel actionPanel;		/** Panel des actions			**/
+	/** Panel d'affichage du graphe **/
+	private GraphDisplayPanel graphPanel;
+	/** Panel des actions			**/
+	private MainWindowActionsPanel actionPanel;		
 
 	/*===== BUILDER =====*/
+	/**
+	 * Construit la fenêtre de simulation d'algorithmes.
+	 * @param graph le graph affiché sur la fenêtre
+	 */
 	public MainWindow(Graph graph) {
 		// Configuration de la fenetre
 		setTitle("Simulation d'algorithmes");

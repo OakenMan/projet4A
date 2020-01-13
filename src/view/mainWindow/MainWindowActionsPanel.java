@@ -34,40 +34,57 @@ import controller.mainWindow.MainWindowController;
 public class MainWindowActionsPanel extends JPanel {
 
 	/*===== ICONS PATHS =====*/
-	protected static final URL rewindIcon = MainWindowActionsPanel.class.getResource("/icons/rewind.png");
-	protected static final URL backIcon = MainWindowActionsPanel.class.getResource("/icons/back.png");
-	protected static final URL playIcon = MainWindowActionsPanel.class.getResource("/icons/play.png");
-	protected static final URL pauseIcon = MainWindowActionsPanel.class.getResource("/icons/pause.png");
-	protected static final URL nextIcon = MainWindowActionsPanel.class.getResource("/icons/next.png");
-	protected static final URL fastForwardIcon = MainWindowActionsPanel.class.getResource("/icons/fast-forward.png");
+	private static final URL rewindIcon = MainWindowActionsPanel.class.getResource("/icons/rewind.png");
+	private static final URL backIcon = MainWindowActionsPanel.class.getResource("/icons/back.png");
+	private static final URL playIcon = MainWindowActionsPanel.class.getResource("/icons/play.png");
+	private static final URL pauseIcon = MainWindowActionsPanel.class.getResource("/icons/pause.png");
+	private static final URL nextIcon = MainWindowActionsPanel.class.getResource("/icons/next.png");
+	private static final URL fastForwardIcon = MainWindowActionsPanel.class.getResource("/icons/fast-forward.png");
 
 	/*===== ATTRIBUTES =====*/
+	/** Champ texte pour le choix du graphe **/
 	private JTextField tfGraphFile;
 
+	/** ComboBox de sélection d'algorithme **/
 	private JComboBox<String> cbAlgo;
 
+	/** Champ texte pour le choix du sommet de départ (PCC)**/
 	private JTextField tfStartVertex;
+	/** Champ texte pour le choix du sommet d'arrivée (PCC)**/
 	private JTextField tfEndVertex;
 
+	/** Spinner pour le choix de la vitesse **/
 	private SpinnerNumberModel speedSpinnerModel;
+	/** Spinner pour le choix du nombre d'essais (TSP) **/
 	private SpinnerNumberModel triesSpinnerModel;
+	/** Spinner pour le choix du nombre d'échanges (TSP) **/
 	private SpinnerNumberModel exchangesSpinnerModel;
 
+	/** Bouton pour lancer l'algorithme **/
 	private JButton calcShortestPath;
-	
+	/** Bouton play/pause **/
 	private JButton bPlayPause;
 
+	/** Zone de texte pour afficher des infos relatives aux algorithmes **/
 	private JTextArea infosPanel;
-
+	/** Zone de texte pour afficher des erreurs **/
 	private JLabel warningLabel;
 
+	/** Panel central (choix des paramètres) **/
 	private JPanel center;
+	/** Panel de choix de l'algo **/
 	private JPanel algoChoicePanel;
+	/** Panel pour les paramètres des TSP **/
 	private JPanel paramsTsp;
+	/** Panel pour les paramètres de PCC **/
 	private JPanel paramsPcc;
+	/** Panel pour la simulation **/
 	private JPanel south;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Construit le panel d'actions de la MainWindow.
+	 */
 	public MainWindowActionsPanel() {
 
 		setLayout(new BorderLayout());
@@ -525,25 +542,22 @@ public class MainWindowActionsPanel extends JPanel {
 				infosPanel.append(("Caractéristiques :\n" +
 						"- Graphes quelconques\n" +
 						"- Longueurs positives\n" +
-						"- One to All\n" +
-						"- Complexité : O(n.log(n))"));
+						"- One to All\n"));
 				break;
 			case BELLMAN_FORD :	
 				infosPanel.append(("Caractéristiques :\n" +
 						"- Graphes quelconques\n" +
 						"- Longueurs quelconques\n" +
-						"- One to All\n" +
-						"- Complexité : O(n*m)"));
+						"- One to All\n"));
 				break;
 			case VOYAGEUR_COMMERCE :
 				infosPanel.append(("Caractéristiques :\n" +
 						"- Graphes complets\n" +
-						"- Longueurs quelconques\n" +
-						"- Complexité : O(?)"));
+						"- Longueurs quelconques\n"));
 				break;
 			case VERTEX_COLOR :
 				infosPanel.append(("Caractéristiques :\n" +
-						"Work In Progress"));
+						"..."));
 				break;
 			default:
 				break;

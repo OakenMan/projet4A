@@ -9,13 +9,12 @@ import model.Vertex;
 
 /**
  * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme de coloration de graphe
- * @author Aymeric Le Moal
- * @author Tom Suchel
  */
 public class VertexColor extends AbstractAlgorithm {
 
 	/*===== ATTRIBUTES =====*/
-	HashMap<Vertex, Integer> map;		/** HashMap qui attribut une couleur (sous la forme d'un Integer) à chaque sommet **/
+	/** HashMap qui attribut une couleur (sous la forme d'un Integer) à chaque sommet **/
+	HashMap<Vertex, Integer> map;		
 
 	/*===== BUILDER =====*/
 	public VertexColor(Graph graph) {

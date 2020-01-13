@@ -20,11 +20,17 @@ import controller.graphBuilder.GraphBuilderController;
 public class GraphBuilderActionsPanel extends JPanel {
 
 	/*===== ATTRIBUTES =====*/
+	/** Champ texte pour le choix du graphe **/
 	private JTextField tfGraphFile;
+	/** Champ texte pour la coordonée X **/
 	private JTextField tfX;
+	/** Champ texte pour la coordonée Y **/
 	private JTextField tfY;
 
 	/*===== BUILDER =====*/
+	/**
+	 * Construit le panel d'actions du GraphBuilder.
+	 */
 	public GraphBuilderActionsPanel() {
 		
 		setPreferredSize(new Dimension(250, 600));

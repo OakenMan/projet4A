@@ -17,10 +17,16 @@ import view.GraphDisplayPanel;
 public class GraphBuilderWindow extends JFrame {
 
 	/*===== ATTRIBUTES =====*/
-	private GraphDisplayPanel graphPanel;			/** Le panel d'affichage du graphe **/
-	private GraphBuilderActionsPanel actionPanel;	/** Le panel d'actions			   **/
+	/** Le panel d'affichage du graphe **/
+	private GraphDisplayPanel graphPanel;	
+	/** Le panel d'actions			   **/
+	private GraphBuilderActionsPanel actionPanel;	
 
 	/*===== BUIDER =====*/
+	/**
+	 * Construit la fenêtre de création de graphes.
+	 * @param graph le graph affiché sur la fenêtre
+	 */
 	public GraphBuilderWindow(Graph graph) {
 		// Configuration de la fenetre
 		setTitle("Création de graphes");

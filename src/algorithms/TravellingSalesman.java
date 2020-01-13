@@ -10,29 +10,10 @@ import model.Vertex;
 
 /**
  * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme du voyageur de commerce
- * @author Aymeric Le Moal
- * @author Tom Suchel
  */
 public class TravellingSalesman extends AbstractAlgorithm {
 
 	private long time;
-
-	/**
-	 * La solution initiale
-	 */
-	private String baseSolution;			// Solution de base pour TSP
-	/**
-	 * L'heuristique qui va être utilisé
-	 */
-	private String heurtistique;			// Heuristique pour TSP
-	/**
-	 * Le nombre d'itération sans changement avant la fin de l'algorithme
-	 */
-	private int nbTries;					// Nombre d'essais pour TSP
-	/**
-	 * Le nombre d'échange d'arc par itération.
-	 */
-	private int nbExchanges;				// Nombre d'échanges pour TSP
 
 	/*===== BUILDER =====*/
 	public TravellingSalesman(Graph graph) {
@@ -41,7 +22,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 
 	/*===== METHODS =====*/
 
-	/** ~O(n³)
+	/**
 	 * Calcule tous les solutions de bases possibles à partir de l'algo du plus proche voisin et renvoie la meilleure
 	 * @return la meilleure solution de départ avec PPV
 	 */
@@ -61,7 +42,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 		return bestSolution;
 	}
 
-	/**	~O(n²)
+	/**
 	 * Calcule une solution de départ avec l'algorithme du plus proche voisin
 	 * wantedStart le sommet de départ, ou null si on veut laisser le hasard décider
 	 * @return une solution de départ
@@ -101,7 +82,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 							min = getDistanceBetween(lastVertex, vertex);
 						}
 					} catch(Exception e) {
-						//						e.printStackTrace();
+						e.printStackTrace();
 					}
 				}
 			}
@@ -109,12 +90,10 @@ public class TravellingSalesman extends AbstractAlgorithm {
 			vertexList.add(lastVertex);
 		}
 
-		Solution solution = new Solution(vertexList, graph);
-
-		return solution;
+		return new Solution(vertexList, graph);
 	}
 
-	/** O(n)
+	/**
 	 * Calcule une solution de départ au hasard
 	 * @return une solution de départ
 	 */
@@ -128,15 +107,14 @@ public class TravellingSalesman extends AbstractAlgorithm {
 		}
 
 		Collections.shuffle(vertexList);
-		Solution solution = new Solution(vertexList, graph);
 
-		return solution;
+		return new Solution(vertexList, graph);
 	}
 
 	/**
 	 * Choisit deux sommets au hasard et les échange
-	 * @param solution
-	 * @return
+	 * @param solution la solution à améliorer
+	 * @return la nouvelle solution
 	 */
 	public Solution randomVertexExchange(Solution solution)
 	{
@@ -155,10 +133,10 @@ public class TravellingSalesman extends AbstractAlgorithm {
 
 	/**
 	 * Echange les deux sommets fournis en paramètres
-	 * @param solution
-	 * @param index1
-	 * @param index2
-	 * @return
+	 * @param solution la solution à améliorer
+	 * @param index1 le numéro du 1er sommet
+	 * @param index2 le numéro du 2nd sommet
+	 * @return la nouvelle solution
 	 */
 	public Solution vertexExchange(Solution solution, int index1, int index2)
 	{
@@ -172,9 +150,9 @@ public class TravellingSalesman extends AbstractAlgorithm {
 		return newSolution;
 	}
 
-	/** ~O(2n)
+	/**
 	 * Applique la solution passée en paramètre sur le style du graphe et l'enregistre dans les étapes
-	 * @param solution
+	 * @param solution la solution à afficher
 	 */
 	public void printSolution(Solution solution, boolean cleanAfter)
 	{
@@ -224,7 +202,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 	}
 
 	/**
-	 * Fonction qui execute l'algorithme du voyageur du commerce. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 * Fonction qui execute l'algorithme du voyageur du commerce. Elle fait appel aux fonctions de la classe, et est appelée dans le constructeur
 	 */
 	@Override
 	public void executeAlgorithm()
@@ -268,7 +246,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 
 					if (currentNeighboor.getWeight() < currentSolution.getWeight())
 					{
-						System.out.println("Amelioration at i="+i+" : old="+currentSolution.getWeight() + ", new="+currentNeighboor.getWeight());
+						System.out.println("Amelioration à i="+i+" : old="+currentSolution.getWeight() + ", new="+currentNeighboor.getWeight());
 						currentSolution = currentNeighboor.copy();
 						printSolution(currentSolution, true);
 						amelioration = true;

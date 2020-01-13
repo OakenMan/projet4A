@@ -4,13 +4,13 @@ import model.Graph;
 
 /**
  * Représente une étape lors de l'affichage de nos algorithmes et de leurs résolutions.
- * @author Aymeric Le Moal
- * @author Tom Suchel
  */
 public class Step {
 
 	/*===== ATTRIBUTES =====*/
+	/** Le graph lié à cette étape **/
 	private Graph graph;
+	/** Le texte à afficher en plus du graphe **/
 	private String info;
 	
 	/*===== BUILDER =====*/

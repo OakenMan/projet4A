@@ -8,8 +8,11 @@ import com.mxgraph.model.mxGeometry;
  */
 public class Vertex extends mxCell {
 
+	/*===== ATTRIBUTES =====*/
+	/** Potentiel du sommet **/
 	private int potential;
 	
+	/*===== BUILDERS =====*/
 	public Vertex() {
 		super();
 	}
@@ -20,6 +23,7 @@ public class Vertex extends mxCell {
 		setStyle(style);
 	}
 	
+	/*===== GETTERS AND SETTERS =====*/
 	public void setPotential(int potential) {
 		this.potential = potential;
 	}
@@ -28,6 +32,10 @@ public class Vertex extends mxCell {
 		return potential;
 	}
 	
+	/**
+	 * Utilisée pour récupérer la valeur d'un sommet, si c'est un nombre
+	 * @return la valeur du sommet, ou 0 si cette valeur n'est pas un nombre
+	 */
 	public int getIntValue() {
 		if(value.toString().matches("(-)?[0-9]+")) {
 			return Integer.parseInt(value.toString());
