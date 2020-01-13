@@ -14,8 +14,7 @@ public class Vertex extends mxCell {
 		super();
 	}
 	
-	public Vertex(Object value, mxGeometry geometry, String style)
-	{
+	public Vertex(Object value, mxGeometry geometry, String style) {
 		setValue(value);
 		setGeometry(geometry);
 		setStyle(style);
@@ -29,9 +28,11 @@ public class Vertex extends mxCell {
 		return potential;
 	}
 	
-	public int getIntValue()
-	{
-		return Integer.parseInt(value.toString());
+	public int getIntValue() {
+		if(value.toString().matches("(-)?[0-9]+")) {
+			return Integer.parseInt(value.toString());
+		}
+		return 0;
 	}
 	
 }

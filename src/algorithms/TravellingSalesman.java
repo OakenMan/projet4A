@@ -8,13 +8,30 @@ import model.Edge;
 import model.Graph;
 import model.Vertex;
 
+/**
+ * Cette classe est la classe permettant de gérer l'affichage et la résolution de l'algorithme du voyageur de commerce
+ * @author Aymeric Le Moal
+ * @author Tom Suchel
+ */
 public class TravellingSalesman extends AbstractAlgorithm {
 
 	private long time;
 
+	/**
+	 * La solution initiale
+	 */
 	private String baseSolution;			// Solution de base pour TSP
-	private String heurtistique;			// Heurtistique pour TSP
+	/**
+	 * L'heuristique qui va être utilisé
+	 */
+	private String heurtistique;			// Heuristique pour TSP
+	/**
+	 * Le nombre d'itération sans changement avant la fin de l'algorithme
+	 */
 	private int nbTries;					// Nombre d'essais pour TSP
+	/**
+	 * Le nombre d'échange d'arc par itération.
+	 */
 	private int nbExchanges;				// Nombre d'échanges pour TSP
 
 	/*===== BUILDER =====*/
@@ -206,6 +223,9 @@ public class TravellingSalesman extends AbstractAlgorithm {
 		}
 	}
 
+	/**
+	 * Fonction qui execute l'algorithme du voyageur du commerce. Elle fait appel aux fonctions de la classe, est elle appelée dans le constructeur
+	 */
 	@Override
 	public void executeAlgorithm()
 	{
@@ -267,7 +287,7 @@ public class TravellingSalesman extends AbstractAlgorithm {
 						else {
 							currentNeighboor = vertexExchange(currentSolution, i+1, j);
 						}
-						// Si après un échange on a une meilleur solution
+						// Si après un échange on a une meilleure solution
 						if (currentNeighboor.getWeight() < currentSolution.getWeight())
 						{
 							System.out.println("Amelioration en échangeant "+i+" et "+j+" : old="+currentSolution.getWeight() + ", new="+currentNeighboor.getWeight());

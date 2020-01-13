@@ -10,25 +10,26 @@ public class Edge extends mxCell {
 
 	private int potential;
 
-	public Edge(Object value, mxGeometry geometry, String style)
-	{
+	public Edge(Object value, mxGeometry geometry, String style) {
 		setValue(value);
 		setGeometry(geometry);
 		setStyle(style);
 		setEdge(true);
 		setVertex(false);
 	}
-	
+
 	public void setPotential(int potential) {
 		this.potential = potential;
 	}
-	
+
 	public int getPotential() {
 		return potential;
 	}
-	
-	public int getIntValue()
-	{
-		return Integer.parseInt(value.toString());
+
+	public int getIntValue() {
+		if(value.toString().matches("(-)?[0-9]+")) {
+			return Integer.parseInt(value.toString());
+		}
+		return 0;
 	}
 }

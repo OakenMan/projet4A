@@ -7,5 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/aymer/Desktop/Java/projet4A/jgraphx.jar"/>
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>
